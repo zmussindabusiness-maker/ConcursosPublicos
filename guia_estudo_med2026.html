@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Estudo — MED 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0e1a; --bg2: #111827; --bg3: #1e293b;
+    --fg: #e2e8f0; --fg2: #94a3b8; --fg3: #64748b;
+    --accent: #ec4896; --accent2: #db2777; --accent3: #be185d;
+    --gold: #facc15;
+    --red-flag: #d21034; --black-flag: #0a0a0a;
+    --card-bg: #0f172a; --card-border: #1e3a5f;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--fg); line-height: 1.7; min-height: 100vh;
+  }
+  .flag-stripe {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    height: 4px; display: flex;
+  }
+  .flag-stripe span { flex: 1; }
+  .flag-stripe .r { background: var(--red-flag); }
+  .flag-stripe .b { background: var(--black-flag); }
+  .flag-stripe .y { background: var(--gold); }
+  .header {
+    padding: 80px 20px 40px; text-align: center;
+    background: linear-gradient(180deg, #4c1d3a 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .header-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent); color: #fff; padding: 4px 14px;
+    border-radius: 20px; font-size: .75rem; font-weight: 700;
+    letter-spacing: 1px; margin-bottom: 12px;
+  }
+  .header .orgao-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(236,72,147,.15); color: var(--accent);
+    padding: 3px 10px; border-radius: 8px; font-size: .7rem; font-weight: 600;
+    margin-bottom: 10px; border: 1px solid rgba(236,72,147,.2);
+  }
+  .header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }
+  .header h1 span { color: var(--accent); }
+  .header .sub {
+    color: var(--fg2); font-size: .9rem; max-width: 600px;
+    margin: 0 auto 16px;
+  }
+  .header-actions {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  }
+  .header-actions a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 24px; border-radius: 10px; font-size: .85rem;
+    font-weight: 600; text-decoration: none; transition: .2s;
+  }
+  .btn-simular {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff; position: relative; overflow: hidden;
+    animation: pulse-glow 2.5s ease-in-out infinite, float 3s ease-in-out infinite;
+  }
+  .btn-simular:hover { background: var(--accent2); transform: scale(1.04); animation: none; box-shadow: 0 6px 25px var(--accent); }
+  .btn-simular::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  .btn-simular::after {
+    content: ''; position: absolute; inset: -4px; border-radius: 12px;
+    border: 2px solid var(--accent);
+    animation: ring-pulse 2s ease-out infinite;
+    pointer-events: none;
+  }
+  .icon-simular { display: inline-block; animation: icon-run 1.8s ease-in-out infinite; }
+  .callout-badge {
+    position: absolute; top: -14px; right: -8px;
+    font-size: .55rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .5px; background: var(--gold); color: #1a1a2e;
+    padding: 2px 10px; border-radius: 20px; white-space: nowrap;
+    animation: callout 3.5s ease-in-out infinite;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,.2); }
+    50% { box-shadow: 0 4px 35px var(--accent); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  @keyframes icon-run {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(4px); }
+    40% { transform: translateX(-1px); }
+    60% { transform: translateX(3px); }
+    80%, 100% { transform: translateX(0); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes ring-pulse {
+    0% { transform: scale(1); opacity: .5; }
+    100% { transform: scale(1.35); opacity: 0; }
+  }
+  @keyframes callout {
+    0%, 100% { opacity: 0; transform: translateY(8px) scale(.9); }
+    15%, 75% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .btn-voltar {
+    background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border);
+  }
+  .btn-voltar:hover { border-color: var(--fg3); color: var(--fg); }
+  .layout { display: flex; max-width: 1200px; margin: 0 auto; padding: 0 20px; gap: 30px; }
+  .toc-sidebar {
+    position: sticky; top: 20px; width: 240px; flex-shrink: 0;
+    max-height: calc(100vh - 40px); overflow-y: auto; padding: 20px 0;
+    display: none;
+  }
+  .toc-sidebar::-webkit-scrollbar { width: 3px; }
+  .toc-sidebar::-webkit-scrollbar-thumb { background: var(--fg3); border-radius: 2px; }
+  .toc-sidebar h3 {
+    font-size: .7rem; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--fg3); margin-bottom: 12px;
+  }
+  .toc-sidebar a {
+    display: block; padding: 3px 0; font-size: .75rem; color: var(--fg2);
+    text-decoration: none; transition: .15s; border-left: 2px solid transparent;
+    padding-left: 8px;
+  }
+  .toc-sidebar a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .content { flex: 1; min-width: 0; padding: 30px 0 60px; }
+  .section-card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 28px; margin-bottom: 16px;
+    transition: border-color .2s;
+  }
+  .section-card:hover { border-color: rgba(236,72,147,.15); }
+  .section-card .sec-header {
+    display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px;
+  }
+  .section-card .sec-icon {
+    width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; background: rgba(236,72,147,.1);
+  }
+  .section-card .sec-title {
+    font-size: 1.05rem; font-weight: 700; color: var(--fg); line-height: 1.3;
+  }
+  .section-card .sec-num {
+    font-size: .7rem; color: var(--accent); font-weight: 600;
+    letter-spacing: 1px; margin-bottom: 2px;
+  }
+  .section-card .sec-body {
+    font-size: .88rem; color: var(--fg2); line-height: 1.8;
+  }
+  .section-card .sec-body p { margin-bottom: 10px; }
+  .section-card .sec-body strong { color: var(--fg); }
+  .section-card .sec-body ul { margin: 8px 0 8px 20px; }
+  .section-card .sec-body li { margin-bottom: 4px; }
+  .pull-quote {
+    margin: 16px 0; padding: 16px 20px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(236,72,147,.08), rgba(236,72,147,.02));
+    border-left: 3px solid var(--accent); font-style: italic;
+    color: var(--fg); font-size: .9rem;
+  }
+  .pull-quote::before { content: '\201C'; font-size: 1.4rem; color: var(--accent); margin-right: 4px; }
+  .tip-box {
+    margin: 16px 0; padding: 14px 18px; border-radius: 10px;
+    background: rgba(250,204,21,.05); border: 1px solid rgba(250,204,21,.15);
+    color: var(--gold);
+  }
+  .alert-box {
+    margin: 16px 0; padding: 14px 18px; border-radius: 10px;
+    background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.15);
+    color: #fca5a5;
+  }
+  .sec-table {
+    width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .82rem;
+  }
+  .sec-table th {
+    text-align: left; padding: 10px 12px; font-weight: 700;
+    background: var(--bg3); color: var(--accent); border-bottom: 2px solid var(--accent);
+  }
+  .sec-table td {
+    padding: 10px 12px; border-bottom: 1px solid var(--card-border); color: var(--fg2);
+    vertical-align: top;
+  }
+  .sec-table tr:hover td { background: rgba(236,72,147,.03); }
+  .sec-table tr.active td {
+    background: rgba(236,72,147,.1);
+    border-left: 3px solid var(--accent);
+    font-weight: 600; color: var(--fg);
+  }
+  .mini-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px; margin: 12px 0;
+  }
+  .mini-grid .item {
+    padding: 10px 14px; border-radius: 8px; background: var(--bg3);
+    border: 1px solid var(--card-border); font-size: .8rem; color: var(--fg2);
+  }
+  .mini-grid .item strong { color: var(--fg); display: block; margin-bottom: 2px; }
+  .orgao-nav {
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .orgao-nav a {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 14px; border-radius: 8px; font-size: .8rem; font-weight: 600;
+    text-decoration: none; transition: .15s;
+    background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border);
+  }
+  .orgao-nav a:hover { border-color: var(--accent); color: var(--fg); }
+  .orgao-nav a.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .footer-guia {
+    text-align: center; padding: 40px 20px; border-top: 1px solid var(--card-border);
+    margin-top: 20px;
+  }
+  .footer-guia p { color: var(--fg3); font-size: .8rem; margin-bottom: 8px; }
+  @media (min-width: 900px) { .toc-sidebar { display: block; } }
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.3rem; }
+    .section-card { padding: 18px; }
+    .section-card .sec-header { gap: 10px; }
+    .section-card .sec-icon { width: 32px; height: 32px; font-size: 1rem; }
+    .layout { padding: 0 12px; }
+    .sec-table { font-size: .72rem; }
+    .sec-table th, .sec-table td { padding: 6px 8px; }
+    .mini-grid { grid-template-columns: 1fr 1fr; }
+    .orgao-nav a { font-size: .7rem; padding: 4px 10px; }
+  }
+  @media print {
+    .flag-stripe, .header-actions, .toc-sidebar, .orgao-nav, .sec-nav, .kbd-hint, .footer-guia { display: none !important; }
+    .layout { display: block !important; max-width: 100% !important; padding: 0 !important; }
+    .header { padding: 15px 0 !important; border: none !important; }
+    .header h1 { font-size: 1.5rem !important; color: #111 !important; }
+    .header h1 span { color: #db2777 !important; }
+    .header .sub { color: #444 !important; }
+    .section-card { display: block !important; break-inside: avoid; border: 1px solid #ddd !important; background: #fff !important; color: #111 !important; box-shadow: none !important; margin-bottom: 24px !important; }
+    .section-card.hidden { display: block !important; }
+    .section-card .sec-header { border-bottom: 1px solid #eee !important; gap: 10px !important; }
+    .section-card .sec-icon { background: #f3f4f6 !important; border: 1px solid #ddd !important; }
+    .sec-num { color: #db2777 !important; }
+    .sec-title { color: #111 !important; }
+    .sec-body { color: #222 !important; }
+    .sec-body h4 { color: #db2777 !important; }
+    .sec-body strong { color: #000 !important; }
+    .sec-table th { background: #f3f4f6 !important; color: #111 !important; border-bottom: 2px solid #db2777 !important; }
+    .sec-table td { color: #333 !important; border-bottom: 1px solid #ddd !important; }
+    .mini-grid .item { background: #fafafa !important; border: 1px solid #ddd !important; color: #333 !important; }
+    .mini-grid .item strong { color: #111 !important; }
+    body { background: #fff !important; color: #000 !important; }
+  }
+  .btn-print {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px; font-size: .8rem; font-weight: 600;
+    cursor: pointer; transition: .2s; text-decoration: none;
+    background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border);
+  }
+  .btn-print:hover { border-color: var(--accent); color: var(--fg); background: var(--bg2); }
+  .sec-read-time {
+    display: inline-block; font-size: .65rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 12px;
+    background: rgba(255,255,255,.06); color: var(--fg3);
+    margin-left: 8px; vertical-align: middle;
+  }
+  .section-card.hidden { display: none; }
+  .sec-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--card-border); }
+  .sec-nav button { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: .78rem; font-weight: 600; cursor: pointer; transition: .2s; background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border); }
+  .sec-nav button:hover { border-color: var(--accent); color: var(--fg); }
+  .sec-nav .btn-prev, .sec-nav .btn-next { background: var(--bg3); }
+  .sec-nav .btn-prev:hover, .sec-nav .btn-next:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .sec-nav .sec-progress { font-size: .7rem; color: var(--fg3); }
+  .toc-sidebar a.toc-active { color: var(--accent); border-left-color: var(--accent); font-weight: 700; }
+  .kbd-hint { text-align: center; font-size: .65rem; color: var(--fg3); margin-top: 12px; opacity: .5; letter-spacing: .5px; }
+</style>
+</head>
+<body>
+
+<div class="flag-stripe">
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+</div>
+
+<div class="header">
+  <div class="header-badge">📖 GUIA DE ESTUDO — MED 2026</div>
+  <div class="orgao-tag" id="orgaoTag"></div>
+  <h1>Preparação Completa para o <span>Concurso MED</span></h1>
+  <p class="sub">13 módulos de estudo · Língua Portuguesa, Pedagogia, Legislação, Administração Pública e mais</p>
+  <div class="orgao-nav" id="orgaoNav"></div>
+  <div class="header-actions">
+    <a href="#" class="btn-simular" id="btnSimular"><span class="icon-simular">▶️</span> Simular Prova <span class="callout-badge">⚡ Teste Agora!</span></a>
+    <button type="button" class="btn-print" onclick="window.print()" title="Imprimir ou Guardar em PDF"><span class="icon-simular">🖨️</span> Imprimir / PDF</button>
+    <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="toc-sidebar" id="toc"></nav>
+  <main class="content" id="content"></main>
+</div>
+
+<div class="footer-guia">
+  <p>Baseado no Guia de Estudo — Concurso Público MED 2026</p>
+  <p style="font-size:.7rem;color:var(--fg3)">
+    Este guia não substitui as regras oficiais do concurso. Consulte sempre o portal oficial do MED.
+  </p>
+</div>
+
+<script>
+var ORGAOS = {
+  "professores": {
+    "sigla": "Prof.",
+    "nome": "Carreira Docente",
+    "icon": "🎓",
+    "cor": "#ec4896",
+    "id": "educacao-professores",
+    "prep": "Pedagogia, did\u00e1ctica, disciplina espec\u00edfica e avalia\u00e7\u00e3o."
+  },
+  "regime-geral": {
+    "sigla": "RG",
+    "nome": "Pessoal Administrativo",
+    "icon": "📝",
+    "cor": "#14b8a6",
+    "id": "educacao-regime-geral",
+    "prep": "Administra\u00e7\u00e3o p\u00fablica, inform\u00e1tica, \u00e9tica e cultura geral."
+  }
+};
+
+var SECTIONS = [
+  {
+    "num": 1,
+    "title": "Organiza\u00e7\u00e3o da Administra\u00e7\u00e3o P\u00fablica",
+    "icon": "🏢",
+    "body": "<p>Base legal: <strong>Decreto Presidencial n.\u00ba 112/24, de 17 de Maio</strong>, que estabelece os procedimentos de recrutamento e selec\u00e7\u00e3o de candidatos na administra\u00e7\u00e3o p\u00fablica.</p><h4 style=\"color:var(--accent);margin-bottom:8px\">1.1 Estrutura da Administra\u00e7\u00e3o P\u00fablica</h4><ul><li><strong>Administra\u00e7\u00e3o Directa:</strong> minist\u00e9rios e \u00f3rg\u00e3os centrais</li><li><strong>Administra\u00e7\u00e3o Indirecta:</strong> institutos p\u00fablicos, empresas p\u00fablicas</li><li><strong>Administra\u00e7\u00e3o Aut\u00f3noma:</strong> associa\u00e7\u00f5es p\u00fablicas, autarquias</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">1.2 Princ\u00edpios Fundamentais</h4><ul><li><strong>Legalidade:</strong> a AP s\u00f3 pode fazer o que a lei permite</li><li><strong>Imparcialidade:</strong> tratamento igual a todos os cidad\u00e3os</li><li><strong>Proporcionalidade:</strong> meios adequados aos fins</li><li><strong>Transpar\u00eancia:</strong> publicidade dos actos administrativos</li><li><strong>Efici\u00eancia:</strong> boa gest\u00e3o dos recursos p\u00fablicos</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">1.3 Concurso P\u00fablico</h4><p>Forma de ingresso na administra\u00e7\u00e3o p\u00fablica. O MED 2026 vai recrutar <strong>9.000 profissionais</strong> (8.000 professores + 1.000 administrativos) em todo o territ\u00f3rio nacional.</p>"
+  },
+  {
+    "num": 2,
+    "title": "\u00c9tica e Deontologia Profissional",
+    "icon": "📜",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">2.1 Princ\u00edpios \u00c9ticos na Educa\u00e7\u00e3o</h4><ul><li><strong>Probidade:</strong> honestidade no exerc\u00edcio da doc\u00eancia</li><li><strong>Sigilo profissional:</strong> protec\u00e7\u00e3o de dados dos alunos</li><li><strong>Dignidade humana:</strong> respeito pela diversidade</li><li><strong>Disciplina e hierarquia:</strong> cumprimento das normas escolares</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">2.2 Deveres do Professor</h4><ul><li>Dedicar-se ao ensino e \u00e0 forma\u00e7\u00e3o integral do aluno</li><li>Respeitar a liberdade de consci\u00eancia e cren\u00e7a</li><li>Recusar benef\u00edcios il\u00edcitos ou presentes</li><li>Manter sigilo sobre informa\u00e7\u00f5es dos alunos</li><li>Actualizar-se permanentemente</li></ul><div class=\"pull-quote\">A \u00e9tica docente \u00e9 o alicerce de uma educa\u00e7\u00e3o de qualidade. O professor \u00e9 um modelo para os seus alunos.</div>"
+  },
+  {
+    "num": 3,
+    "title": "L\u00edngua Portuguesa",
+    "icon": "📖",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">3.1 Compet\u00eancias Lingu\u00edsticas</h4><ul><li>Interpreta\u00e7\u00e3o de textos (compreens\u00e3o e an\u00e1lise cr\u00edtica)</li><li>Gram\u00e1tica: morfologia, sintaxe, sem\u00e2ntica</li><li>Ortografia e pontua\u00e7\u00e3o</li><li>Concord\u00e2ncia verbal e nominal</li><li>Reg\u00eancia verbal e nominal</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">3.2 Tipologia Textual</h4><ul><li>Texto narrativo, descritivo, dissertativo-argumentativo</li><li>Texto expositivo e injuntivo</li><li>G\u00e9neros textuais: artigo, relat\u00f3rio, of\u00edcio, circular</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">3.3 Produ\u00e7\u00e3o Escrita</h4><ul><li>Coer\u00eancia e coes\u00e3o textual</li><li>Estrutura do par\u00e1grafo</li><li>Uso adequado do vocabul\u00e1rio</li></ul>"
+  },
+  {
+    "num": 4,
+    "title": "Cultura Geral",
+    "icon": "🌍",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">4.1 Dados Essenciais de Angola</h4><table class=\"sec-table\"><thead><tr><th>Dado</th><th>Informa\u00e7\u00e3o</th></tr></thead><tbody><tr><td>Capital</td><td>Luanda</td></tr><tr><td>L\u00edngua oficial</td><td>Portugu\u00eas</td></tr><tr><td>Lema</td><td>\"Virtude e Unidade\"</td></tr><tr><td>Extens\u00e3o territorial</td><td>1.246.700 km\u00b2</td></tr><tr><td>Popula\u00e7\u00e3o (Censo 2024)</td><td>36.604.681 habitantes</td></tr><tr><td>Divis\u00e3o administrativa</td><td>21 prov\u00edncias, 326 munic\u00edpios</td></tr></tbody></table><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">4.2 \u00d3rg\u00e3os de Soberania</h4><ul><li>Presidente da Rep\u00fablica, Vice-Presidente</li><li>Assembleia Nacional (220 deputados)</li><li>Tribunais: Supremo, Constitucional, de Contas</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">4.3 Datas Nacionais</h4><ul><li><strong>4 Fev 1961:</strong> In\u00edcio da luta armada</li><li><strong>11 Nov 1975:</strong> Independ\u00eancia Nacional</li><li><strong>4 Abr 2002:</strong> Paz e Reconcilia\u00e7\u00e3o Nacional</li><li><strong>17 Set:</strong> Dia do Her\u00f3i Nacional</li></ul>"
+  },
+  {
+    "num": 5,
+    "title": "Conhecimentos Pedag\u00f3gicos",
+    "icon": "🎓",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">5.1 Fundamentos da Educa\u00e7\u00e3o</h4><ul><li>Teorias da aprendizagem: behaviorismo, cognitivismo, construtivismo, s\u00f3cio-interaccionismo</li><li>Papel do professor e do aluno no processo educativo</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">5.2 Did\u00e1ctica e Metodologias de Ensino</h4><ul><li>Planeamento de aulas: objectivos, conte\u00fados, m\u00e9todos, avalia\u00e7\u00e3o</li><li>M\u00e9todos de ensino: expositivo, demonstrativo, activo, indutivo, dedutivo</li><li>Recursos did\u00e1cticos e tecnologias educativas</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">5.3 Avalia\u00e7\u00e3o da Aprendizagem</h4><ul><li>Diagn\u00f3stica, formativa, sumativa</li><li>Instrumentos de avalia\u00e7\u00e3o: testes, trabalhos, observa\u00e7\u00e3o</li><li>Crit\u00e9rios de correc\u00e7\u00e3o e classifica\u00e7\u00e3o</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">5.4 Inclus\u00e3o e Diversidade</h4><ul><li>Educa\u00e7\u00e3o inclusiva: adapta\u00e7\u00f5es curriculares</li><li>Quota de 4% para alunos com defici\u00eancia</li><li>Gest\u00e3o da diversidade cultural na sala de aula</li></ul>"
+  },
+  {
+    "num": 6,
+    "title": "Sistema de Ensino em Angola",
+    "icon": "🏫",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">6.1 Lei de Bases do Sistema de Educa\u00e7\u00e3o e Ensino</h4><p>A Lei n.\u00ba 32/20 (Lei de Bases do Sistema de Educa\u00e7\u00e3o e Ensino) estrutura o sistema nos seguintes subsistemas:</p><ul><li><strong>Subsistema de Educa\u00e7\u00e3o Pr\u00e9-Escolar</strong></li><li><strong>Subsistema de Ensino Geral:</strong> Ensino Prim\u00e1rio (I e II Ciclos) e Secund\u00e1rio (I e II Ciclos)</li><li><strong>Subsistema de Ensino T\u00e9cnico-Profissional</strong></li><li><strong>Subsistema de Forma\u00e7\u00e3o de Professores</strong></li><li><strong>Subsistema de Educa\u00e7\u00e3o de Adultos</strong></li><li><strong>Subsistema de Ensino Superior</strong></li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">6.2 Estrutura do Ano Lectivo</h4><ul><li>Ano lectivo: Agosto a Junho</li><li>Avalia\u00e7\u00f5es trimestrais/semestrais</li><li>Per\u00edodo de f\u00e9rias: Julho</li></ul>"
+  },
+  {
+    "num": 7,
+    "title": "Legisla\u00e7\u00e3o Educacional",
+    "icon": "📖",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">7.1 Diplomas Fundamentais</h4><table class=\"sec-table\"><thead><tr><th>Diploma</th><th>Conte\u00fado</th></tr></thead><tbody><tr><td><strong>Lei n.\u00ba 32/20</strong></td><td>Lei de Bases do Sistema de Educa\u00e7\u00e3o e Ensino</td></tr><tr><td><strong>DP n.\u00ba 160/18, de 3 de Julho</strong></td><td>Estatuto da Carreira dos Agentes de Educa\u00e7\u00e3o</td></tr><tr><td><strong>DP n.\u00ba 222/20, de 28 de Agosto</strong></td><td>Estatuto Org\u00e2nico do MED</td></tr><tr><td><strong>DP n.\u00ba 112/24, de 17 de Maio</strong></td><td>Procedimentos de recrutamento na AP</td></tr></tbody></table><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">7.2 Direitos e Deveres dos Agentes de Educa\u00e7\u00e3o</h4><ul><li>Direito \u00e0 forma\u00e7\u00e3o cont\u00ednua</li><li>Dever de assiduidade e pontualidade</li><li>Progress\u00e3o na carreira por concurso interno</li><li>Estabilidade no emprego ap\u00f3s per\u00edodo experimental</li></ul>"
+  },
+  {
+    "num": 8,
+    "title": "Psicologia da Educa\u00e7\u00e3o",
+    "icon": "🧠",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">8.1 Desenvolvimento Cognitivo</h4><ul><li>Est\u00e1dios de Piaget: sens\u00f3rio-motor, pr\u00e9-operat\u00f3rio, operat\u00f3rio concreto, operat\u00f3rio formal</li><li>Zona de Desenvolvimento Proximal (Vygotsky)</li><li>Teoria das Intelig\u00eancias M\u00faltiplas (Gardner)</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">8.2 Motiva\u00e7\u00e3o e Aprendizagem</h4><ul><li>Motiva\u00e7\u00e3o intr\u00ednseca vs extr\u00ednseca</li><li>Teoria da Autodetermina\u00e7\u00e3o</li><li>Estilos de aprendizagem: visual, auditivo, cinest\u00e9sico</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">8.3 Gest\u00e3o da Sala de Aula</h4><ul><li>Disciplina positiva</li><li>Resolu\u00e7\u00e3o de conflitos</li><li>Comunica\u00e7\u00e3o n\u00e3o-violenta</li><li>Estrat\u00e9gias para alunos com dificuldades</li></ul>"
+  },
+  {
+    "num": 9,
+    "title": "Curr\u00edculo e Avalia\u00e7\u00e3o",
+    "icon": "📋",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">9.1 Concep\u00e7\u00e3o Curricular</h4><ul><li>Curr\u00edculo nacional vs curr\u00edculo local</li><li>Compet\u00eancias essenciais: conhecimentos, capacidades, atitudes</li><li>Plano de Desenvolvimento Curricular</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">9.2 Organiza\u00e7\u00e3o Curricular</h4><ul><li>Matriz curricular por ciclo de ensino</li><li>Carga hor\u00e1ria semanal</li><li>Transversalidade e interdisciplinaridade</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">9.3 Avalia\u00e7\u00e3o no Sistema de Ensino</h4><ul><li>Princ\u00edpios da avalia\u00e7\u00e3o: cont\u00ednua, sistem\u00e1tica, formativa, sumativa</li><li>Classifica\u00e7\u00f5es: escala de 0 a 20 valores, positiva \u2265 10</li><li>Transi\u00e7\u00e3o de ano, reten\u00e7\u00e3o, conclus\u00e3o de ciclo</li></ul>"
+  },
+  {
+    "num": 10,
+    "title": "Racioc\u00ednio L\u00f3gico e Psicot\u00e9cnico",
+    "icon": "🧠",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">10.1 Tipos de Exerc\u00edcios</h4><ul><li>Sequ\u00eancias num\u00e9ricas e de letras</li><li>Analogias e associa\u00e7\u00f5es l\u00f3gicas</li><li>Sin\u00f3nimos e ant\u00f3nimos</li><li>Classifica\u00e7\u00e3o de palavras</li><li>Interpreta\u00e7\u00e3o de texto</li><li>Proposi\u00e7\u00f5es l\u00f3gicas (todo, nenhum, alguns)</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">10.2 Palavras de Aten\u00e7\u00e3o</h4><table class=\"sec-table\"><thead><tr><th>Palavra</th><th>Significado</th></tr></thead><tbody><tr><td><strong>EXCEPTO</strong></td><td>Escolher a op\u00e7\u00e3o que N\u00c3O se aplica</td></tr><tr><td><strong>N\u00c3O</strong></td><td>Identificar a afirma\u00e7\u00e3o falsa</td></tr><tr><td><strong>TODOS / NENHUM</strong></td><td>Quantificadores universais</td></tr><tr><td><strong>APENAS</strong></td><td>Indica exclusividade</td></tr><tr><td><strong>INCORRECTO / FALSO / VERDADEIRO</strong></td><td>Aten\u00e7\u00e3o ao que se pede</td></tr></tbody></table>"
+  },
+  {
+    "num": 11,
+    "title": "Actualidade Nacional",
+    "icon": "🌎",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">11.1 Censo Populacional 2024</h4><ul><li>Objectivos: contagem da popula\u00e7\u00e3o e habita\u00e7\u00e3o</li><li>Principais indicadores demogr\u00e1ficos</li><li>Crescimento populacional e distribui\u00e7\u00e3o geogr\u00e1fica</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">11.2 Divis\u00e3o Pol\u00edtico-Administrativa (2024)</h4><ul><li>21 prov\u00edncias, 326 munic\u00edpios, 378 comunas</li><li>Cria\u00e7\u00e3o de novas prov\u00edncias: Icolo e Bengo, Moxico Leste, Cuando</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">11.3 Educa\u00e7\u00e3o em Angola (2026)</h4><ul><li>9.000 novas vagas no sector</li><li>Reforma curricular em curso</li><li>Novas escolas t\u00e9cnico-profissionais</li><li>Programa de alfabetiza\u00e7\u00e3o e educa\u00e7\u00e3o de adultos</li></ul>"
+  },
+  {
+    "num": 12,
+    "title": "Inform\u00e1tica na Educa\u00e7\u00e3o",
+    "icon": "💻",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">12.1 Tecnologias na Sala de Aula</h4><ul><li>Plataformas de ensino \u00e0 dist\u00e2ncia</li><li>Recursos educativos digitais</li><li>Quadros interactivos e projectores</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">12.2 Compet\u00eancias Digitais do Professor</h4><ul><li>Produ\u00e7\u00e3o de conte\u00fados digitais</li><li>Avalia\u00e7\u00e3o assistida por tecnologia</li><li>Comunica\u00e7\u00e3o digital com alunos e encarregados</li><li>Seguran\u00e7a e privacidade online</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">12.3 Intelig\u00eancia Artificial na Educa\u00e7\u00e3o</h4><ul><li>Aplica\u00e7\u00f5es: ensino adaptativo, tutores virtuais</li><li>Benef\u00edcios: personaliza\u00e7\u00e3o, feedback imediato</li><li>Desafios: vi\u00e9s algor\u00edtmico, acesso desigual</li></ul>"
+  },
+  {
+    "num": 13,
+    "title": "Erros que Mais Reprovam e Checklist Final",
+    "icon": "✒️",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">13.1 Erros Comuns</h4><div class=\"mini-grid\"><div class=\"item\"><strong>N\u00e3o dominar LP</strong>L\u00edngua Portuguesa essencial</div><div class=\"item\"><strong>Ignorar pedagogia</strong>Teorias e m\u00e9todos</div><div class=\"item\"><strong>Confundir leis</strong>32/20, 160/18, 222/20</div><div class=\"item\"><strong>N\u00e3o saber datas</strong>4 Fev, 11 Nov, 4 Abr</div><div class=\"item\"><strong>\u00c9tica descuidada</strong>Pauta deontol\u00f3gica</div><div class=\"item\"><strong>N\u00e3o estudar AP</strong>Adm. P\u00fablica na prova</div><div class=\"item\"><strong>Ansiedade</strong>Falta de controlo</div><div class=\"item\"><strong>N\u00e3o ler o edital</strong>Perde requisitos</div><div class=\"item\"><strong>Burladores</strong>Acreditar em facilitadores</div></div><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">13.2 Checklist de Revis\u00e3o Final</h4><div class=\"mini-grid\"><div class=\"item\">Estrutura do sistema de ensino?</div><div class=\"item\">Lei de Bases da Educa\u00e7\u00e3o?</div><div class=\"item\">Estatuto da Carreira?</div><div class=\"item\">DP 112/24?</div><div class=\"item\">Princ\u00edpios da AP?</div><div class=\"item\">Pedagogia e did\u00e1ctica?</div><div class=\"item\">Avalia\u00e7\u00e3o formativa?</div><div class=\"item\">Teorias aprendizagem?</div><div class=\"item\">Censo 2024?</div><div class=\"item\">Divis\u00e3o adm Angola?</div><div class=\"item\">Datas nacionais?</div><div class=\"item\">\u00c9tica e deontologia?</div><div class=\"item\">Portal candidatura?</div><div class=\"item\">Cultura geral?</div><div class=\"item\">Racioc\u00ednio l\u00f3gico?</div><div class=\"item\">Disciplina espec\u00edfica?</div></div>"
+  }
+];
+
+var EXTRA_SECTIONS = {
+  "professores": {
+    "num": 14,
+    "title": "Prepara\u00e7\u00e3o Espec\u00edfica \u2014 Professores",
+    "icon": "🎓",
+    "body": "<p><strong>8.000 vagas</strong> para Professores do Ensino Prim\u00e1rio e Secund\u00e1rio (13.\u00ba e 6.\u00ba Graus), em regime especial.</p><h4 style=\"color:var(--accent);margin-bottom:8px\">Estrutura da Prova (120 minutos)</h4><ul><li>L\u00edngua Portuguesa</li><li>Conhecimentos Pedag\u00f3gicos</li><li>Disciplina Espec\u00edfica (Matem\u00e1tica, F\u00edsica, Qu\u00edmica, Biologia, Hist\u00f3ria, Geografia, Portugu\u00eas, Ingl\u00eas, Inform\u00e1tica, Filosofia, Educa\u00e7\u00e3o F\u00edsica)</li><li>No\u00e7\u00f5es de Administra\u00e7\u00e3o P\u00fablica</li><li>\u00c9tica e Deontologia Profissional</li><li>Cultura Geral</li></ul><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">Requisitos de Candidatura</h4><ul><li>Nacionalidade angolana, idade \u2265 18 anos</li><li>Licenciatura ou Ensino Secund\u00e1rio em Magist\u00e9rio/ISCED na disciplina</li><li>Documentos: requerimento \u00e0 Ministra, BI, certificado de habilita\u00e7\u00f5es</li></ul><div class=\"pull-quote\">A prova escrita \u00e9 a fase mais concorrida. A prepara\u00e7\u00e3o nas 6 \u00e1reas \u00e9 essencial para uma classifica\u00e7\u00e3o positiva (\u2265 10 valores).</div>"
+  },
+  "regime-geral": {
+    "num": 14,
+    "title": "Prepara\u00e7\u00e3o Espec\u00edfica \u2014 Pessoal Administrativo",
+    "icon": "📝",
+    "body": "<p><strong>1.000 vagas</strong> para T\u00e9cnico M\u00e9dio de 3.\u00aa Classe, geridas pelos Governos Provinciais.</p><h4 style=\"color:var(--accent);margin-bottom:8px\">Processo de Selec\u00e7\u00e3o</h4><ol style=\"margin-left:20px\"><li>Avalia\u00e7\u00e3o documental (confirma\u00e7\u00e3o de certificados)</li><li>Prova escrita (t\u00f3picos definidos pela Comiss\u00e3o de J\u00fari Provincial)</li></ol><h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">Requisitos de Candidatura</h4><ul><li>Nacionalidade angolana, idade \u2265 18 anos</li><li>Ensino Secund\u00e1rio do II Ciclo em: T\u00e9cnico de Inform\u00e1tica, Administra\u00e7\u00e3o ou Contabilidade P\u00fablica</li><li>Documentos: requerimento ao Governador Provincial, BI, certificado de habilita\u00e7\u00f5es</li></ul><div class=\"tip-box\">As vagas do Regime Geral distribuem-se por todas as prov\u00edncias. Consulte o seu Governo Provincial para detalhes locais.</div>"
+  }
+};
+
+var ORGAO_LIST = ["professores", "regime-geral"];
+
+function getOrgaoFromURL() {
+  var p = new URLSearchParams(window.location.search);
+  var o = p.get('carreira');
+  if (o && ORGAO_LIST.indexOf(o) >= 0) return o;
+  return 'professores';
+}
+
+function render() {
+  var orgao = getOrgaoFromURL();
+  var meta = ORGAOS[orgao];
+
+  document.getElementById('orgaoTag').textContent = meta.icon + ' ' + meta.sigla + ' — ' + meta.nome;
+  document.getElementById('btnSimular').href = 'simulador_prova_MININT.html?id=' + meta.id;
+
+  var navHTML = '';
+  ORGAO_LIST.forEach(function(k) {
+    var m = ORGAOS[k];
+    navHTML += '<a href="?carreira=' + k + '" class="' + (k === orgao ? 'active' : '') + '">' + m.icon + ' ' + m.sigla + '</a>';
+  });
+  document.getElementById('orgaoNav').innerHTML = navHTML;
+
+  var toc = document.getElementById('toc');
+  var content = document.getElementById('content');
+
+  var tocHTML = '<h3>Conteúdo</h3>';
+  var contentHTML = '';
+
+  function calcReadTime(html) {
+    var words = html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
+    var mins = Math.max(2, Math.round(words / 140));
+    return "⏱️ ~" + mins + " min de leitura";
+  }
+
+  SECTIONS.forEach(function(s) {
+    var id = 'sec-' + s.num;
+    var rt = calcReadTime(s.body);
+    tocHTML += '<a href="#' + id + '">Módulo ' + s.num + ' — ' + s.title + '</a>';
+    contentHTML += '<div class="section-card" id="' + id + '">' +
+      '<div class="sec-header">' +
+        '<div class="sec-icon">' + s.icon + '</div>' +
+        '<div>' +
+          '<div class="sec-num">MÓDULO ' + s.num + ' <span class="sec-read-time">' + rt + '</span></div>' +
+          '<div class="sec-title">' + s.title + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="sec-body">' + s.body + '</div>' +
+    '</div>';
+  });
+
+  var extra = EXTRA_SECTIONS[orgao];
+  var eid = 'sec-14';
+  var ert = calcReadTime(extra.body);
+  tocHTML += '<a href="#' + eid + '">Módulo 14 — ' + extra.title + '</a>';
+  contentHTML += '<div class="section-card" id="' + eid + '" style="border-color:rgba(236,72,147,.3)">' +
+    '<div class="sec-header">' +
+      '<div class="sec-icon" style="background:rgba(236,72,147,.15)">' + extra.icon + '</div>' +
+      '<div>' +
+        '<div class="sec-num" style="color:var(--gold)">MÓDULO 14 · ESPECÍFICO <span class="sec-read-time" style="color:var(--gold);background:rgba(250,204,21,.1)">' + ert + '</span></div>' +
+        '<div class="sec-title">' + extra.title + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="sec-body">' + extra.body + '</div>' +
+  '</div>';
+
+  toc.innerHTML = tocHTML;
+  content.innerHTML = contentHTML;
+
+  var cards = document.querySelectorAll('.section-card');
+  cards.forEach(function(card, i) {
+    var num = i + 1;
+    var nav = document.createElement('div');
+    nav.className = 'sec-nav';
+    nav.innerHTML = 
+      (i > 0 ? '<button class="btn-prev" data-target="sec-' + (num - 1) + '">\u2190 Anterior</button>' : '<span></span>') +
+      '<span class="sec-progress">' + num + ' de ' + cards.length + '</span>' +
+      (i < cards.length - 1 ? '<button class="btn-next" data-target="sec-' + (num + 1) + '">Seguinte \u2192</button>' : '<span></span>');
+    card.appendChild(nav);
+  });
+
+  cards.forEach(function(c) { c.classList.add('hidden'); });
+  if (cards[0]) cards[0].classList.remove('hidden');
+  var tocLinks = document.querySelectorAll('.toc-sidebar a');
+  if (tocLinks[0]) tocLinks[0].classList.add('toc-active');
+
+  function goToModule(id) {
+    cards.forEach(function(c) { c.classList.add('hidden'); });
+    var target = document.getElementById(id);
+    if (target) {
+      target.classList.remove('hidden');
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+
+  document.getElementById('toc').addEventListener('click', function(e) {
+    var link = e.target.closest('a');
+    if (!link) return;
+    var href = link.getAttribute('href');
+    if (!href || href[0] !== '#') return;
+    e.preventDefault();
+    goToModule(href.substring(1));
+  });
+
+  document.getElementById('content').addEventListener('click', function(e) {
+    var btn = e.target.closest('.sec-nav button');
+    if (!btn) return;
+    var target = btn.getAttribute('data-target');
+    if (target) goToModule(target);
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    var visible = document.querySelector('.section-card:not(.hidden)');
+    if (!visible) return;
+    var cur = parseInt(visible.id.split('-')[1]);
+    var next = e.key === 'ArrowRight' ? cur + 1 : cur - 1;
+    if (next >= 1 && next <= cards.length) goToModule('sec-' + next);
+  });
+  var hint = document.createElement('p');
+  hint.className = 'kbd-hint';
+  hint.textContent = '\u2328 \u2190 \u2192 para navegar entre m\u00f3dulos';
+  document.getElementById('content').appendChild(hint);
+
+
+  setTimeout(function() {
+    var rows = document.querySelectorAll('#tabelaCarreiras tr[data-carreira]');
+    rows.forEach(function(r) {
+      if (r.dataset.carreira === orgao) r.classList.add('active');
+    });
+  }, 50);
+}
+
+render();
+</script>
+<script src="audio-guia.js"></script>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de Estudo n.º 16 — Aptidão Física e Preparação Psicológica</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0a; --bg2: #111111; --bg3: #1a1a1a;
+    --fg: #f0e0d0; --fg2: #a09080; --fg3: #706050;
+    --accent: #ef4444; --accent2: #dc2626; --accent3: #b91c1c;
+    --gold: #facc15; --gold2: #a67c00;
+    --red-flag: #d21034; --black-flag: #0a0a0a;
+    --card-bg: #141414; --card-border: #2a1a1a;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--fg); line-height: 1.7; min-height: 100vh;
+  }
+  .flag-stripe {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    height: 4px; display: flex;
+  }
+  .flag-stripe span { flex: 1; }
+  .flag-stripe .r { background: var(--red-flag); }
+  .flag-stripe .b { background: var(--black-flag); }
+  .flag-stripe .y { background: var(--gold); }
+  .header {
+    padding: 80px 20px 40px; text-align: center;
+    background: linear-gradient(180deg, #1a0505 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .header-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent); color: #fff; padding: 4px 14px;
+    border-radius: 20px; font-size: .75rem; font-weight: 700;
+    letter-spacing: 1px; margin-bottom: 16px;
+  }
+  .header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }
+  .header h1 span { color: var(--accent); }
+  .header .sub {
+    color: var(--fg2); font-size: .95rem; max-width: 600px;
+    margin: 0 auto 20px;
+  }
+  .header-actions {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  }
+  .header-actions a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 24px; border-radius: 10px; font-size: .85rem;
+    font-weight: 600; text-decoration: none; transition: .2s;
+  }
+  .btn-simular {
+    background: var(--accent); color: #fff;
+  }
+  .btn-simular:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-voltar {
+    background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border);
+  }
+  .btn-voltar:hover { border-color: var(--fg3); color: var(--fg); }
+  .layout { display: flex; max-width: 1200px; margin: 0 auto; padding: 0 20px; gap: 30px; }
+  .toc-sidebar {
+    position: sticky; top: 20px; width: 240px; flex-shrink: 0;
+    max-height: calc(100vh - 40px); overflow-y: auto; padding: 20px 0;
+    display: none;
+  }
+  .toc-sidebar::-webkit-scrollbar { width: 3px; }
+  .toc-sidebar::-webkit-scrollbar-thumb { background: var(--fg3); border-radius: 2px; }
+  .toc-sidebar h3 {
+    font-size: .7rem; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--fg3); margin-bottom: 12px;
+  }
+  .toc-sidebar a {
+    display: block; padding: 3px 0; font-size: .75rem; color: var(--fg2);
+    text-decoration: none; transition: .15s; border-left: 2px solid transparent;
+    padding-left: 8px;
+  }
+  .toc-sidebar a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .content { flex: 1; min-width: 0; padding: 30px 0 60px; }
+  .section-card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 28px; margin-bottom: 16px;
+    transition: border-color .2s;
+  }
+  .section-card:hover { border-color: rgba(239,68,68,.15); }
+  .section-card .sec-header {
+    display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px;
+  }
+  .section-card .sec-icon {
+    width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; background: rgba(239,68,68,.1);
+  }
+  .section-card .sec-title {
+    font-size: 1.05rem; font-weight: 700; color: var(--fg); line-height: 1.3;
+  }
+  .section-card .sec-num {
+    font-size: .7rem; color: var(--accent); font-weight: 600;
+    letter-spacing: 1px; margin-bottom: 2px;
+  }
+  .section-card .sec-body {
+    font-size: .88rem; color: var(--fg2); line-height: 1.8;
+  }
+  .section-card .sec-body p { margin-bottom: 10px; }
+  .section-card .sec-body strong { color: var(--fg); }
+  .section-card .sec-body ul { margin: 8px 0 8px 20px; }
+  .section-card .sec-body li { margin-bottom: 4px; }
+  .pull-quote {
+    margin: 16px 0; padding: 16px 20px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(239,68,68,.08), rgba(239,68,68,.02));
+    border-left: 3px solid var(--accent); font-style: italic;
+    color: var(--fg); font-size: .9rem;
+  }
+  .pull-quote::before { content: '\201C'; font-size: 1.4rem; color: var(--accent); margin-right: 4px; }
+  .tip-box {
+    margin: 16px 0; padding: 14px 18px; border-radius: 10px;
+    background: rgba(250,204,21,.05); border: 1px solid rgba(250,204,21,.15);
+    color: var(--gold);
+  }
+  .alert-box {
+    margin: 16px 0; padding: 14px 18px; border-radius: 10px;
+    background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.15);
+    color: #fca5a5;
+  }
+  .sec-table {
+    width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .82rem;
+  }
+  .sec-table th {
+    text-align: left; padding: 10px 12px; font-weight: 700;
+    background: var(--bg3); color: var(--accent); border-bottom: 2px solid var(--accent);
+  }
+  .sec-table td {
+    padding: 10px 12px; border-bottom: 1px solid var(--card-border); color: var(--fg2);
+    vertical-align: top;
+  }
+  .sec-table tr:hover td { background: rgba(239,68,68,.03); }
+  .mini-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px; margin: 12px 0;
+  }
+  .mini-grid .item {
+    padding: 10px 14px; border-radius: 8px; background: var(--bg3);
+    border: 1px solid var(--card-border); font-size: .8rem; color: var(--fg2);
+  }
+  .mini-grid .item strong { color: var(--fg); display: block; margin-bottom: 2px; }
+  .footer-guia {
+    text-align: center; padding: 40px 20px; border-top: 1px solid var(--card-border);
+    margin-top: 20px;
+  }
+  .footer-guia p { color: var(--fg3); font-size: .8rem; margin-bottom: 12px; }
+  .badge-55 {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    color: #fff; padding: 3px 10px; border-radius: 12px;
+    font-size: .7rem; font-weight: 700;
+  }
+  @media (min-width: 900px) { .toc-sidebar { display: block; } }
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.3rem; }
+    .section-card { padding: 18px; }
+    .section-card .sec-header { gap: 10px; }
+    .section-card .sec-icon { width: 32px; height: 32px; font-size: 1rem; }
+    .layout { padding: 0 12px; }
+    .sec-table { font-size: .72rem; }
+    .sec-table th, .sec-table td { padding: 6px 8px; }
+    .mini-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media print {
+    .flag-stripe, .header-actions, .toc-sidebar, .footer-guia { display: none !important; }
+    .layout { display: block !important; max-width: 100% !important; padding: 0 !important; }
+    .header { padding: 15px 0 !important; border: none !important; }
+    .header h1 { font-size: 1.5rem !important; color: #111 !important; }
+    .header h1 span { color: #dc2626 !important; }
+    .header .sub { color: #444 !important; }
+    .section-card { display: block !important; break-inside: avoid; border: 1px solid #ddd !important; background: #fff !important; color: #111 !important; box-shadow: none !important; margin-bottom: 24px !important; }
+    .section-card .sec-header { border-bottom: 1px solid #eee !important; gap: 10px !important; }
+    .section-card .sec-icon { background: #f3f4f6 !important; border: 1px solid #ddd !important; }
+    .sec-num { color: #dc2626 !important; }
+    .sec-title { color: #111 !important; }
+    .sec-body { color: #222 !important; }
+    .sec-body h4 { color: #dc2626 !important; }
+    .sec-body strong { color: #000 !important; }
+    .sec-table th { background: #f3f4f6 !important; color: #111 !important; border-bottom: 2px solid #dc2626 !important; }
+    .sec-table td { color: #333 !important; border-bottom: 1px solid #ddd !important; }
+    .mini-grid .item { background: #fafafa !important; border: 1px solid #ddd !important; color: #333 !important; }
+    .mini-grid .item strong { color: #111 !important; }
+    body { background: #fff !important; color: #000 !important; }
+  }
+  .btn-print {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 24px; border-radius: 10px; font-size: .85rem; font-weight: 600;
+    cursor: pointer; transition: .2s; text-decoration: none;
+    background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border);
+  }
+  .btn-print:hover { border-color: var(--accent); color: var(--fg); background: var(--bg2); }
+  .sec-read-time {
+    display: inline-block; font-size: .65rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 12px;
+    background: rgba(255,255,255,.06); color: var(--fg3);
+    margin-left: 8px; vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="flag-stripe">
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+</div>
+
+<div class="header">
+  <div class="header-badge">📖 MANUAL DE ESTUDO N.º 16</div>
+  <h1>Aptidão Física e <span>Preparação Psicológica</span></h1>
+  <p class="sub">
+    Concurso Público de Ingresso aos Órgãos do Ministério do Interior
+    · <span class="badge-55">⚡ 55% do peso total</span>
+  </p>
+  <div class="header-actions">
+    <a href="simulador_prova_MININT.html?id=aptidao-fisica" class="btn-simular">▶️ Simular Prova (30 questões)</a>
+    <button type="button" class="btn-print" onclick="window.print()" title="Imprimir ou Guardar em PDF"><span class="icon-simular">🖨️</span> Imprimir / PDF</button>
+    <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="toc-sidebar" id="toc"></nav>
+  <main class="content" id="content"></main>
+</div>
+
+<div class="footer-guia">
+  <p>Manual de Estudo n.º 16 — Elaborado com base no portal oficial candidaturas.minint.ao</p>
+  <p style="font-size:.7rem;color:var(--fg3)">
+    Este guia não substitui as regras oficiais do concurso nem substitui orientação médica.
+  </p>
+</div>
+
+<script>
+var SECTIONS = [
+  { num: 1, title: "Finalidade deste manual", icon: "\u{1F3AF}",
+    body: '<p>Este manual foi elaborado para apoiar os candidatos ao concurso p\u00fablico de ingresso nos \u00f3rg\u00e3os do Minist\u00e9rio do Interior, especialmente na prepara\u00e7\u00e3o para a prova de aptid\u00e3o f\u00edsica, a avalia\u00e7\u00e3o psicol\u00f3gica e os exames m\u00e9dicos.</p><p>O portal oficial das candidaturas indica que os candidatos admitidos ao concurso ser\u00e3o avaliados por meio de <strong>prova escrita, avalia\u00e7\u00e3o psicol\u00f3gica, exames m\u00e9dicos e prova de aptid\u00e3o f\u00edsica</strong>. O mesmo portal tamb\u00e9m informa que o prazo de candidatura \u00e9 de 15 dias \u00fateis.</p><p>A ideia central deste manual \u00e9 simples: <strong>n\u00e3o basta estudar para a prova escrita</strong>. O candidato tamb\u00e9m deve preparar o corpo, a mente, a sa\u00fade, a disciplina e o equil\u00edbrio emocional.</p><p>Quem pretende ingressar na Pol\u00edcia Nacional, no Servi\u00e7o de Investiga\u00e7\u00e3o Criminal, no Servi\u00e7o de Migra\u00e7\u00e3o e Estrangeiros, no Servi\u00e7o Penitenci\u00e1rio ou no Servi\u00e7o de Protec\u00e7\u00e3o Civil e Bombeiros deve compreender que a fun\u00e7\u00e3o exige <strong>resist\u00eancia, autocontrolo, disciplina, coragem, serenidade, sa\u00fade f\u00edsica, equil\u00edbrio psicol\u00f3gico e capacidade de obedecer a regras</strong>.</p>' },
+  { num: 2, title: "Nota de prud\u00eancia", icon: "\u26A0\uFE0F",
+    body: '<p>Este manual <strong>n\u00e3o substitui</strong> as regras oficiais do concurso nem substitui orienta\u00e7\u00e3o m\u00e9dica.</p><p>Como os crit\u00e9rios concretos da prova f\u00edsica podem variar conforme \u00f3rg\u00e3o, categoria, sexo, idade ou regulamento interno, o candidato deve <strong>acompanhar sempre o portal oficial</strong> e os comunicados do MININT.</p><p>Este manual n\u00e3o inventa tempos, dist\u00e2ncias, pontua\u00e7\u00f5es ou exerc\u00edcios espec\u00edficos que n\u00e3o estejam oficialmente publicados. O objectivo \u00e9 preparar o candidato de forma geral e segura.</p>' },
+  { num: 3, title: "Por que a aptid\u00e3o f\u00edsica \u00e9 importante nos \u00f3rg\u00e3os do MININT", icon: "\u{1F3C3}",
+    body: '<p>A aptid\u00e3o f\u00edsica \u00e9 essencial porque os \u00f3rg\u00e3os do Minist\u00e9rio do Interior exercem fun\u00e7\u00f5es que podem exigir <strong>esfor\u00e7o, resist\u00eancia, rapidez, for\u00e7a, coordena\u00e7\u00e3o, equil\u00edbrio e capacidade de actuar sob press\u00e3o</strong>.</p><p><strong>Na Pol\u00edcia Nacional</strong>, o agente pode precisar de patrulhar, correr, permanecer longos per\u00edodos de p\u00e9, controlar multid\u00f5es, proteger cidad\u00e3os e responder a ocorr\u00eancias urgentes.</p><p><strong>No SIC</strong>, embora a actividade investigativa exija forte componente t\u00e9cnica e intelectual, o investigador pode ter de participar em dilig\u00eancias, buscas, deten\u00e7\u00f5es, opera\u00e7\u00f5es e desloca\u00e7\u00f5es que exigem resist\u00eancia e prontid\u00e3o.</p><p><strong>No SME</strong>, o agente pode trabalhar em fronteiras, aeroportos, postos migrat\u00f3rios, fiscaliza\u00e7\u00e3o territorial e servi\u00e7os que exigem disciplina, perman\u00eancia prolongada e aten\u00e7\u00e3o constante.</p><p><strong>No Servi\u00e7o Penitenci\u00e1rio</strong>, o agente deve ter resist\u00eancia, firmeza, capacidade de resposta, controlo emocional e condi\u00e7\u00f5es f\u00edsicas para actuar em ambiente de cust\u00f3dia e seguran\u00e7a.</p><p><strong>No SPCB</strong>, a exig\u00eancia f\u00edsica \u00e9 ainda mais evidente, porque a protec\u00e7\u00e3o civil, o combate a inc\u00eandios, o socorro, o resgate e o salvamento exigem for\u00e7a, resist\u00eancia, coragem, t\u00e9cnica e capacidade de actuar em emerg\u00eancia.</p>' },
+  { num: 4, title: "Aptid\u00e3o f\u00edsica n\u00e3o \u00e9 apenas for\u00e7a", icon: "\u{1F4AA}",
+    body: '<p>Muitos candidatos pensam que estar fisicamente preparado significa apenas ter for\u00e7a muscular. Isso \u00e9 <strong>incompleto</strong>.</p><p>A aptid\u00e3o f\u00edsica para \u00f3rg\u00e3o de seguran\u00e7a envolve:</p><ul><li>Resist\u00eancia cardiorrespirat\u00f3ria</li><li>For\u00e7a muscular</li><li>Resist\u00eancia muscular</li><li>Velocidade</li><li>Agilidade</li><li>Coordena\u00e7\u00e3o motora</li><li>Flexibilidade</li><li>Equil\u00edbrio</li><li>Capacidade de recupera\u00e7\u00e3o</li><li>Controlo da respira\u00e7\u00e3o</li><li>Disciplina corporal</li><li>Capacidade de actuar sob fadiga</li></ul><p>Um candidato forte, mas sem resist\u00eancia, pode falhar. Um candidato resistente, mas sem for\u00e7a m\u00ednima, tamb\u00e9m pode falhar. Um candidato fisicamente preparado, mas emocionalmente descontrolado, pode igualmente comprometer-se.</p>' },
+  { num: 5, title: "Resist\u00eancia cardiorrespirat\u00f3ria", icon: "\u{1F3C3}\u200D\u2642\uFE0F",
+    body: '<p>A resist\u00eancia cardiorrespirat\u00f3ria \u00e9 a capacidade do cora\u00e7\u00e3o, pulm\u00f5es e sistema circulat\u00f3rio fornecerem oxig\u00e9nio ao corpo durante esfor\u00e7o prolongado.</p><p>Ela \u00e9 importante para corrida, marcha, desloca\u00e7\u00f5es r\u00e1pidas, patrulhamento, opera\u00e7\u00f5es prolongadas, socorro, salvamento e situa\u00e7\u00f5es que exigem esfor\u00e7o cont\u00ednuo.</p><p>A Organiza\u00e7\u00e3o Mundial da Sa\u00fade recomenda, para adultos, pelo menos <strong>150 a 300 minutos</strong> de actividade f\u00edsica aer\u00f3bica moderada a vigorosa por semana, ou <strong>75 a 150 minutos</strong> de actividade f\u00edsica aer\u00f3bica vigorosa, al\u00e9m de actividades de fortalecimento muscular em dois ou mais dias por semana.</p><div class="pull-quote">Para o candidato, isto significa que a prepara\u00e7\u00e3o f\u00edsica n\u00e3o deve come\u00e7ar na v\u00e9spera da prova. Deve ser progressiva, semanal e disciplinada.</div>' },
+  { num: 6, title: "Como desenvolver resist\u00eancia", icon: "\u{1F3C3}",
+    body: '<p>O candidato pode desenvolver resist\u00eancia com:</p><div class="mini-grid"><div class="item"><strong>\u{1F9B6} Caminhada r\u00e1pida</strong>Iniciar com 20-30 min</div><div class="item"><strong>\u{1F3C3} Corrida leve</strong>Ritmo constante e suave</div><div class="item"><strong>\u26A1 Corrida intervalada</strong>Alternar ritmo r\u00e1pido e lento</div><div class="item"><strong>\u{1F377} Subida de escadas</strong>Excelente para resist\u00eancia</div><div class="item"><strong>\u{1F3DE}\uFE0F Terreno plano</strong>Superf\u00edcie regular e segura</div><div class="item"><strong>\u{1F4CD} Progress\u00e3o em dist\u00e2ncia</strong>Aumentar gradualmente</div><div class="item"><strong>\u23F1\uFE0F Progress\u00e3o em tempo</strong>Aumentar dura\u00e7\u00e3o aos poucos</div></div><p>O erro mais comum \u00e9 <strong>querer correr muito logo no primeiro dia</strong>. Isso aumenta risco de les\u00e3o, dores musculares, queda de rendimento e desist\u00eancia.</p><div class="pull-quote">A regra pr\u00e1tica \u00e9: come\u00e7ar com intensidade moderada e aumentar gradualmente.</div>' },
+  { num: 7, title: "Exemplo de evolu\u00e7\u00e3o segura para corrida", icon: "\u{1F4C8}",
+    body: '<p>Um candidato sedent\u00e1rio n\u00e3o deve come\u00e7ar com corrida intensa.</p><p>Pode iniciar assim:</p><ul><li><strong>Primeira fase:</strong> caminhada r\u00e1pida durante 20 a 30 minutos</li><li><strong>Segunda fase:</strong> alternar caminhada e corrida leve</li><li><strong>Terceira fase:</strong> aumentar o tempo de corrida leve</li><li><strong>Quarta fase:</strong> introduzir pequenos intervalos de velocidade</li><li><strong>Quinta fase:</strong> simular esfor\u00e7o semelhante ao da prova, quando os crit\u00e9rios forem conhecidos</li></ul><p>O objectivo \u00e9 <strong>criar adapta\u00e7\u00e3o do corpo</strong>, n\u00e3o destruir o corpo.</p>' },
+  { num: 8, title: "For\u00e7a muscular", icon: "\u{1F4AA}",
+    body: '<p>A for\u00e7a muscular \u00e9 importante para empurrar, puxar, levantar, carregar, sustentar o corpo, manter postura e responder a exig\u00eancias f\u00edsicas.</p><p>Nos \u00f3rg\u00e3os do MININT, a for\u00e7a pode ser \u00fatil em opera\u00e7\u00f5es policiais, resgate, controlo f\u00edsico legal, transporte de material, salvamento, apoio a v\u00edtimas e actividades de prontid\u00e3o operacional.</p><p>Exerc\u00edcios \u00fateis:</p><div class="mini-grid"><div class="item"><strong>Flex\u00f5es</strong>Bra\u00e7os e peito</div><div class="item"><strong>Agachamentos</strong>Pernas e gl\u00fateos</div><div class="item"><strong>Abdominais</strong>Core e postura</div><div class="item"><strong>Prancha</strong>Resist\u00eancia central</div><div class="item"><strong>Eleva\u00e7\u00e3o de joelhos</strong>Coordena\u00e7\u00e3o</div><div class="item"><strong>Saltos controlados</strong>Pot\u00eancia</div><div class="item"><strong>Peso corporal</strong>Treino funcional</div><div class="item"><strong>Escadas</strong>Resist\u00eancia e for\u00e7a</div></div><p>O candidato n\u00e3o precisa de gin\u00e1sio sofisticado para come\u00e7ar. O pr\u00f3prio peso corporal j\u00e1 permite uma boa prepara\u00e7\u00e3o inicial.</p>' },
+  { num: 9, title: "Resist\u00eancia muscular", icon: "\u{1F3CB}\uFE0F",
+    body: '<p>Resist\u00eancia muscular \u00e9 a capacidade de repetir esfor\u00e7o v\u00e1rias vezes sem perder completamente a efici\u00eancia.</p><p>\u00c9 diferente de for\u00e7a m\u00e1xima. Um candidato pode conseguir fazer uma repeti\u00e7\u00e3o forte, mas falhar quando precisa repetir v\u00e1rias vezes.</p><p>Por isso, \u00e9 importante treinar exerc\u00edcios com <strong>s\u00e9ries moderadas, boa t\u00e9cnica e descanso adequado</strong>.</p><p>Exemplo:</p><ul><li>Flex\u00f5es em s\u00e9ries pequenas</li><li>Abdominais em s\u00e9ries controladas</li><li>Agachamentos em s\u00e9ries progressivas</li><li>Prancha por tempo</li><li>Corrida leve ap\u00f3s exerc\u00edcios de for\u00e7a</li></ul><p>A resist\u00eancia muscular melhora com <strong>regularidade</strong>.</p>' },
+  { num: 10, title: "Flexibilidade e mobilidade", icon: "\u{1F9CD}\u200D\u2642\uFE0F",
+    body: '<p>Flexibilidade e mobilidade ajudam a <strong>prevenir les\u00f5es</strong>, melhorar postura, facilitar movimentos e reduzir tens\u00e3o muscular.</p><p>O candidato deve alongar principalmente:</p><ul><li>Pernas</li><li>Coxa posterior</li><li>Quadr\u00edceps</li><li>G\u00e9meos</li><li>Anca</li><li>Costas</li><li>Ombros</li><li>Pesco\u00e7o</li></ul><p>O alongamento deve ser feito com calma, <strong>sem dor excessiva</strong> e sem movimentos bruscos.</p><p>Depois do treino, o alongamento ajuda na recupera\u00e7\u00e3o. Antes do treino, o ideal \u00e9 <strong>aquecimento din\u00e2mico</strong>, com movimentos leves e progressivos.</p>' },
+  { num: 11, title: "Aquecimento", icon: "\u{1F525}",
+    body: '<p>O aquecimento prepara o corpo para o esfor\u00e7o.</p><p>Um bom aquecimento pode incluir:</p><ul><li>Caminhada leve</li><li>Corrida leve</li><li>Movimentos articulares</li><li>Eleva\u00e7\u00e3o de joelhos</li><li>Rota\u00e7\u00e3o de ombros</li><li>Agachamentos leves</li><li>Pequenos saltos controlados</li></ul><p>O aquecimento <strong>reduz o risco de les\u00e3o</strong> e melhora o desempenho.</p><div class="alert-box">Entrar numa corrida ou treino intenso sem aquecimento \u00e9 erro grave.</div>' },
+  { num: 12, title: "Recupera\u00e7\u00e3o", icon: "\u{1F634}",
+    body: '<p>O corpo n\u00e3o evolui apenas durante o treino. <strong>Evolui tamb\u00e9m durante o descanso</strong>.</p><p>O candidato deve respeitar:</p><ul><li>Sono adequado</li><li>Dias de treino leve</li><li>Hidrata\u00e7\u00e3o</li><li>Alimenta\u00e7\u00e3o equilibrada</li><li>Alongamento</li><li>Intervalo entre treinos intensos</li></ul><div class="alert-box">Ignorar a recupera\u00e7\u00e3o pode causar fadiga, les\u00f5es, irritabilidade, queda de rendimento e perda de motiva\u00e7\u00e3o.</div>' },
+  { num: 13, title: "Alimenta\u00e7\u00e3o antes da prova f\u00edsica", icon: "\u{1F34E}",
+    body: '<p>A alimenta\u00e7\u00e3o deve ser simples, equilibrada e segura.</p><p>Antes da prova, o candidato deve <strong>evitar</strong>:</p><ul><li>Comida muito pesada</li><li>\u00c1lcool</li><li>Bebidas energ\u00e9ticas em excesso</li><li>Alimentos desconhecidos</li><li>Jejum prolongado</li><li>Excesso de gordura</li><li>Excesso de a\u00e7\u00facar</li></ul><p>O ideal \u00e9 comer algo leve e familiar, com tempo suficiente para digest\u00e3o.</p><div class="alert-box">O candidato n\u00e3o deve experimentar suplementos ou subst\u00e2ncias novas no dia da prova.</div>' },
+  { num: 14, title: "Hidrata\u00e7\u00e3o", icon: "\u{1F4A7}",
+    body: '<p>A hidrata\u00e7\u00e3o \u00e9 fundamental para <strong>desempenho, seguran\u00e7a e sa\u00fade</strong>.</p><p>O candidato deve beber \u00e1gua ao longo do dia, n\u00e3o apenas quando sente sede intensa.</p><p>A desidrata\u00e7\u00e3o pode causar fadiga, tontura, dor de cabe\u00e7a, queda de rendimento e risco de mal-estar durante o esfor\u00e7o.</p><p>Em dias de calor, a aten\u00e7\u00e3o deve ser maior.</p>' },
+  { num: 15, title: "Sono", icon: "\u{1F31C}",
+    body: '<p>Dormir bem antes da prova \u00e9 t\u00e3o importante quanto estudar ou treinar.</p><p>A falta de sono prejudica:</p><ul><li>Aten\u00e7\u00e3o</li><li>Mem\u00f3ria</li><li>Reflexos</li><li>Humor</li><li>Coordena\u00e7\u00e3o</li><li>Resist\u00eancia</li><li>Autocontrolo</li></ul><p>O candidato deve evitar estudar ou treinar exageradamente na noite anterior. O corpo e a mente precisam de <strong>descanso</strong>.</p>' },
+  { num: 16, title: "Sinais de alerta durante o treino", icon: "\u{1F6A8}",
+    body: '<p>O candidato deve <strong>parar o treino e procurar ajuda m\u00e9dica</strong> quando sentir sintomas graves como:</p><ul><li>Dor ou press\u00e3o no peito</li><li>Falta de ar intensa</li><li>Tonturas</li><li>Desmaio</li><li>Dor que irradia para bra\u00e7o, costas, pesco\u00e7o ou mand\u00edbula</li><li>Palpita\u00e7\u00f5es persistentes</li><li>Mal-estar forte</li></ul><p>A American Heart Association indica que sinais de ataque card\u00edaco podem incluir desconforto no peito, falta de ar e desconforto em bra\u00e7os, costas, pesco\u00e7o, mand\u00edbula ou est\u00f3mago.</p><div class="alert-box">Treinar com dor forte ou sintomas card\u00edacos n\u00e3o \u00e9 coragem. \u00c9 imprud\u00eancia. A sa\u00fade do candidato vem antes da prova.</div>' },
+  { num: 17, title: "Quem deve ter cuidado especial", icon: "\u{1FA7A}",
+    body: '<p>Devem ter cuidado especial candidatos com:</p><div class="mini-grid"><div class="item"><strong>Doen\u00e7a card\u00edaca</strong>Hist\u00f3rico m\u00e9dico</div><div class="item"><strong>Press\u00e3o alta</strong>Hipertens\u00e3o arterial</div><div class="item"><strong>Asma</strong>Problemas respirat\u00f3rios</div><div class="item"><strong>Diabetes</strong>Controlo metab\u00f3lico</div><div class="item"><strong>Obesidade grave</strong>IMC elevado</div><div class="item"><strong>Desmaios</strong>S\u00edncope frequente</div><div class="item"><strong>Les\u00f5es recentes</strong>M\u00fasculo-esquel\u00e9ticas</div><div class="item"><strong>Cirurgias recentes</strong>P\u00f3s-operat\u00f3rio</div></div><div class="pull-quote">Nesses casos, \u00e9 prudente fazer avalia\u00e7\u00e3o m\u00e9dica antes de iniciar treino intenso.</div>' },
+  { num: 18, title: "Erros perigosos na prepara\u00e7\u00e3o f\u00edsica", icon: "\u{1F6D1}",
+    body: '<p>O candidato deve <strong>evitar</strong>:</p><ul><li>Come\u00e7ar treino intenso sem adapta\u00e7\u00e3o</li><li>Treinar todos os dias no m\u00e1ximo esfor\u00e7o</li><li>Correr lesionado</li><li>Tomar subst\u00e2ncias desconhecidas</li><li>Treinar em jejum extremo</li><li>Usar roupa inadequada</li><li>N\u00e3o beber \u00e1gua</li><li>Dormir pouco</li><li>Imitar treinos de atletas avan\u00e7ados</li><li>Competir com outros candidatos antes de estar preparado</li></ul><div class="pull-quote">A prepara\u00e7\u00e3o deve ser inteligente, n\u00e3o desesperada.</div>' },
+  { num: 19, title: "Plano semanal simples de prepara\u00e7\u00e3o f\u00edsica", icon: "\u{1F4C5}",
+    body: '<p>Este plano \u00e9 apenas <strong>orientativo</strong> e deve ser adaptado \u00e0 condi\u00e7\u00e3o de cada candidato.</p><table class="sec-table"><thead><tr><th>Dia</th><th>Actividade</th></tr></thead><tbody><tr><td><strong>Segunda-feira</strong></td><td>Corrida leve ou caminhada r\u00e1pida + alongamento</td></tr><tr><td><strong>Ter\u00e7a-feira</strong></td><td>For\u00e7a com peso corporal: flex\u00f5es, agachamentos, abdominais, prancha</td></tr><tr><td><strong>Quarta-feira</strong></td><td>Corrida leve com pequenos intervalos de velocidade</td></tr><tr><td><strong>Quinta-feira</strong></td><td>Descanso activo: caminhada e mobilidade</td></tr><tr><td><strong>Sexta-feira</strong></td><td>Treino combinado: corrida leve + for\u00e7a + alongamento</td></tr><tr><td><strong>S\u00e1bado</strong></td><td>Treino mais longo de resist\u00eancia ou simula\u00e7\u00e3o moderada</td></tr><tr><td><strong>Domingo</strong></td><td>Descanso</td></tr></tbody></table><p>O candidato mais avan\u00e7ado pode aumentar gradualmente a intensidade. O candidato sedent\u00e1rio deve come\u00e7ar com menor volume.</p>' },
+  { num: 20, title: "Prepara\u00e7\u00e3o psicol\u00f3gica", icon: "\u{1F9E0}",
+    body: '<p>A avalia\u00e7\u00e3o psicol\u00f3gica <strong>n\u00e3o deve ser vista como inimiga</strong> do candidato.</p><p>Ela existe para avaliar se o candidato possui condi\u00e7\u00f5es emocionais, cognitivas e comportamentais compat\u00edveis com fun\u00e7\u00f5es sens\u00edveis de seguran\u00e7a p\u00fablica, investiga\u00e7\u00e3o, migra\u00e7\u00e3o, cust\u00f3dia penitenci\u00e1ria ou protec\u00e7\u00e3o civil.</p><p>Os \u00f3rg\u00e3os do MININT exigem pessoas com:</p><ul><li>Autocontrolo</li><li>Disciplina</li><li>Responsabilidade</li><li>Resist\u00eancia ao stress</li><li>Maturidade</li><li>Capacidade de obedecer a regras</li><li>Capacidade de trabalhar em equipa</li><li>Respeito pela autoridade leg\u00edtima</li><li>Capacidade de decis\u00e3o</li><li>Equil\u00edbrio emocional</li><li>Sentido de miss\u00e3o</li></ul>' },
+  { num: 21, title: "O que pode ser avaliado psicologicamente", icon: "\u{1F50D}",
+    body: '<p>Sem inventar crit\u00e9rios oficiais, \u00e9 razo\u00e1vel afirmar que avalia\u00e7\u00f5es psicol\u00f3gicas em concursos desta natureza costumam observar:</p><ul><li>Aten\u00e7\u00e3o</li><li>Mem\u00f3ria</li><li>Racioc\u00ednio</li><li>Controlo emocional</li><li>Impulsividade</li><li>Capacidade de lidar com press\u00e3o</li><li>Sociabilidade</li><li>Responsabilidade</li><li>Honestidade</li><li>Disciplina</li><li>Estabilidade emocional</li><li>Capacidade de seguir instru\u00e7\u00f5es</li></ul><div class="pull-quote">O candidato n\u00e3o deve tentar \u201cdecorar respostas psicol\u00f3gicas\u201d. Deve apresentar-se com sinceridade, coer\u00eancia e equil\u00edbrio.</div>' },
+  { num: 22, title: "Como preparar a mente", icon: "\u{1F9D8}\u200D\u2642\uFE0F",
+    body: '<p>A prepara\u00e7\u00e3o psicol\u00f3gica <strong>come\u00e7a antes da avalia\u00e7\u00e3o</strong>.</p><p>O candidato deve:</p><ul><li>Dormir bem</li><li>Estudar com organiza\u00e7\u00e3o</li><li>Evitar p\u00e2nico</li><li>Evitar boatos</li><li>Controlar ansiedade</li><li>Treinar respira\u00e7\u00e3o</li><li>Fazer pausas</li><li>Manter rotina</li><li>Conversar com pessoas equilibradas</li><li>Evitar discuss\u00f5es desnecess\u00e1rias</li><li>Evitar \u00e1lcool e subst\u00e2ncias que alterem o comportamento</li></ul><div class="pull-quote">A mente precisa de disciplina como o corpo.</div>' },
+  { num: 23, title: "Ansiedade antes da prova", icon: "\u{1F62C}",
+    body: '<p>\u00c9 normal sentir ansiedade antes de uma prova importante.</p><p>O problema n\u00e3o \u00e9 sentir ansiedade. O problema \u00e9 <strong>deixar a ansiedade dominar o comportamento</strong>.</p><p>Sinais comuns de ansiedade:</p><ul><li>Cora\u00e7\u00e3o acelerado</li><li>Suor</li><li>Medo de falhar</li><li>Pensamentos negativos</li><li>Dificuldade de concentra\u00e7\u00e3o</li><li>Vontade de desistir</li><li>Ins\u00f3nia</li><li>Irritabilidade</li></ul><p>O candidato deve <strong>reconhecer esses sinais</strong> e aplicar t\u00e9cnicas simples de controlo.</p>' },
+  { num: 24, title: "T\u00e9cnica simples de respira\u00e7\u00e3o", icon: "\u{1F9D9}",
+    body: '<p>Uma t\u00e9cnica \u00fatil \u00e9 a <strong>respira\u00e7\u00e3o controlada</strong>:</p><div class="tip-box"><strong>Passo 1:</strong> Inspirar pelo nariz durante quatro segundos<br><strong>Passo 2:</strong> Segurar o ar por dois segundos<br><strong>Passo 3:</strong> Expirar lentamente pela boca durante seis segundos<br><strong>Passo 4:</strong> Repetir algumas vezes</div><p>Esta t\u00e9cnica ajuda a <strong>reduzir tens\u00e3o</strong>, acalmar o corpo e recuperar foco.</p><p>N\u00e3o \u00e9 magia. \u00c9 <strong>disciplina respirat\u00f3ria</strong>.</p>' },
+  { num: 25, title: "Organiza\u00e7\u00e3o mental para o dia da prova", icon: "\u{1F4DD}",
+    body: '<p>No dia da prova, o candidato deve:</p><ul><li>Acordar cedo</li><li>Conferir documentos</li><li>Chegar antes da hora</li><li>Evitar discuss\u00f5es</li><li>Evitar ouvir boatos</li><li>Ler instru\u00e7\u00f5es com aten\u00e7\u00e3o</li><li>Respirar antes de responder</li><li>Gerir o tempo</li><li>Manter postura respeitosa</li><li>N\u00e3o entrar em p\u00e2nico quando encontrar pergunta dif\u00edcil</li></ul><div class="pull-quote">A prova avalia conhecimento, mas tamb\u00e9m maturidade.</div>' },
+  { num: 26, title: "Controlo emocional na fun\u00e7\u00e3o p\u00fablica", icon: "\u{1F9D1}\u200D\u2696\uFE0F",
+    body: '<p>O futuro agente do MININT enfrentar\u00e1 <strong>situa\u00e7\u00f5es dif\u00edceis</strong>.</p><p>Pode lidar com v\u00edtimas, suspeitos, reclusos, estrangeiros em situa\u00e7\u00e3o vulner\u00e1vel, emerg\u00eancias, acidentes, inc\u00eandios, multid\u00f5es, conflitos familiares, mortes, feridos, deten\u00e7\u00f5es e press\u00e3o social.</p><p>Por isso, precisa de <strong>controlo emocional</strong>.</p><div class="alert-box">Um agente emocionalmente descontrolado pode agir com excesso de for\u00e7a, insultar cidad\u00e3os, violar direitos, comprometer opera\u00e7\u00f5es e manchar a imagem da institui\u00e7\u00e3o.</div>' },
+  { num: 27, title: "Disciplina psicol\u00f3gica", icon: "\u{1F3AF}",
+    body: '<p>Disciplina psicol\u00f3gica significa capacidade de <strong>manter comportamento correcto mesmo sob press\u00e3o</strong>.</p><p>O candidato disciplinado:</p><ul><li>N\u00e3o responde insulto com insulto</li><li>N\u00e3o entra em p\u00e2nico facilmente</li><li>N\u00e3o desiste perante dificuldade</li><li>N\u00e3o se deixa levar por boatos</li><li>N\u00e3o procura atalhos il\u00edcitos</li><li>N\u00e3o perde a educa\u00e7\u00e3o diante de frustra\u00e7\u00e3o</li><li>N\u00e3o usa viol\u00eancia por impulso</li></ul><div class="pull-quote">A disciplina emocional \u00e9 t\u00e3o importante quanto a disciplina f\u00edsica.</div>' },
+  { num: 28, title: "Motiva\u00e7\u00e3o correcta", icon: "\u{1F525}",
+    body: '<p>A motiva\u00e7\u00e3o do candidato deve ser <strong>limpa</strong>.</p><p><strong>Motiva\u00e7\u00f5es correctas:</strong></p><ul><li>Servir Angola</li><li>Proteger cidad\u00e3os</li><li>Honrar a farda</li><li>Ter carreira digna</li><li>Aprender e evoluir</li><li>Contribuir para a seguran\u00e7a p\u00fablica</li><li>Servir com disciplina e legalidade</li></ul><p><strong>Motiva\u00e7\u00f5es perigosas:</strong></p><ul><li>Querer poder para humilhar</li><li>Entrar apenas por sal\u00e1rio</li><li>Usar farda para vantagens pessoais</li><li>Vingar-se de pessoas</li><li>Ter acesso a arma para intimidar</li><li>Obter influ\u00eancia social</li><li>Proteger actividades il\u00edcitas</li></ul><div class="pull-quote">A motiva\u00e7\u00e3o revela o perfil do candidato.</div>' },
+  { num: 29, title: "Prepara\u00e7\u00e3o para entrevista ou contacto avaliativo", icon: "\u{1F399}\uFE0F",
+    body: '<p>Se houver entrevista, chamada, apresenta\u00e7\u00e3o oral ou contacto avaliativo, o candidato deve:</p><ul><li>Falar com clareza</li><li>Responder com verdade</li><li>N\u00e3o exagerar</li><li>N\u00e3o inventar experi\u00eancia</li><li>N\u00e3o insultar institui\u00e7\u00f5es</li><li>N\u00e3o apresentar arrog\u00e2ncia</li><li>N\u00e3o demonstrar desprezo pela disciplina</li><li>N\u00e3o tentar agradar com mentiras</li><li>Ser firme, educado e objectivo</li></ul><div class="pull-quote">A humildade madura \u00e9 melhor do que arrog\u00e2ncia vazia.</div>' },
+  { num: 30, title: "Exames m\u00e9dicos", icon: "\u{1FA7A}",
+    body: '<p>Os exames m\u00e9dicos servem para verificar se o candidato possui condi\u00e7\u00f5es de sa\u00fade compat\u00edveis com a fun\u00e7\u00e3o.</p><p>O candidato deve encarar essa fase com seriedade.</p><p>Deve <strong>evitar</strong>:</p><ul><li>Ocultar doen\u00e7as graves</li><li>Usar subst\u00e2ncias para mascarar resultados</li><li>Apresentar documentos m\u00e9dicos falsos</li><li>Ignorar sintomas</li><li>Treinar intensamente na v\u00e9spera</li><li>Comparecer sem descanso</li></ul><div class="pull-quote">A sa\u00fade do candidato \u00e9 tamb\u00e9m quest\u00e3o de seguran\u00e7a institucional.</div>' },
+  { num: 31, title: "Aptid\u00e3o f\u00edsica e \u00e9tica", icon: "\u{1F4DC}",
+    body: '<p>A prepara\u00e7\u00e3o f\u00edsica tamb\u00e9m tem <strong>dimens\u00e3o \u00e9tica</strong>.</p><p>O candidato n\u00e3o deve:</p><ul><li>Usar subst\u00e2ncias proibidas</li><li>Pagar para alterar resultado</li><li>Pedir a outra pessoa para fazer prova no seu lugar</li><li>Falsificar atestado</li><li>Mentir sobre condi\u00e7\u00e3o m\u00e9dica</li><li>Simular resultado</li></ul><div class="alert-box">A aprova\u00e7\u00e3o deve resultar de m\u00e9rito real. Quem frauda a prova f\u00edsica demonstra que n\u00e3o merece a farda.</div>' },
+  { num: 32, title: "Diferen\u00e7a entre coragem e imprud\u00eancia", icon: "\u2695\uFE0F",
+    body: '<p><strong>Coragem</strong> \u00e9 enfrentar a prova com <strong>prepara\u00e7\u00e3o, disciplina e responsabilidade</strong>.</p><p><strong>Imprud\u00eancia</strong> \u00e9 ignorar dor no peito, treinar lesionado, usar subst\u00e2ncias perigosas, n\u00e3o dormir, n\u00e3o comer adequadamente e arriscar a pr\u00f3pria sa\u00fade.</p><p>Os \u00f3rg\u00e3os do MININT precisam de candidatos corajosos, mas <strong>tamb\u00e9m prudentes</strong>.</p><ul><li>A coragem sem t\u00e9cnica pode causar acidente</li><li>A for\u00e7a sem controlo pode gerar abuso</li><li>A vontade sem prepara\u00e7\u00e3o pode terminar em fracasso</li></ul>' },
+  { num: 33, title: "Prepara\u00e7\u00e3o por \u00f3rg\u00e3o", icon: "\u{1F3E2}",
+    body: '<p>A prepara\u00e7\u00e3o deve considerar a natureza do \u00f3rg\u00e3o escolhido.</p><table class="sec-table"><thead><tr><th>\u00d3rg\u00e3o</th><th>Foco na prepara\u00e7\u00e3o</th></tr></thead><tbody><tr><td><strong>Pol\u00edcia Nacional</strong></td><td>Resist\u00eancia, agilidade, for\u00e7a funcional, disciplina e autocontrolo</td></tr><tr><td><strong>SIC</strong></td><td>Equil\u00edbrio psicol\u00f3gico, aten\u00e7\u00e3o, discri\u00e7\u00e3o, racioc\u00ednio, resist\u00eancia e postura t\u00e9cnica</td></tr><tr><td><strong>SME</strong></td><td>Aten\u00e7\u00e3o, disciplina, urbanidade, resist\u00eancia em servi\u00e7o prolongado e controlo emocional</td></tr><tr><td><strong>Servi\u00e7o Penitenci\u00e1rio</strong></td><td>Firmeza, resist\u00eancia, autocontrolo, disciplina, vigil\u00e2ncia e estabilidade emocional</td></tr><tr><td><strong>SPCB</strong></td><td>Resist\u00eancia f\u00edsica elevada, for\u00e7a, coragem, t\u00e9cnica, trabalho em equipa e capacidade de agir sob emerg\u00eancia</td></tr></tbody></table>' },
+  { num: 34, title: "Como estudar e treinar ao mesmo tempo", icon: "\u{1F4DA}",
+    body: '<p>O candidato deve <strong>dividir o dia</strong>.</p><p>N\u00e3o deve treinar tanto que fique sem energia para estudar. Tamb\u00e9m n\u00e3o deve estudar tanto que abandone o corpo.</p><p><strong>Exemplo simples:</strong></p><ul><li><strong>Manh\u00e3:</strong> treino f\u00edsico leve ou moderado</li><li><strong>Tarde:</strong> estudo dos manuais</li><li><strong>Noite:</strong> revis\u00e3o, leitura leve e descanso</li></ul><p>Ou:</p><ul><li><strong>Manh\u00e3:</strong> estudo</li><li><strong>Fim da tarde:</strong> treino</li><li><strong>Noite:</strong> revis\u00e3o curta e sono</li></ul><div class="pull-quote">O segredo \u00e9 equil\u00edbrio.</div>' },
+  { num: 35, title: "Prepara\u00e7\u00e3o nos \u00faltimos dias antes da prova", icon: "\u23F3",
+    body: '<p>Nos \u00faltimos dias, o candidato deve <strong>evitar exageros</strong>.</p><p>Deve:</p><ul><li>Dormir bem</li><li>Reduzir treinos muito intensos</li><li>Fazer revis\u00e3o leve</li><li>Organizar documentos</li><li>Confirmar local e hor\u00e1rio</li><li>Alimentar-se bem</li><li>Hidratar-se</li><li>Evitar discuss\u00f5es</li><li>Manter serenidade</li></ul><div class="pull-quote">O candidato n\u00e3o ganha prepara\u00e7\u00e3o verdadeira na v\u00e9spera. Na v\u00e9spera, ele protege aquilo que construiu.</div>' },
+  { num: 36, title: "O que levar no dia da prova", icon: "\u{1F4BC}",
+    body: '<p>O candidato deve acompanhar as orienta\u00e7\u00f5es oficiais, mas, em regra, deve preparar:</p><ul><li>Bilhete de Identidade</li><li>Comprovativo ou refer\u00eancia de candidatura, se exigido</li><li>Material permitido</li><li>Roupa adequada para a fase f\u00edsica, se for o caso</li><li>\u00c1gua</li><li>Alimenta\u00e7\u00e3o leve, se permitido</li><li>Documento m\u00e9dico, se solicitado</li></ul><div class="alert-box">N\u00e3o deve levar objectos proibidos, telem\u00f3vel em locais n\u00e3o autorizados, documentos falsos ou materiais que possam causar exclus\u00e3o.</div>' },
+  { num: 37, title: "Conduta durante a prova f\u00edsica", icon: "\u{1F3C3}\u200D\u2640\uFE0F",
+    body: '<p>Durante a prova f\u00edsica, o candidato deve:</p><ul><li>Ouvir as instru\u00e7\u00f5es</li><li>Respeitar avaliadores</li><li>N\u00e3o discutir</li><li>N\u00e3o empurrar colegas</li><li>N\u00e3o tentar fraudar</li><li>N\u00e3o usar atalhos</li><li>Cumprir a t\u00e9cnica exigida</li><li>Parar se houver sinal grave de sa\u00fade</li><li>Aceitar o resultado com maturidade</li></ul><div class="pull-quote">A prova f\u00edsica tamb\u00e9m mede disciplina.</div>' },
+  { num: 38, title: "Conduta durante avalia\u00e7\u00e3o psicol\u00f3gica", icon: "\u{1F9E0}",
+    body: '<p>Durante a avalia\u00e7\u00e3o psicol\u00f3gica, o candidato deve:</p><ul><li>Ler as instru\u00e7\u00f5es</li><li>Responder com calma</li><li>Ser sincero</li><li>Evitar contradi\u00e7\u00f5es</li><li>N\u00e3o tentar manipular</li><li>N\u00e3o copiar respostas</li><li>N\u00e3o interromper outros candidatos</li><li>N\u00e3o demonstrar agressividade</li><li>Manter postura respeitosa</li></ul><div class="pull-quote">A avalia\u00e7\u00e3o psicol\u00f3gica n\u00e3o procura \u201cperfei\u00e7\u00e3o\u201d. Procura compatibilidade com a fun\u00e7\u00e3o.</div>' },
+  { num: 39, title: "Conduta nos exames m\u00e9dicos", icon: "\u{1FA7A}",
+    body: '<p>Nos exames m\u00e9dicos, o candidato deve:</p><ul><li>Ser verdadeiro</li><li>Respeitar profissionais de sa\u00fade</li><li>Apresentar documentos solicitados</li><li>Cumprir orienta\u00e7\u00f5es</li><li>N\u00e3o esconder sintomas relevantes</li><li>N\u00e3o usar atestados falsos</li><li>N\u00e3o tentar corromper ningu\u00e9m</li></ul><div class="pull-quote">A sa\u00fade n\u00e3o deve ser tratada como obst\u00e1culo, mas como requisito de seguran\u00e7a.</div>' },
+  { num: 40, title: "Erros que eliminam ou prejudicam", icon: "\u{1F6AB}",
+    body: '<p>Podem prejudicar o candidato:</p><div class="mini-grid"><div class="item"><strong>Chegar atrasado</strong>Falta de pontualidade</div><div class="item"><strong>Falta de documento</strong>Sem BI ou comprovativo</div><div class="item"><strong>Desrespeitar avaliadores</strong>M\u00e1 conduta</div><div class="item"><strong>Fraudar prova</strong>M\u00e9rito falsificado</div><div class="item"><strong>Documento falso</strong>Crime de falsidade</div><div class="item"><strong>Subst\u00e2ncia perigosa</strong>Risco \u00e0 sa\u00fade</div><div class="item"><strong>Treinar lesionado</strong>Agrava les\u00e3o</div><div class="item"><strong>N\u00e3o cumprir instru\u00e7\u00f5es</strong>Falta de disciplina</div><div class="item"><strong>Entrar em p\u00e2nico</strong>Perda de controlo</div><div class="item"><strong>Desistir sem tentar</strong>Oportunidade perdida</div><div class="item"><strong>Pagar a terceiros</strong>Corrup\u00e7\u00e3o</div><div class="item"><strong>Promessas de facilita\u00e7\u00e3o</strong>Golpe financeiro</div></div>' },
+  { num: 41, title: "Quadro-resumo para memoriza\u00e7\u00e3o", icon: "\u{1F4CA}",
+    body: '<table class="sec-table"><thead><tr><th>\u00c1rea</th><th>O que preparar</th><th>Erro a evitar</th></tr></thead><tbody><tr><td><strong>Resist\u00eancia</strong></td><td>Caminhada, corrida leve e progress\u00e3o</td><td>Come\u00e7ar com esfor\u00e7o extremo</td></tr><tr><td><strong>For\u00e7a</strong></td><td>Flex\u00f5es, agachamentos, abdominais e prancha</td><td>Fazer t\u00e9cnica errada</td></tr><tr><td><strong>Flexibilidade</strong></td><td>Alongamento e mobilidade</td><td>Alongar com dor intensa</td></tr><tr><td><strong>Sa\u00fade</strong></td><td>Sono, hidrata\u00e7\u00e3o e alimenta\u00e7\u00e3o</td><td>Ignorar sinais de alerta</td></tr><tr><td><strong>Psicologia</strong></td><td>Autocontrolo, foco e serenidade</td><td>Mentir ou tentar manipular</td></tr><tr><td><strong>\u00c9tica</strong></td><td>M\u00e9rito e verdade</td><td>Fraudar prova ou documento</td></tr><tr><td><strong>Dia da prova</strong></td><td>Pontualidade e documentos</td><td>Chegar atrasado</td></tr><tr><td><strong>Conduta</strong></td><td>Respeito e disciplina</td><td>Discutir com avaliadores</td></tr></tbody></table>' },
+  { num: 42, title: "Perguntas prov\u00e1veis de prova (Q&A)", icon: "\u2753",
+    body: '<p><strong>1. A prova de aptid\u00e3o f\u00edsica deve ser preparada apenas na v\u00e9spera?</strong></p><p><strong>N\u00e3o.</strong> Deve ser preparada com anteced\u00eancia, progress\u00e3o, disciplina e seguran\u00e7a.</p><p><strong>2. A resist\u00eancia cardiorrespirat\u00f3ria \u00e9 importante para candidatos aos \u00f3rg\u00e3os do MININT?</strong></p><p><strong>Sim.</strong> Ela melhora a capacidade de esfor\u00e7o prolongado e resposta operacional.</p><p><strong>3. O candidato deve usar subst\u00e2ncias desconhecidas para melhorar desempenho?</strong></p><p><strong>N\u00e3o.</strong> Isso pode colocar a sa\u00fade em risco e comprometer a candidatura.</p><p><strong>4. A avalia\u00e7\u00e3o psicol\u00f3gica serve apenas para eliminar candidatos?</strong></p><p><strong>N\u00e3o.</strong> Serve para verificar compatibilidade emocional, comportamental e psicol\u00f3gica com fun\u00e7\u00f5es sens\u00edveis.</p><p><strong>5. O candidato deve mentir na avalia\u00e7\u00e3o psicol\u00f3gica?</strong></p><p><strong>N\u00e3o.</strong> Deve responder com sinceridade e coer\u00eancia.</p><p><strong>6. Dor no peito, falta de ar intensa e tontura durante o treino devem ser ignoradas?</strong></p><p><strong>N\u00e3o.</strong> S\u00e3o sinais de alerta e podem exigir assist\u00eancia m\u00e9dica.</p><p><strong>7. O descanso \u00e9 importante na prepara\u00e7\u00e3o f\u00edsica?</strong></p><p><strong>Sim.</strong> O corpo precisa de recupera\u00e7\u00e3o para evoluir.</p><p><strong>8. O candidato deve respeitar avaliadores durante a prova f\u00edsica?</strong></p><p><strong>Sim.</strong> A disciplina e a urbanidade fazem parte do perfil do candidato.</p><p><strong>9. A prova f\u00edsica pode ser fraudada se o candidato tiver boa inten\u00e7\u00e3o?</strong></p><p><strong>N\u00e3o.</strong> Fraude \u00e9 incompat\u00edvel com a fun\u00e7\u00e3o p\u00fablica e com a farda.</p><p><strong>10. A prepara\u00e7\u00e3o psicol\u00f3gica inclui controlo da ansiedade?</strong></p><p><strong>Sim.</strong> O candidato deve aprender a controlar ansiedade, manter foco e agir com maturidade.</p>' },
+  { num: 43, title: "Teste r\u00e1pido de escolha m\u00faltipla", icon: "\u{1F4DD}",
+    body: '<p><strong>1.</strong> A aptid\u00e3o f\u00edsica envolve:<br>a) Apenas for\u00e7a muscular<br>b) Resist\u00eancia, for\u00e7a, flexibilidade, coordena\u00e7\u00e3o e recupera\u00e7\u00e3o<br>c) Apenas apar\u00eancia f\u00edsica<br>d) Apenas velocidade<br><strong>Resposta: b</strong></p><p><strong>2.</strong> A prepara\u00e7\u00e3o f\u00edsica deve ser:<br>a) Progressiva e disciplinada<br>b) Feita apenas na v\u00e9spera<br>c) Baseada em subst\u00e2ncias desconhecidas<br>d) Sem descanso<br><strong>Resposta: a</strong></p><p><strong>3.</strong> O candidato deve parar o treino e procurar ajuda quando sentir:<br>a) Dor no peito, tontura ou falta de ar intensa<br>b) Suor leve<br>c) Cansa\u00e7o moderado normal<br>d) Vontade de beber \u00e1gua<br><strong>Resposta: a</strong></p><p><strong>4.</strong> A avalia\u00e7\u00e3o psicol\u00f3gica procura verificar:<br>a) Equil\u00edbrio, autocontrolo, responsabilidade e maturidade<br>b) Apenas for\u00e7a f\u00edsica<br>c) Apenas altura<br>d) Apenas velocidade<br><strong>Resposta: a</strong></p><p><strong>5.</strong> O candidato deve responder \u00e0 avalia\u00e7\u00e3o psicol\u00f3gica com:<br>a) Sinceridade e coer\u00eancia<br>b) Mentiras decoradas<br>c) Agressividade<br>d) Contradi\u00e7\u00f5es propositadas<br><strong>Resposta: a</strong></p><p><strong>6.</strong> Antes da prova f\u00edsica, o candidato deve evitar:<br>a) \u00c1lcool, noite mal dormida e treino exagerado<br>b) Descanso<br>c) Hidrata\u00e7\u00e3o<br>d) Alimenta\u00e7\u00e3o leve<br><strong>Resposta: a</strong></p><p><strong>7.</strong> A for\u00e7a p\u00fablica exige:<br>a) For\u00e7a f\u00edsica sem controlo<br>b) Corpo preparado e mente disciplinada<br>c) Viol\u00eancia impulsiva<br>d) Desobedi\u00eancia \u00e0s regras<br><strong>Resposta: b</strong></p><p><strong>8.</strong> A prepara\u00e7\u00e3o psicol\u00f3gica inclui:<br>a) Controlo emocional e disciplina<br>b) P\u00e2nico e boatos<br>c) Arrog\u00e2ncia<br>d) Desrespeito pelas instru\u00e7\u00f5es<br><strong>Resposta: a</strong></p><p><strong>9.</strong> Durante a prova f\u00edsica, o candidato deve:<br>a) Cumprir instru\u00e7\u00f5es e respeitar avaliadores<br>b) Empurrar colegas<br>c) Fraudar resultados<br>d) Discutir com avaliadores<br><strong>Resposta: a</strong></p><p><strong>10.</strong> A farda exige:<br>a) M\u00e9rito, sa\u00fade, disciplina e equil\u00edbrio<br>b) Apenas desejo pessoal<br>c) Apenas for\u00e7a bruta<br>d) Facilita\u00e7\u00e3o il\u00edcita<br><strong>Resposta: a</strong></p>' },
+  { num: 44, title: "Perguntas de verdadeiro ou falso", icon: "\u2705",
+    body: '<p><strong>1.</strong> A prova de aptid\u00e3o f\u00edsica deve ser preparada com anteced\u00eancia. <strong>Verdadeiro</strong></p><p><strong>2.</strong> A prepara\u00e7\u00e3o psicol\u00f3gica \u00e9 dispens\u00e1vel para candidatos ao MININT. <strong>Falso</strong></p><p><strong>3.</strong> O descanso ajuda na recupera\u00e7\u00e3o e no rendimento f\u00edsico. <strong>Verdadeiro</strong></p><p><strong>4.</strong> A hidrata\u00e7\u00e3o \u00e9 importante para o desempenho. <strong>Verdadeiro</strong></p><p><strong>5.</strong> O candidato deve ignorar dor no peito durante o treino. <strong>Falso</strong></p><p><strong>6.</strong> A avalia\u00e7\u00e3o psicol\u00f3gica deve ser respondida com sinceridade. <strong>Verdadeiro</strong></p><p><strong>7.</strong> A fraude na prova f\u00edsica \u00e9 compat\u00edvel com a fun\u00e7\u00e3o p\u00fablica. <strong>Falso</strong></p><p><strong>8.</strong> O candidato deve respeitar avaliadores e colegas. <strong>Verdadeiro</strong></p><p><strong>9.</strong> A for\u00e7a sem controlo pode gerar abuso. <strong>Verdadeiro</strong></p><p><strong>10.</strong> A prepara\u00e7\u00e3o f\u00edsica e psicol\u00f3gica faz parte da responsabilidade do candidato. <strong>Verdadeiro</strong></p>' },
+  { num: 45, title: "T\u00f3picos obrigat\u00f3rios para revis\u00e3o final", icon: "\u{1F4DA}",
+    body: '<p>O candidato deve dominar:</p><div class="mini-grid"><div class="item"><strong>Resist\u00eancia cardiorrespirat\u00f3ria</strong>Capacidade aer\u00f3bica</div><div class="item"><strong>For\u00e7a muscular</strong>Treino com peso corporal</div><div class="item"><strong>Resist\u00eancia muscular</strong>S\u00e9ries moderadas</div><div class="item"><strong>Flexibilidade</strong>Alongamento seguro</div><div class="item"><strong>Aquecimento</strong>Preparar o corpo</div><div class="item"><strong>Recupera\u00e7\u00e3o</strong>Sono e descanso</div><div class="item"><strong>Sono</strong>M\u00ednimo 7-8 horas</div><div class="item"><strong>Hidrata\u00e7\u00e3o</strong>\u00c1gua ao longo do dia</div><div class="item"><strong>Alimenta\u00e7\u00e3o</strong>Leve e equilibrada</div><div class="item"><strong>Sinais de alerta</strong>Dor no peito, tontura</div><div class="item"><strong>Progress\u00e3o</strong>Aumentar gradualmente</div><div class="item"><strong>Prova f\u00edsica</strong>Conduta e t\u00e9cnica</div><div class="item"><strong>Avalia\u00e7\u00e3o psicol\u00f3gica</strong>Sinceridade e calma</div><div class="item"><strong>Exames m\u00e9dicos</strong>Verdade e respeito</div><div class="item"><strong>Controlo da ansiedade</strong>Respira\u00e7\u00e3o controlada</div><div class="item"><strong>Disciplina emocional</strong>Calma sob press\u00e3o</div><div class="item"><strong>Motiva\u00e7\u00e3o</strong>Servir com honra</div><div class="item"><strong>Conduta</strong>Respeito e disciplina</div><div class="item"><strong>\u00c9tica</strong>M\u00e9rito real</div><div class="item"><strong>Fraude</strong>Causa de desonra</div><div class="item"><strong>Prepara\u00e7\u00e3o por \u00f3rg\u00e3o</strong>Natureza da fun\u00e7\u00e3o</div></div>' },
+  { num: 46, title: "S\u00edntese final para memoriza\u00e7\u00e3o", icon: "\u{1F3C6}",
+    body: '<p>A prova de ingresso aos \u00f3rg\u00e3os do Minist\u00e9rio do Interior n\u00e3o exige apenas conhecimento escrito. Exige <strong>corpo preparado, mente equilibrada, sa\u00fade compat\u00edvel, disciplina, maturidade, autocontrolo e conduta \u00e9tica</strong>.</p><p>O candidato deve treinar com anteced\u00eancia, respeitar os limites do corpo, dormir bem, hidratar-se, alimentar-se correctamente, evitar subst\u00e2ncias perigosas, controlar a ansiedade e cumprir as orienta\u00e7\u00f5es oficiais.</p><p>A prepara\u00e7\u00e3o f\u00edsica sem equil\u00edbrio psicol\u00f3gico \u00e9 incompleta. A prepara\u00e7\u00e3o psicol\u00f3gica sem disciplina f\u00edsica tamb\u00e9m \u00e9 insuficiente.</p><div class="pull-quote">O futuro agente do MININT deve estar preparado para servir Angola com for\u00e7a, resist\u00eancia, serenidade, legalidade e responsabilidade.</div><p>A ideia central \u00e9 esta: <strong>quem pretende vestir a farda deve preparar o corpo, educar a mente e fortalecer o car\u00e1cter</strong>. A aprova\u00e7\u00e3o come\u00e7a antes da prova, com disciplina, sa\u00fade, paci\u00eancia, equil\u00edbrio e m\u00e9rito.</p>' }
+];
+
+function render() {
+  var toc = document.getElementById('toc');
+  var content = document.getElementById('content');
+
+  var tocHTML = '<h3>Conte\u00FAdo</h3>';
+  var contentHTML = '';
+
+  function calcReadTime(html) {
+    var words = html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
+    var mins = Math.max(1, Math.round(words / 140));
+    return "⏱️ ~" + mins + " min de leitura";
+  }
+
+  SECTIONS.forEach(function(s) {
+    var id = 'sec-' + s.num;
+    var rt = calcReadTime(s.body);
+    tocHTML += '<a href="#' + id + '">Sec\u00E7\u00E3o ' + s.num + ' &mdash; ' + s.title + '</a>';
+    contentHTML += '<div class="section-card" id="' + id + '">' +
+      '<div class="sec-header">' +
+        '<div class="sec-icon">' + s.icon + '</div>' +
+        '<div>' +
+          '<div class="sec-num">SEC\u00C7\u00C3O ' + s.num + ' <span class="sec-read-time">' + rt + '</span></div>' +
+          '<div class="sec-title">' + s.title + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="sec-body">' + s.body + '</div>' +
+    '</div>';
+  });
+
+  toc.innerHTML = tocHTML;
+  content.innerHTML = contentHTML;
+}
+
+render();
+</script>
+<script src="audio-guia.js"></script>
+</body>
+</html>

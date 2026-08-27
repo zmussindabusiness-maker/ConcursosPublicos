@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Estudo — MININT 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0e1a; --bg2: #111827; --bg3: #1e293b;
+    --fg: #e2e8f0; --fg2: #94a3b8; --fg3: #64748b;
+    --accent: #3b82f6; --accent2: #2563eb; --accent3: #1d4ed8;
+    --gold: #facc15;
+    --red-flag: #d21034; --black-flag: #0a0a0a;
+    --card-bg: #0f172a; --card-border: #1e3a5f;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--fg); line-height: 1.7; min-height: 100vh;
+  }
+  .flag-stripe {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    height: 4px; display: flex;
+  }
+  .flag-stripe span { flex: 1; }
+  .flag-stripe .r { background: var(--red-flag); }
+  .flag-stripe .b { background: var(--black-flag); }
+  .flag-stripe .y { background: var(--gold); }
+  .header {
+    padding: 80px 20px 40px; text-align: center;
+    background: linear-gradient(180deg, #0c1a3a 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .header-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent); color: #fff; padding: 4px 14px;
+    border-radius: 20px; font-size: .75rem; font-weight: 700;
+    letter-spacing: 1px; margin-bottom: 12px;
+  }
+  .header .orgao-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(59,130,246,.15); color: var(--accent);
+    padding: 3px 10px; border-radius: 8px; font-size: .7rem; font-weight: 600;
+    margin-bottom: 10px; border: 1px solid rgba(59,130,246,.2);
+  }
+  .header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }
+  .header h1 span { color: var(--accent); }
+  .header .sub {
+    color: var(--fg2); font-size: .9rem; max-width: 600px;
+    margin: 0 auto 16px;
+  }
+  .header-actions {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  }
+  .header-actions a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 24px; border-radius: 10px; font-size: .85rem;
+    font-weight: 600; text-decoration: none; transition: .2s;
+  }
+  .btn-simular {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff; position: relative; overflow: hidden;
+    animation: pulse-glow 2.5s ease-in-out infinite, float 3s ease-in-out infinite;
+  }
+  .btn-simular:hover { background: var(--accent2); transform: scale(1.04); animation: none; box-shadow: 0 6px 25px var(--accent); }
+  .btn-simular::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  .btn-simular::after {
+    content: ''; position: absolute; inset: -4px; border-radius: 12px;
+    border: 2px solid var(--accent);
+    animation: ring-pulse 2s ease-out infinite;
+    pointer-events: none;
+  }
+  .icon-simular { display: inline-block; animation: icon-run 1.8s ease-in-out infinite; }
+  .callout-badge {
+    position: absolute; top: -14px; right: -8px;
+    font-size: .55rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .5px; background: var(--gold); color: #1a1a2e;
+    padding: 2px 10px; border-radius: 20px; white-space: nowrap;
+    animation: callout 3.5s ease-in-out infinite;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,.2); }
+    50% { box-shadow: 0 4px 35px var(--accent); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  @keyframes icon-run {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(4px); }
+    40% { transform: translateX(-1px); }
+    60% { transform: translateX(3px); }
+    80%, 100% { transform: translateX(0); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes ring-pulse {
+    0% { transform: scale(1); opacity: .5; }
+    100% { transform: scale(1.35); opacity: 0; }
+  }
+  @keyframes callout {
+    0%, 100% { opacity: 0; transform: translateY(8px) scale(.9); }
+    15%, 75% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .btn-voltar {
+    background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border);
+  }
+  .btn-voltar:hover { border-color: var(--fg3); color: var(--fg); }
+  .layout { display: flex; max-width: 1200px; margin: 0 auto; padding: 0 20px; gap: 30px; }
+  .toc-sidebar {
+    position: sticky; top: 20px; width: 240px; flex-shrink: 0;
+    max-height: calc(100vh - 40px); overflow-y: auto; padding: 20px 0;
+    display: none;
+  }
+  .toc-sidebar::-webkit-scrollbar { width: 3px; }
+  .toc-sidebar::-webkit-scrollbar-thumb { background: var(--fg3); border-radius: 2px; }
+  .toc-sidebar h3 {
+    font-size: .7rem; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--fg3); margin-bottom: 12px;
+  }
+  .toc-sidebar a {
+    display: block; padding: 3px 0; font-size: .75rem; color: var(--fg2);
+    text-decoration: none; transition: .15s; border-left: 2px solid transparent;
+    padding-left: 8px;
+  }
+  .toc-sidebar a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .content { flex: 1; min-width: 0; padding: 30px 0 60px; }
+  .section-card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 28px; margin-bottom: 16px;
+    transition: border-color .2s;
+  }
+  .section-card:hover { border-color: rgba(59,130,246,.15); }
+  .section-card .sec-header {
+    display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px;
+  }
+  .section-card .sec-icon {
+    width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; background: rgba(59,130,246,.1);
+  }
+  .section-card .sec-title {
+    font-size: 1.05rem; font-weight: 700; color: var(--fg); line-height: 1.3;
+  }
+  .section-card .sec-num {
+    font-size: .7rem; color: var(--accent); font-weight: 600;
+    letter-spacing: 1px; margin-bottom: 2px;
+  }
+  .section-card .sec-body {
+    font-size: .88rem; color: var(--fg2); line-height: 1.8;
+  }
+  .section-card .sec-body p { margin-bottom: 10px; }
+  .section-card .sec-body strong { color: var(--fg); }
+  .section-card .sec-body ul { margin: 8px 0 8px 20px; }
+  .section-card .sec-body li { margin-bottom: 4px; }
+  .pull-quote {
+    margin: 16px 0; padding: 16px 20px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(59,130,246,.02));
+    border-left: 3px solid var(--accent); font-style: italic;
+    color: var(--fg); font-size: .9rem;
+  }
+  .pull-quote::before { content: '\201C'; font-size: 1.4rem; color: var(--accent); margin-right: 4px; }
+  .tip-box {
+    margin: 16px 0; padding: 14px 18px; border-radius: 10px;
+    background: rgba(250,204,21,.05); border: 1px solid rgba(250,204,21,.15);
+    color: var(--gold);
+  }
+  .alert-box {
+    margin: 16px 0; padding: 14px 18px; border-radius: 10px;
+    background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.15);
+    color: #fca5a5;
+  }
+  .sec-table {
+    width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .82rem;
+  }
+  .sec-table th {
+    text-align: left; padding: 10px 12px; font-weight: 700;
+    background: var(--bg3); color: var(--accent); border-bottom: 2px solid var(--accent);
+  }
+  .sec-table td {
+    padding: 10px 12px; border-bottom: 1px solid var(--card-border); color: var(--fg2);
+    vertical-align: top;
+  }
+  .sec-table tr:hover td { background: rgba(59,130,246,.03); }
+  .sec-table tr.active td {
+    background: rgba(59,130,246,.1);
+    border-left: 3px solid var(--accent);
+    font-weight: 600; color: var(--fg);
+  }
+  .mini-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px; margin: 12px 0;
+  }
+  .mini-grid .item {
+    padding: 10px 14px; border-radius: 8px; background: var(--bg3);
+    border: 1px solid var(--card-border); font-size: .8rem; color: var(--fg2);
+  }
+  .mini-grid .item strong { color: var(--fg); display: block; margin-bottom: 2px; }
+  .orgao-nav {
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .orgao-nav a {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 14px; border-radius: 8px; font-size: .8rem; font-weight: 600;
+    text-decoration: none; transition: .15s;
+    background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border);
+  }
+  .orgao-nav a:hover { border-color: var(--accent); color: var(--fg); }
+  .orgao-nav a.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .footer-guia {
+    text-align: center; padding: 40px 20px; border-top: 1px solid var(--card-border);
+    margin-top: 20px;
+  }
+  .footer-guia p { color: var(--fg3); font-size: .8rem; margin-bottom: 8px; }
+  @media (min-width: 900px) { .toc-sidebar { display: block; } }
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.3rem; }
+    .section-card { padding: 18px; }
+    .section-card .sec-header { gap: 10px; }
+    .section-card .sec-icon { width: 32px; height: 32px; font-size: 1rem; }
+    .layout { padding: 0 12px; }
+    .sec-table { font-size: .72rem; }
+    .sec-table th, .sec-table td { padding: 6px 8px; }
+    .mini-grid { grid-template-columns: 1fr 1fr; }
+    .orgao-nav a { font-size: .7rem; padding: 4px 10px; }
+  }
+  @media print {
+    .flag-stripe, .header-actions, .toc-sidebar, .orgao-nav, .sec-nav, .kbd-hint, .footer-guia { display: none !important; }
+    .layout { display: block !important; max-width: 100% !important; padding: 0 !important; }
+    .header { padding: 15px 0 !important; border: none !important; }
+    .header h1 { font-size: 1.5rem !important; color: #111 !important; }
+    .header h1 span { color: #2563eb !important; }
+    .header .sub { color: #444 !important; }
+    .section-card { display: block !important; break-inside: avoid; border: 1px solid #ddd !important; background: #fff !important; color: #111 !important; box-shadow: none !important; margin-bottom: 24px !important; }
+    .section-card.hidden { display: block !important; }
+    .section-card .sec-header { border-bottom: 1px solid #eee !important; gap: 10px !important; }
+    .section-card .sec-icon { background: #f3f4f6 !important; border: 1px solid #ddd !important; }
+    .sec-num { color: #2563eb !important; }
+    .sec-title { color: #111 !important; }
+    .sec-body { color: #222 !important; }
+    .sec-body h4 { color: #2563eb !important; }
+    .sec-body strong { color: #000 !important; }
+    .sec-table th { background: #f3f4f6 !important; color: #111 !important; border-bottom: 2px solid #2563eb !important; }
+    .sec-table td { color: #333 !important; border-bottom: 1px solid #ddd !important; }
+    .mini-grid .item { background: #fafafa !important; border: 1px solid #ddd !important; color: #333 !important; }
+    .mini-grid .item strong { color: #111 !important; }
+    body { background: #fff !important; color: #000 !important; }
+  }
+  .btn-print {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px; font-size: .8rem; font-weight: 600;
+    cursor: pointer; transition: .2s; text-decoration: none;
+    background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border);
+  }
+  .btn-print:hover { border-color: var(--accent); color: var(--fg); background: var(--bg2); }
+  .sec-read-time {
+    display: inline-block; font-size: .65rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 12px;
+    background: rgba(255,255,255,.06); color: var(--fg3);
+    margin-left: 8px; vertical-align: middle;
+  }
+  .section-card.hidden { display: none; }
+  .sec-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--card-border); }
+  .sec-nav button { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: .78rem; font-weight: 600; cursor: pointer; transition: .2s; background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border); }
+  .sec-nav button:hover { border-color: var(--accent); color: var(--fg); }
+  .sec-nav .btn-prev, .sec-nav .btn-next { background: var(--bg3); }
+  .sec-nav .btn-prev:hover, .sec-nav .btn-next:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .sec-nav .sec-progress { font-size: .7rem; color: var(--fg3); }
+  .toc-sidebar a.toc-active { color: var(--accent); border-left-color: var(--accent); font-weight: 700; }
+  .kbd-hint { text-align: center; font-size: .65rem; color: var(--fg3); margin-top: 12px; opacity: .5; letter-spacing: .5px; }
+</style>
+</head>
+<body>
+
+<div class="flag-stripe">
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+</div>
+
+<div class="header">
+  <div class="header-badge">📖 GUIA DE ESTUDO — MININT 2026</div>
+  <div class="orgao-tag" id="orgaoTag"></div>
+  <h1>Preparação Completa para o <span>Concurso MININT</span></h1>
+  <p class="sub">13 módulos de estudo · História, CRA, Administração Pública, MININT, Conduta, Psicotécnico e mais</p>
+  <div class="orgao-nav" id="orgaoNav"></div>
+  <div class="header-actions">
+    <a href="#" class="btn-simular" id="btnSimular"><span class="icon-simular">▶️</span> Simular Prova <span class="callout-badge">⚡ Teste Agora!</span></a>
+    <button type="button" class="btn-print" onclick="window.print()" title="Imprimir ou Guardar em PDF"><span class="icon-simular">🖨️</span> Imprimir / PDF</button>
+    <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="toc-sidebar" id="toc"></nav>
+  <main class="content" id="content"></main>
+</div>
+
+<div class="footer-guia">
+  <p>Baseado no Guia de Estudo — Concurso Público MININT 2026</p>
+  <p style="font-size:.7rem;color:var(--fg3)">
+    Este guia não substitui as regras oficiais do concurso. Consulte sempre candidaturas.minint.ao
+  </p>
+</div>
+
+<script>
+var ORGAOS = {
+  sic:  { sigla: 'SIC',  nome: 'Serviço de Investigação Criminal', icon: '\u{1F50D}', cor: '#dc2626', id: 'minint-sic', prep: 'Equilíbrio psicológico, atenção, discrição, raciocínio, resistência e postura técnica.' },
+  pn:   { sigla: 'PN',   nome: 'Polícia Nacional', icon: '\u{1F6A8}', cor: '#2563eb', id: 'minint-pn', prep: 'Resistência, agilidade, força funcional, disciplina e autocontrolo.' },
+  sme:  { sigla: 'SME',  nome: 'Serviço de Migração e Estrangeiros', icon: '\u{1F30D}', cor: '#059669', id: 'minint-sme', prep: 'Atenção, disciplina, urbanidade, resistência em serviço prolongado e controlo emocional.' },
+  sp:   { sigla: 'SP',   nome: 'Serviço Penitenciário', icon: '\u{1F6E1}', cor: '#7c3aed', id: 'minint-sp', prep: 'Firmeza, resistência, autocontrolo, disciplina, vigilância e estabilidade emocional.' },
+  spcb: { sigla: 'SPCB', nome: 'Serviço de Protecção Civil e Bombeiros', icon: '\u{1F692}', cor: '#ea580c', id: 'minint-spcb', prep: 'Resistência física elevada, força, coragem, técnica, trabalho em equipa e capacidade de agir sob emergência.' }
+};
+
+var SECTIONS = [
+  { num: 1, title: 'História de Angola', icon: '\u{1F3F4}',
+    body: '<h4 style="color:var(--accent);margin-bottom:8px">1.1 Período Colonial (séc. XV–1975)</h4><ul><li>Chegada dos portugueses (1483, Diogo Cão)</li><li>Tráfico negreiro e colonização efectiva (séc. XIX-XX)</li><li>Estatuto do Indigenato, assimilados, trabalho forçado</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">1.2 Luta de Libertação Nacional (1961–1974)</h4><ul><li><strong>4 Fevereiro 1961:</strong> Ataque à Casa de Reclusão Militar (Luanda)</li><li><strong>15 Março 1961:</strong> Massacre da UPA no Norte (Uíge, Zaire)</li><li><strong>4 Janeiro 1961:</strong> Greve da Baixa do Cassange (Malanje) — Dia dos Mártires</li></ul><p><strong>Movimentos:</strong></p><ul><li><strong>MPLA</strong> — Agostinho Neto, marxista, base urbana/k<strong title="kimbundu">o</strong>is</li><li><strong>FNLA</strong> — Holden Roberto, base Bakongo</li><li><strong>UNITA</strong> — Jonas Savimbi (1966), base Ovimbundo</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">1.3 Revolução dos Cravos e Independência (1974–1975)</h4><ul><li><strong>25 Abril 1974:</strong> Revolução dos Cravos em Portugal</li><li><strong>Acordo do Alvor (15 Janeiro 1975):</strong> Portugal + MPLA + FNLA + UNITA</li><li><strong>11 Novembro 1975:</strong> Proclamação da Independência</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">1.4 Guerra Civil (1975–2002)</h4><ul><li>1975–1991: MPLA (URSS/Cuba) vs UNITA (EUA/África do Sul) + FNLA</li><li><strong>Acordos de Bicesse (1991):</strong> cessar-fogo, eleições</li><li><strong>Morte de Jonas Savimbi (22 Fevereiro 2002):</strong> fim da guerra civil</li><li><strong>Acordo de Luena (Abril 2002):</strong> paz definitiva</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">1.5 Pós-Guerra (2002–presente)</h4><ul><li>Reconstrução nacional, crescimento económico (petróleo e diamantes)</li><li>Eleições periódicas (2008, 2012, 2017, 2022)</li></ul>' },
+  { num: 2, title: 'Organização Política e Administrativa da República de Angola', icon: '\u{1F3DB}\uFE0F',
+    body: '<p>Base: <strong>Constituição da República de Angola (CRA) 2010</strong>, alterada pela Lei n.º 18/21</p><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">2.1 Princípios Fundamentais</h4><ul><li><strong>Art. 1.º:</strong> Angola é uma República soberana e independente</li><li><strong>Art. 2.º:</strong> Estado Democrático de Direito</li><li><strong>Art. 5.º:</strong> Organização territorial — Províncias → Municípios → Comunas</li><li><strong>Art. 8.º:</strong> Separação e interdependência de poderes</li><li><strong>Art. 23.º:</strong> Igualdade de todos perante a lei</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">2.2 Organização do Poder do Estado</h4><p><strong>Poder Executivo:</strong> Presidente da República (Chefe de Estado e do Executivo), mandato de 5 anos renovável uma vez.</p><p><strong>Poder Legislativo:</strong> Assembleia Nacional — 220 deputados eleitos por sufrágio universal.</p><p><strong>Poder Judicial:</strong> Tribunal Supremo, Tribunal Constitucional, Tribunal de Contas, tribunais comuns e militares.</p><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">2.3 Símbolos Nacionais</h4><ul><li>Bandeira Nacional, Hino Nacional (\u201cAngola Avante!\u201d), Brasão</li><li>Lema: \u201cVirtude e Unidade\u201d</li></ul>' },
+  { num: 3, title: 'Noções Gerais de Administração Pública', icon: '\u{1F3E2}',
+    body: '<p><strong>Administração Pública:</strong> conjunto de órgãos, serviços e agentes do Estado que visam satisfazer as necessidades colectivas.</p><p><strong>Divisão:</strong></p><ul><li><strong>Administração Directa:</strong> ministérios e órgãos do Estado</li><li><strong>Administração Indirecta:</strong> institutos públicos, empresas públicas, fundações</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">Princípios Fundamentais</h4><table class="sec-table"><thead><tr><th>Princípio</th><th>Descrição</th></tr></thead><tbody><tr><td><strong>Legalidade</strong></td><td>A AP só pode fazer o que a lei permite</td></tr><tr><td><strong>Imparcialidade</strong></td><td>Tratamento igual a todos os cidadãos</td></tr><tr><td><strong>Proporcionalidade</strong></td><td>Meios adequados aos fins</td></tr><tr><td><strong>Transparência</strong></td><td>Publicidade dos actos administrativos</td></tr><tr><td><strong>Eficiência</strong></td><td>Boa gestão dos recursos públicos</td></tr><tr><td><strong>Responsabilidade</strong></td><td>Os agentes respondem pelos seus actos</td></tr></tbody></table><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">Deveres do Funcionário Público</h4><p>Lealdade, assiduidade, pontualidade, zelo, sigilo profissional, isenção, imparcialidade, cortesia no tratamento ao público.</p><p>Ingresso por <strong>concurso público</strong> (princípio constitucional).</p>' },
+  { num: 4, title: 'Organização e Funcionamento do Ministério do Interior', icon: '\u{1F6CF}\uFE0F',
+    body: '<p>Base: <strong>Decreto Presidencial n.º 32/18</strong> (Estatuto Orgânico do MININT)</p><p><strong>Missão do MININT (Art. 1.º):</strong> Propor, coordenar, executar e avaliar a política do Executivo relativa à ordem interna e segurança pública.</p><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">Serviços Executivos Directos (5 órgãos)</h4><table class="sec-table" id="tabelaOrgaos"><thead><tr><th>Órgão</th><th>Sigla</th><th>Função</th></tr></thead><tbody><tr data-orgao="sic"><td><strong>SIC</strong></td><td>Serviço de Investigação Criminal</td><td>Investigação criminal, polícia científica</td></tr><tr data-orgao="pn"><td><strong>PN</strong></td><td>Polícia Nacional</td><td>Ordem pública, prevenção e repressão criminal</td></tr><tr data-orgao="sme"><td><strong>SME</strong></td><td>Serviço de Migração e Estrangeiros</td><td>Controlo migratório, passaportes, vistos, fronteiras</td></tr><tr data-orgao="sp"><td><strong>SP</strong></td><td>Serviço Penitenciário</td><td>Execução de penas, reinserção social</td></tr><tr data-orgao="spcb"><td><strong>SPCB</strong></td><td>Serviço de Protecção Civil e Bombeiros</td><td>Protecção civil, combate a incêndios, emergências</td></tr></tbody></table><p>O MININT estrutura-se também em <strong>Serviços de Apoio Técnico</strong> (Inspecção-Geral, RH, Planeamento, Finanças, Direcção de Telecomunicações e TI, Logística, Jurídico, Cooperação) e <strong>Serviços Executivos Locais</strong> (Delegações Provinciais e Municipais).</p>' },
+  { num: 5, title: 'Patriotismo', icon: '\u{1F1E6}\u{1F1F4}',
+    body: '<h4 style="color:var(--accent);margin-bottom:8px">5.1 Símbolos Nacionais</h4><ul><li><strong>Bandeira Nacional:</strong> vermelho (sangue derramado), preto (continente africano), amarelo (riquezas), estrela (internacionalismo/progresso), roda dentada/machete (trabalhadores/camponeses)</li><li><strong>Hino Nacional:</strong> \u201cAngola Avante!\u201d</li><li><strong>Brasão:</strong> estrela, milho, café, roda dentada, livro, sol nascente, machete e enxada</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">5.2 Deveres do Cidadão (CRA)</h4><ul><li>Defender a pátria e a integridade territorial</li><li>Respeitar a Constituição e as leis</li><li>Pagar impostos</li><li>Participar na vida cívica e política</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">5.3 Valores Patrióticos</h4><p>Amor à pátria, unidade nacional, defesa da soberania, respeito pelos heróis nacionais (Agostinho Neto), promoção da paz e estabilidade.</p>' },
+  { num: 6, title: 'Rastros de Concursos Passados', icon: '\u{1F4DD}',
+    body: '<p>Não existem provas anteriores do MININT publicamente disponíveis. Com base em concursos similares da administração pública angolana, o padrão esperado é:</p><table class="sec-table"><thead><tr><th>Formato</th><th>Detalhe</th></tr></thead><tbody><tr><td>Formato</td><td>Prova electrónica, presencial em sala equipada</td></tr><tr><td>Tipo</td><td>Escolha múltipla (4 opções)</td></tr><tr><td>Quantidade</td><td>30 a 50 questões</td></tr><tr><td>Duração</td><td>60 a 90 minutos</td></tr><tr><td>Nota</td><td>0 a 20 valores</td></tr></tbody></table><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">Exemplos de Questões</h4><ol style="margin-left:20px"><li><strong>Qual é o órgão supremo do poder judicial em Angola?</strong> — Tribunal Supremo</li><li><strong>Quem exerce o poder executivo em Angola?</strong> — O Presidente da República</li><li><strong>Qual é o princípio que garante a separação de poderes?</strong> — Princípio da Separação de Poderes</li><li><strong>Quem fiscaliza a constitucionalidade das leis?</strong> — Tribunal Constitucional</li><li><strong>Data da independência de Angola?</strong> — 11 de Novembro de 1975</li><li><strong>Primeiro Presidente de Angola?</strong> — Agostinho Neto</li><li><strong>Organização internacional que Angola integra desde 1996?</strong> — CPLP</li><li><strong>5 órgãos executivos do MININT?</strong> — PN, SIC, SME, SP, SPCB</li><li><strong>O que é um acto administrativo?</strong> — Manifestação de vontade da AP que visa produzir efeitos jurídicos</li><li><strong>Quantos deputados tem a Assembleia Nacional?</strong> — 220 deputados</li></ol>' },
+  { num: 7, title: 'Código de Conduta do Candidato e do Futuro Agente', icon: '\u{1F4DC}',
+    body: '<h4 style="color:var(--accent);margin-bottom:8px">7.1 Regras para o Candidato</h4><ul><li>Não pagar a terceiros para facilitar a candidatura</li><li>Não entregar a palavra-passe do portal a ninguém</li><li>Não usar documentos falsos ou mentir no formulário</li><li>Não copiar na prova escrita</li><li>Não insultar avaliadores ou fiscais</li><li>Não divulgar boatos ou informações não oficiais</li><li>Não confiar em promessas de facilitação</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">7.2 Regras para o Futuro Agente</h4><ul><li><strong>Legalidade:</strong> agir conforme a Constituição e a lei</li><li><strong>Imparcialidade:</strong> tratar todos os cidadãos por igual</li><li><strong>Probidade:</strong> honestidade e rectidão no exercício da função</li><li><strong>Sigilo profissional:</strong> guardar segredo sobre informações obtidas no serviço</li><li><strong>Dignidade humana:</strong> respeitar a dignidade de suspeitos, reclusos, vítimas</li><li><strong>Disciplina e hierarquia:</strong> cumprir ordens legais dos superiores</li><li><strong>Uso legítimo da força:</strong> apenas quando legal, necessário e proporcional</li></ul>' },
+  { num: 8, title: 'Portal de Candidatura', icon: '\u{1F310}',
+    body: '<p><strong>Endereço oficial:</strong> candidaturas.minint.ao</p><p><strong>Processo:</strong> Criar conta → Preencher currículo → Submeter candidatura</p><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">Cuidados Essenciais</h4><div class="mini-grid"><div class="item"><strong>Email próprio</strong>Não partilhar conta</div><div class="item"><strong>Guardar password</strong>Não entregar a ninguém</div><div class="item"><strong>Escolher uma vaga</strong>Apenas uma candidatura</div><div class="item"><strong>Documentos legíveis</strong>Digitalização nítida</div><div class="item"><strong>Comprovativo</strong>Guardar submissão</div><div class="item"><strong>Acompanhar</strong>Convocatórias no portal</div></div><div class="alert-box">Não pagar para se inscrever. Não acreditar em intermediários.</div>' },
+  { num: 9, title: 'Aptidão Física e Preparação Psicológica', icon: '\u{1F4AA}',
+    body: '<h4 style="color:var(--accent);margin-bottom:8px">9.1 Componentes da Preparação Física</h4><ul><li>Resistência cardiorrespiratória</li><li>Força muscular</li><li>Resistência muscular</li><li>Flexibilidade</li><li>Coordenação e equilíbrio</li><li>Hidratação, sono e alimentação adequados</li><li>Aquecimento antes do exercício</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">9.2 O que Evitar</h4><ul><li>Treinar intensamente na véspera da prova</li><li>Usar substâncias perigosas ou doping</li><li>Ignorar dor no peito, tontura ou falta de ar</li><li>Treinar lesionado</li><li>Dormir mal antes da prova</li><li>Fraudar resultados</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">9.3 Preparação Psicológica</h4><ul><li>Autocontrolo e disciplina</li><li>Maturidade e equilíbrio emocional</li><li>Capacidade de lidar com pressão</li><li>Respeito por instruções</li><li>Sinceridade nas avaliações psicológicas</li></ul><div class="pull-quote">A preparação física sem equilíbrio psicológico é incompleta. A preparação psicológica sem disciplina física também é insuficiente.</div>' },
+  { num: 10, title: 'Raciocínio Lógico e Psicotécnico', icon: '\u{1F9E0}',
+    body: '<h4 style="color:var(--accent);margin-bottom:8px">10.1 Tipos de Exercícios</h4><ul><li>Sequências numéricas (ex.: 2, 4, 6, 8, ?)</li><li>Sequências de letras (ex.: A, C, E, G, ?)</li><li>Analogias (ex.: POLÍCIA : SEGURANÇA :: BOMBEIRO : ?)</li><li>Sinónimos e antónimos</li><li>Classificação de palavras (qual não pertence ao grupo?)</li><li>Raciocínio verbal e interpretação de texto</li><li>Proposições lógicas (todo, nenhum, alguns)</li></ul><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">10.2 Palavras de Atenção</h4><table class="sec-table"><thead><tr><th>Palavra</th><th>Significado</th></tr></thead><tbody><tr><td><strong>EXCEPTO</strong></td><td>Escolher a opção que NÃO se aplica</td></tr><tr><td><strong>NÃO</strong></td><td>Identificar a afirmação falsa</td></tr><tr><td><strong>TODOS / NENHUM</strong></td><td>Quantificadores universais</td></tr><tr><td><strong>APENAS</strong></td><td>Indica exclusividade</td></tr><tr><td><strong>INCORRECTO / FALSO / VERDADEIRO</strong></td><td>Atenção ao que se pede</td></tr></tbody></table>' },
+  { num: 11, title: 'Actualidade Nacional e Cultura Geral', icon: '\u{1F30D}',
+    body: '<h4 style="color:var(--accent);margin-bottom:8px">11.1 Dados Demográficos Oficiais (Censo 2024)</h4><table class="sec-table"><thead><tr><th>Indicador</th><th>Valor Oficial (INE Angola)</th></tr></thead><tbody><tr><td><strong>População Total</strong></td><td>36.604.681 habitantes</td></tr><tr><td><strong>Distribuição por Sexo</strong></td><td>51% Mulheres (18,6M) | 49% Homens (17,9M)</td></tr><tr><td><strong>Urbanização</strong></td><td>65,5% Urbana | 34,5% Rural</td></tr><tr><td><strong>Província mais populosa</strong></td><td>Luanda (10,1 Milhões - 24,1% do total)</td></tr><tr><td><strong>Estrutura Etária</strong></td><td>40,6% da população tem menos de 15 anos</td></tr><tr><td><strong>Extensão territorial</strong></td><td>1.246.700 km² (7.º maior de África)</td></tr></tbody></table><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">11.2 Divisão Político-Administrativa (Lei n.º 14/24)</h4><p>Angola possui <strong>21 Províncias</strong>, <strong>326 Municípios</strong> e <strong>378 Comunas</strong>. Tabela de Províncias e respetivas sedes oficiais:</p><table class=\"sec-table\"><thead><tr><th>Província</th><th>Sede</th><th>Província</th><th>Sede</th></tr></thead><tbody><tr><td>Bengo</td><td>Dande</td><td>Lunda-Sul</td><td>Saurimo</td></tr><tr><td>Benguela</td><td>Benguela</td><td>Malanje</td><td>Malanje</td></tr><tr><td>Bié</td><td>Cuito</td><td>Moxico</td><td>Luena</td></tr><tr><td>Cabinda</td><td>Cabinda</td><td>Moxico Leste</td><td>Cazombo</td></tr><tr><td>Cuando</td><td>Mavinga</td><td>Namibe</td><td>Moçâmedes</td></tr><tr><td>Cubango</td><td>Menongue</td><td>Uíge</td><td>Uíge</td></tr><tr><td>Cuanza-Norte</td><td>Cazengo</td><td>Zaire</td><td>Mbanza Kongo</td></tr><tr><td>Cuanza-Sul</td><td>Sumbe</td><td>Icolo e Bengo</td><td>Catete</td></tr><tr><td>Cunene</td><td>Cuanhama</td><td>Luanda</td><td>Ingombota</td></tr><tr><td>Huambo</td><td>Huambo</td><td>Lunda-Norte</td><td>Dundo</td></tr><tr><td>Huíla</td><td>Lubango</td><td>-</td><td>-</td></tr></tbody></table><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">11.3 Órgãos de Soberania e Liderança</h4><ul><li><strong>Presidente da República:</strong> João Manuel Gonçalves Lourenço</li><li><strong>Vice-Presidente:</strong> Esperança Maria Eduardo Francisco da Costa</li><li><strong>Assembleia Nacional:</strong> 220 deputados (sufrágio universal)</li><li><strong>Ministro do Interior (MININT):</strong> Manuel Gomes da Conceição Homem (nomeado em Outubro de 2024)</li></ul>' },
+  { num: 12, title: 'História do MININT e Datas Nacionais', icon: '\u{1F4C5}',
+    body: '<table class="sec-table"><thead><tr><th>Data</th><th>Significado</th></tr></thead><tbody><tr><td><strong>4 de Fevereiro de 1961</strong></td><td>Início da luta armada de libertação nacional</td></tr><tr><td><strong>11 de Novembro de 1975</strong></td><td>Proclamação da Independência Nacional</td></tr><tr><td><strong>28 de Fevereiro de 1976</strong></td><td>Institucionalização da Polícia Nacional</td></tr><tr><td><strong>19 de Abril de 1976</strong></td><td>Criação do Serviço de Emigração e Fronteiras (antecedente do SME)</td></tr><tr><td><strong>4 de Abril de 2002</strong></td><td>Paz e Reconciliação Nacional</td></tr><tr><td><strong>16 de Agosto de 2021</strong></td><td>Primeira revisão constitucional (Lei n.º 18/21)</td></tr><tr><td><strong>22 de Junho</strong></td><td>Efeméride institucional do MININT</td></tr><tr><td><strong>17 de Setembro</strong></td><td>Dia do Herói Nacional (Agostinho Neto)</td></tr></tbody></table><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">Figuras Históricas</h4><ul><li><strong>Rainha Njinga a Mbande:</strong> liderança, diplomacia e resistência no Reino do Ndongo</li><li><strong>Mandume ya Ndemufayo:</strong> resistência no sul de Angola</li><li><strong>Agostinho Neto:</strong> primeiro Presidente, herói nacional</li></ul>' },
+  { num: 13, title: 'Erros que Mais Reprovam e Checklist Final', icon: '\u2712\uFE0F',
+    body: '<h4 style="color:var(--accent);margin-bottom:8px">13.1 Erros Comuns</h4><div class="mini-grid"><div class="item"><strong>Não estudar a CRA</strong>Constituição ignorada</div><div class="item"><strong>Confundir MININT</strong>Não é órgão de soberania</div><div class="item"><strong>Confundir funções</strong>PN não julga, SIC não condena</div><div class="item"><strong>Ignorar datas</strong>4 Fev, 11 Nov, 4 Abr</div><div class="item"><strong>Não treinar lógica</strong>Psicotécnico elimina</div><div class="item"><strong>Não preparar física</strong>55% do peso total</div><div class="item"><strong>Ansiedade</strong>Falta de controlo emocional</div><div class="item"><strong>Candidatura errada</strong>Preencher mal o formulário</div><div class="item"><strong>Burladores</strong>Acreditar em facilitadores</div></div><h4 style="color:var(--accent);margin-top:12px;margin-bottom:8px">13.2 Checklist de Revisão Final</h4><div class="mini-grid"><div class="item">Capital de Angola?</div><div class="item">Lei Suprema?</div><div class="item">Órgãos de soberania?</div><div class="item">MININT é órgão de soberania?</div><div class="item">Serviços directos do MININT?</div><div class="item">Missão da PN?</div><div class="item">Função do SIC?</div><div class="item">Função do SME?</div><div class="item">Função do SP?</div><div class="item">Função do SPCB?</div><div class="item">4 Fev 1961?</div><div class="item">11 Nov 1975?</div><div class="item">4 Abr 2002?</div><div class="item">Símbolos nacionais?</div><div class="item">Patriotismo, probidade?</div><div class="item">Como candidatar-se?</div></div>' }
+];
+
+var EXTRA_SECTIONS = {
+  sic:  { num: 14, title: 'Preparação Específica — SIC', icon: '\u{1F50D}', body: '<p>O SIC exige equilíbrio psicológico, atenção aos detalhes, discrição, raciocínio analítico, resistência e postura técnica. A investigação criminal requer paciência, método e capacidade de trabalhar sob pressão.</p><p>A componente técnica é reforçada pela <strong>Direcção Central de Combate aos Crimes Informáticos</strong>, que actua em cibercrime, perícia digital e computação forense. O ITEL forma agentes do SIC em ethical hacking, cibersegurança e computação forense.</p><div class="pull-quote">A tua formação em TI é uma mais-valia enorme — o SIC precisa de especialistas digitais.</div>' },
+  pn:   { num: 14, title: 'Preparação Específica — Polícia Nacional', icon: '\u{1F6A8}', body: '<p>A PN exige resistência, agilidade, força funcional, disciplina e autocontrolo. O policiamento ostensivo, o patrulhamento e a resposta a ocorrências exigem prontidão física e mental.</p><p>O agente da PN deve manter a calma em situações de conflito, usar a força de forma proporcional e legal, e tratar os cidadãos com respeito e urbanidade.</p>' },
+  sme:  { num: 14, title: 'Preparação Específica — SME', icon: '\u{1F30D}', body: '<p>O SME exige atenção, disciplina, urbanidade, resistência em serviço prolongado e controlo emocional. O trabalho em fronteiras, aeroportos e postos migratórios requer paciência e capacidade de lidar com o público.</p><p>O agente do SME deve conhecer a legislação migratória, tratar estrangeiros com dignidade e manter a segurança nas fronteiras nacionais.</p>' },
+  sp:   { num: 14, title: 'Preparação Específica — Serviço Penitenciário', icon: '\u{1F6E1}', body: '<p>O SP exige firmeza, resistência, autocontrolo, disciplina, vigilância e estabilidade emocional. O ambiente prisional requer agentes equilibrados e capazes de manter a ordem sem recorrer a violência desnecessária.</p><p>O agente penitenciário deve contribuir para a reinserção social dos reclusos e garantir a segurança das instalações prisionais.</p>' },
+  spcb: { num: 14, title: 'Preparação Específica — SPCB', icon: '\u{1F692}', body: '<p>O SPCB exige resistência física elevada, força, coragem, técnica, trabalho em equipa e capacidade de agir sob emergência. A protecção civil, o combate a incêndios e o salvamento estão entre as funções fisicamente mais exigentes.</p><p>O agente do SPCB deve estar preparado para actuar em cenários de catástrofe, acidentes graves e situações de perigo iminente, mantendo a calma e a eficiência.</p>' }
+};
+
+var ORGAO_LIST = ['sic', 'pn', 'sme', 'sp', 'spcb'];
+
+function getOrgaoFromURL() {
+  var p = new URLSearchParams(window.location.search);
+  var o = p.get('orgao');
+  if (o && ORGAO_LIST.indexOf(o) >= 0) return o;
+  return 'sic';
+}
+
+function render() {
+  var orgao = getOrgaoFromURL();
+  var meta = ORGAOS[orgao];
+
+  document.getElementById('orgaoTag').textContent = meta.icon + ' ' + meta.sigla + ' — ' + meta.nome;
+  document.getElementById('btnSimular').href = 'simulador_prova_MININT.html?id=' + meta.id;
+
+  var navHTML = '';
+  ORGAO_LIST.forEach(function(k) {
+    var m = ORGAOS[k];
+    navHTML += '<a href="?orgao=' + k + '" class="' + (k === orgao ? 'active' : '') + '">' + m.icon + ' ' + m.sigla + '</a>';
+  });
+  document.getElementById('orgaoNav').innerHTML = navHTML;
+
+  var toc = document.getElementById('toc');
+  var content = document.getElementById('content');
+
+  var tocHTML = '<h3>Conteúdo</h3>';
+  var contentHTML = '';
+
+  function calcReadTime(html) {
+    var words = html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
+    var mins = Math.max(2, Math.round(words / 140));
+    return "⏱️ ~" + mins + " min de leitura";
+  }
+
+  SECTIONS.forEach(function(s) {
+    var id = 'sec-' + s.num;
+    var rt = calcReadTime(s.body);
+    tocHTML += '<a href="#' + id + '">Módulo ' + s.num + ' — ' + s.title + '</a>';
+    contentHTML += '<div class="section-card" id="' + id + '">' +
+      '<div class="sec-header">' +
+        '<div class="sec-icon">' + s.icon + '</div>' +
+        '<div>' +
+          '<div class="sec-num">MÓDULO ' + s.num + ' <span class="sec-read-time">' + rt + '</span></div>' +
+          '<div class="sec-title">' + s.title + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="sec-body">' + s.body + '</div>' +
+    '</div>';
+  });
+
+  var extra = EXTRA_SECTIONS[orgao];
+  var eid = 'sec-14';
+  var ert = calcReadTime(extra.body);
+  tocHTML += '<a href="#' + eid + '">Módulo 14 — ' + extra.title + '</a>';
+  contentHTML += '<div class="section-card" id="' + eid + '" style="border-color:rgba(59,130,246,.3)">' +
+    '<div class="sec-header">' +
+      '<div class="sec-icon" style="background:rgba(59,130,246,.15)">' + extra.icon + '</div>' +
+      '<div>' +
+        '<div class="sec-num" style="color:var(--gold)">MÓDULO 14 · ESPECÍFICO <span class="sec-read-time" style="color:var(--gold);background:rgba(250,204,21,.1)">' + ert + '</span></div>' +
+        '<div class="sec-title">' + extra.title + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="sec-body">' + extra.body + '</div>' +
+  '</div>';
+
+  toc.innerHTML = tocHTML;
+  content.innerHTML = contentHTML;
+
+  var cards = document.querySelectorAll('.section-card');
+  cards.forEach(function(card, i) {
+    var num = i + 1;
+    var nav = document.createElement('div');
+    nav.className = 'sec-nav';
+    nav.innerHTML = 
+      (i > 0 ? '<button class="btn-prev" data-target="sec-' + (num - 1) + '">\u2190 Anterior</button>' : '<span></span>') +
+      '<span class="sec-progress">' + num + ' de ' + cards.length + '</span>' +
+      (i < cards.length - 1 ? '<button class="btn-next" data-target="sec-' + (num + 1) + '">Seguinte \u2192</button>' : '<span></span>');
+    card.appendChild(nav);
+  });
+
+  cards.forEach(function(c) { c.classList.add('hidden'); });
+  if (cards[0]) cards[0].classList.remove('hidden');
+  var tocLinks = document.querySelectorAll('.toc-sidebar a');
+  if (tocLinks[0]) tocLinks[0].classList.add('toc-active');
+
+  function goToModule(id) {
+    cards.forEach(function(c) { c.classList.add('hidden'); });
+    var target = document.getElementById(id);
+    if (target) {
+      target.classList.remove('hidden');
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+
+  document.getElementById('toc').addEventListener('click', function(e) {
+    var link = e.target.closest('a');
+    if (!link) return;
+    var href = link.getAttribute('href');
+    if (!href || href[0] !== '#') return;
+    e.preventDefault();
+    goToModule(href.substring(1));
+  });
+
+  document.getElementById('content').addEventListener('click', function(e) {
+    var btn = e.target.closest('.sec-nav button');
+    if (!btn) return;
+    var target = btn.getAttribute('data-target');
+    if (target) goToModule(target);
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    var visible = document.querySelector('.section-card:not(.hidden)');
+    if (!visible) return;
+    var cur = parseInt(visible.id.split('-')[1]);
+    var next = e.key === 'ArrowRight' ? cur + 1 : cur - 1;
+    if (next >= 1 && next <= cards.length) goToModule('sec-' + next);
+  });
+  var hint = document.createElement('p');
+  hint.className = 'kbd-hint';
+  hint.textContent = '\u2328 \u2190 \u2192 para navegar entre m\u00f3dulos';
+  document.getElementById('content').appendChild(hint);
+
+
+  setTimeout(function() {
+    var rows = document.querySelectorAll('#tabelaOrgaos tr[data-orgao]');
+    rows.forEach(function(r) {
+      if (r.dataset.orgao === orgao) r.classList.add('active');
+    });
+  }, 50);
+}
+
+render();
+</script>
+<script src="audio-guia.js"></script>
+</body>
+</html>

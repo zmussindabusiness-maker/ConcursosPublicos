@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Estudo — MINSA 2026</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --green: #10b981; --white: #fff; --blue: #06b6d4;
+  --green-light: #d1fae5; --blue-light: #e0f2fe; --gray: #f5f5f5; --gray-dark: #666;
+  --yellow: #ffcd00;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--gray); color: #222; line-height: 1.5; padding: 20px;
+}
+.page { max-width: 1000px; margin: 0 auto; }
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--green) 0%, #047857 100%);
+  color: #fff; padding: 32px 28px; border-radius: 10px; margin-bottom: 24px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.header::before {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px; background: rgba(6,182,212,0.12); border-radius: 50%;
+}
+.header::after {
+  content: ''; position: absolute; bottom: -80px; left: -40px;
+  width: 240px; height: 240px; background: rgba(255,255,255,0.08); border-radius: 50%;
+}
+.header h1 { font-size: 2rem; letter-spacing: 1px; position: relative; z-index: 1; }
+.header h1 span { color: var(--yellow); }
+.header .sub { font-size: 1rem; opacity: .9; margin-top: 6px; position: relative; z-index: 1; }
+.header .date-badge {
+  display: inline-block; background: var(--yellow); color: #000; font-weight: 700;
+  padding: 6px 20px; border-radius: 20px; margin-top: 12px; font-size: .92rem;
+  position: relative; z-index: 1;
+}
+.flag-stripe { height: 4px; background: repeating-linear-gradient(90deg, var(--green) 0%, var(--green) 33.33%, var(--white) 33.33%, var(--white) 66.66%, var(--blue) 66.66%, var(--blue) 100%); }
+
+/* Stats bar */
+.stats-bar {
+  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;
+}
+.stat-card {
+  flex: 1; min-width: 140px; background: #fff; border-radius: 8px; padding: 14px 18px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08); text-align: center;
+}
+.stat-card .num { font-size: 1.6rem; font-weight: 800; color: var(--green); }
+.stat-card .label { font-size: .78rem; color: var(--gray-dark); margin-top: 2px; }
+
+/* Sections */
+.section-title {
+  font-size: 1.2rem; font-weight: 700; color: var(--green);
+  border-bottom: 3px solid var(--green); padding-bottom: 6px; margin: 28px 0 16px;
+}
+
+/* Carreira card */
+.carreira {
+  background: #fff; border-radius: 10px; margin-bottom: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08); overflow: hidden; break-inside: avoid;
+}
+.carreira-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px; color: #fff;
+}
+.carreira-header .icon {
+  width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.carreira-header .info { flex: 1; }
+.carreira-header .info h3 { font-size: 1.05rem; }
+.carreira-header .info .sigla { font-size: .78rem; opacity: .85; }
+.carreira-header .vac-count {
+  background: rgba(0,0,0,.2); padding: 4px 14px; border-radius: 20px;
+  font-size: .85rem; font-weight: 600; white-space: nowrap;
+}
+
+/* Topic groups */
+.group { padding: 12px 20px 16px; }
+.group-title {
+  font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 8px; color: #444;
+}
+.topic { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.topic-name { font-size: .82rem; width: 200px; flex-shrink: 0; text-align: right; color: #333; }
+.topic-bar-wrap { flex: 1; height: 22px; background: #eee; border-radius: 4px; overflow: hidden; position: relative; }
+.topic-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: .72rem; font-weight: 600; color: #fff; transition: width .5s; min-width: fit-content; }
+.topic-bar .q-count { margin-left: auto; padding-right: 6px; }
+
+/* Bonus group */
+.group.bonus {
+  border: 2px dashed #d4a800; background: #fff8db; border-radius: 8px;
+  margin: 0 20px 14px; padding: 12px 16px;
+}
+.group.bonus .group-title { color: #8a6a00; }
+
+/* Footer */
+.footer {
+  margin-top: 32px; padding: 18px 20px; background: #222; color: #ccc;
+  border-radius: 8px; text-align: center; font-size: .82rem;
+}
+.footer a { color: var(--yellow); text-decoration: none; }
+.footer .emoji-hint { margin-top: 4px; font-size: .78rem; opacity: .7; }
+
+/* Print */
+@media print {
+  body { background: #fff; padding: 0; font-size: 11px; }
+  .page { max-width: none; }
+  .header { background: var(--green) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .header::before, .header::after { display: none; }
+  .header h1 span { color: var(--yellow) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .date-badge { background: var(--yellow) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .carreira-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .topic-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .group.bonus { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .stats-bar .num { color: var(--green) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .flag-stripe { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .section-title { color: var(--green) !important; border-bottom-color: var(--green) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .footer { background: #222 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .footer a { color: var(--yellow) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .carreira { break-inside: avoid; }
+}
+
+@media (max-width: 600px) {
+  .topic { flex-wrap: wrap; }
+  .topic-name { width: 100%; text-align: left; font-size: .78rem; }
+  .carreira-header { flex-wrap: wrap; }
+  .carreira-header .vac-count { margin-left: auto; }
+}
+</style>
+</head>
+<body>
+<div class="page" id="app"></div>
+
+<script>
+const CARREIRAS = [
+  {
+    sigla: 'Méd.', nome: 'Carreira Médica',
+    cor: '#06b6d4', icon: '\uD83D\uDC0E', vagas: 1545,
+    baseComum: [
+      { nome: 'Administração Pública (Org. AP)', q: 15 },
+      { nome: 'Ética e Deontologia', q: 15 },
+      { nome: 'Língua Portuguesa', q: 12 },
+      { nome: 'Informática', q: 8 },
+      { nome: 'Estatística', q: 8 },
+    ],
+    especifica: [
+      { nome: 'Medicina Interna (DM, HTA)', q: 12 },
+      { nome: 'Saúde Pública (Malária, TB, HIV)', q: 10 },
+      { nome: 'Pediatria', q: 6 },
+      { nome: 'Cirurgia Geral', q: 5 },
+      { nome: 'Ginecologia/Obstetrícia', q: 5 },
+      { nome: 'Urgência/Emergência', q: 5 },
+      { nome: 'Sistema Hemolinfopoético', q: 5 },
+      { nome: 'Coma e Neurologia', q: 4 },
+    ],
+  },
+  {
+    sigla: 'Enf.', nome: 'Carreira de Enfermagem',
+    cor: '#10b981', icon: '\uD83D\uDC89', vagas: 1828,
+    baseComum: [
+      { nome: 'Administração Pública (Org. AP)', q: 15 },
+      { nome: 'Ética e Deontologia', q: 15 },
+      { nome: 'Língua Portuguesa', q: 12 },
+      { nome: 'Informática', q: 8 },
+      { nome: 'Estatística', q: 8 },
+    ],
+    especifica: [
+      { nome: 'Fundamentos de Enfermagem', q: 10 },
+      { nome: 'Saúde Materno-Infantil', q: 8 },
+      { nome: 'Saúde Pública', q: 7 },
+      { nome: 'Farmacologia em Enfermagem', q: 6 },
+      { nome: 'Cuidados Intensivos', q: 5 },
+      { nome: 'Urgência/Emergência', q: 5 },
+      { nome: 'Enfermagem Pediátrica', q: 4 },
+      { nome: 'Ética em Enfermagem', q: 4 },
+    ],
+  },
+  {
+    sigla: 'TDT', nome: 'Diagnóstico e Terapêutica',
+    cor: '#8b5cf6', icon: '\uD83D\uDD2C', vagas: 1255,
+    baseComum: [
+      { nome: 'Administração Pública (Org. AP)', q: 15 },
+      { nome: 'Ética e Deontologia', q: 15 },
+      { nome: 'Língua Portuguesa', q: 12 },
+      { nome: 'Informática', q: 8 },
+      { nome: 'Estatística', q: 8 },
+    ],
+    especifica: [
+      { nome: 'Questões Gerais TDT', q: 4 },
+      { nome: 'Análises Clínicas', q: 12 },
+      { nome: 'Radiologia/Imagiologia', q: 14 },
+      { nome: 'Farmácia', q: 10 },
+      { nome: 'Fisioterapia', q: 10 },
+      { nome: 'Psicologia Clínica', q: 10 },
+      { nome: 'Nutrição', q: 8 },
+      { nome: 'Anatomia Patológica', q: 8 },
+      { nome: 'Cardiopneumologia', q: 8 },
+      { nome: 'Estomatologia', q: 8 },
+      { nome: 'Electromedicina', q: 8 },
+      { nome: 'Medicina Nuclear', q: 8 },
+    ],
+  },
+  {
+    sigla: 'Apoio', nome: 'Apoio Hospitalar',
+    cor: '#f97316', icon: '\uD83C\uDFE5', vagas: 1067,
+    baseComum: [
+      { nome: 'Administração Pública (Org. AP)', q: 15 },
+      { nome: 'Ética e Deontologia', q: 15 },
+      { nome: 'Língua Portuguesa', q: 12 },
+      { nome: 'Informática', q: 8 },
+      { nome: 'Estatística', q: 8 },
+    ],
+    especifica: [
+      { nome: 'Higiene Hospitalar', q: 8 },
+      { nome: 'Transporte de Doentes', q: 7 },
+      { nome: 'Gestão de Resíduos', q: 6 },
+      { nome: 'Maqueiro', q: 5 },
+      { nome: 'Vigilância Hospitalar', q: 4 },
+      { nome: 'Condutor de Ambulâncias', q: 4 },
+      { nome: 'Atendimento ao Público', q: 4 },
+    ],
+  },
+  {
+    sigla: 'RG', nome: 'Regime Geral',
+    cor: '#6366f1', icon: '\uD83D\uDCCB', vagas: 220,
+    baseComum: [
+      { nome: 'Administração Pública (Org. AP)', q: 15 },
+      { nome: 'Ética e Deontologia', q: 15 },
+      { nome: 'Língua Portuguesa', q: 12 },
+      { nome: 'Informática', q: 8 },
+      { nome: 'Estatística', q: 8 },
+    ],
+    especifica: [
+      { nome: 'Gestão Administrativa', q: 6 },
+      { nome: 'Gestão Financeira', q: 5 },
+      { nome: 'Recursos Humanos', q: 5 },
+      { nome: 'Contratação Pública', q: 4 },
+      { nome: 'Economia da Saúde', q: 4 },
+      { nome: 'Arquivo e Documentação', q: 4 },
+    ],
+  },
+  {
+    sigla: 'AS', nome: 'Assistentes Sociais',
+    cor: '#ec4899', icon: '\uD83E\uDD1D', vagas: 85,
+    baseComum: [
+      { nome: 'Administração Pública (Org. AP)', q: 15 },
+      { nome: 'Ética e Deontologia', q: 15 },
+      { nome: 'Língua Portuguesa', q: 12 },
+      { nome: 'Informática', q: 8 },
+      { nome: 'Estatística', q: 8 },
+    ],
+    especifica: [
+      { nome: 'Fundamentos do Serviço Social', q: 6 },
+      { nome: 'Política Social', q: 5 },
+      { nome: 'Ética no Serviço Social', q: 5 },
+      { nome: 'Inclusão Social', q: 4 },
+      { nome: 'Saúde Comunitária', q: 4 },
+      { nome: 'Proteção Social', q: 4 },
+    ],
+  },
+];
+
+const COLORS_BAR = ['#2980b9', '#e67e22', '#27ae60', '#8e44ad', '#2c3e50', '#c0392b', '#1abc9c', '#f39c12'];
+const COR_BONUS = '#d4a800';
+
+function sum(arr) { return arr.reduce((a, b) => a + b, 0); }
+
+function renderTopics(arr, baseTotal) {
+  return arr.map((t, i) => {
+    const pct = baseTotal > 0 ? (t.q / baseTotal) * 100 : 0;
+    const color = COLORS_BAR[i % COLORS_BAR.length];
+    return `<div class="topic">
+      <span class="topic-name">${t.nome}</span>
+      <div class="topic-bar-wrap">
+        <div class="topic-bar" style="width:${Math.max(pct, 4)}%;background:${color}">
+          <span class="q-count">${t.q}Q</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderBonusTopics(arr, total) {
+  return arr.map((t, i) => {
+    const pct = total > 0 ? (t.q / total) * 100 : 0;
+    const color = i % 2 === 0 ? '#d4a800' : '#bd9300';
+    return `<div class="topic">
+      <span class="topic-name">\uD83C\uDFAF ${t.nome}</span>
+      <div class="topic-bar-wrap">
+        <div class="topic-bar" style="width:${Math.max(pct, 4)}%;background:${color}">
+          <span class="q-count">${t.q}Q</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function render() {
+  const totalVagas = sum(CARREIRAS.map(c => c.vagas));
+  const totalCarreiras = CARREIRAS.length;
+
+  let html = '';
+
+  // Header
+  html += `<div class="header">
+    <h1>Guia de Estudo — <span>MINSA 2026</span></h1>
+    <div class="sub">Concurso Público de Ingresso Externo — Ministério da Saúde</div>
+    <div class="date-badge">\uD83D\uDCC5 Candidaturas: 13 a 31 de Julho de 2026</div>
+  </div>
+  <div class="flag-stripe"></div>`;
+
+  // Stats bar
+  html += `<div class="stats-bar">
+    <div class="stat-card"><div class="num">${totalCarreiras}</div><div class="label">Carreiras</div></div>
+    <div class="stat-card"><div class="num">${totalVagas.toLocaleString('pt-PT')}</div><div class="label">Vagas</div></div>
+    <div class="stat-card"><div class="num">${CARREIRAS.map(c => {
+      const bc = sum(c.baseComum.map(x => x.q));
+      const esp = sum(c.especifica.map(x => x.q));
+      const bb = c.bonusBase ? sum(c.bonusBase.map(x => x.q)) : 0;
+      const be = c.bonusExtra ? sum(c.bonusExtra.map(x => x.q)) : 0;
+      return bc + esp + bb + be;
+    }).reduce((a, b) => a + b, 0)}</div><div class="label">Total Questões</div></div>
+    <div class="stat-card"><div class="num">${CARREIRAS[0].baseComum.reduce((a, x) => a + x.q, 0)}</div><div class="label">Q. Base Comum</div></div>
+  </div>`;
+
+  // Section
+  html += `<div class="section-title">Carreiras</div>`;
+
+  // Each carreira
+  for (const c of CARREIRAS) {
+    const bcTotal = sum(c.baseComum.map(x => x.q));
+    const espTotal = sum(c.especifica.map(x => x.q));
+    const bbTotal = c.bonusBase ? sum(c.bonusBase.map(x => x.q)) : 0;
+    const beTotal = c.bonusExtra ? sum(c.bonusExtra.map(x => x.q)) : 0;
+    const allTotal = bcTotal + espTotal + bbTotal + beTotal;
+
+    html += `<div class="carreira">
+      <div class="carreira-header" style="background:${c.cor}">
+        <div class="icon">${c.icon}</div>
+        <div class="info">
+          <h3>${c.nome}</h3>
+          <div class="sigla">${c.sigla}</div>
+        </div>
+        <div class="vac-count">${c.vagas.toLocaleString('pt-PT')} vagas</div>
+      </div>`;
+
+    // Base Comum
+    html += `<div class="group">
+      <div class="group-title">Base Comum — ${bcTotal}Q</div>
+      ${renderTopics(c.baseComum, bcTotal)}
+    </div>`;
+
+    // Específica
+    html += `<div class="group">
+      <div class="group-title">Específica ${c.sigla} — ${espTotal}Q</div>
+      ${renderTopics(c.especifica, espTotal)}
+    </div>`;
+
+    // Bónus Base
+    if (c.bonusBase && c.bonusBase.length) {
+      html += `<div class="group bonus">
+        <div class="group-title">\uD83C\uDFAF Bónus — ${bbTotal}Q</div>
+        ${renderBonusTopics(c.bonusBase, bbTotal)}`;
+      if (c.bonusExtra && c.bonusExtra.length) {
+        html += renderBonusTopics(c.bonusExtra, bbTotal + beTotal);
+      }
+      html += `</div>`;
+    }
+
+    html += `<div style="padding:0 20px 12px;font-size:.8rem;color:#888;text-align:right;border-top:1px solid #eee;padding-top:8px;margin-top:4px;">
+      Total: <strong>${allTotal} questões</strong>
+    </div>`;
+
+    html += `</div>`;
+  }
+
+  // Footer
+  html += `<div class="footer">
+    <div>Simulador disponível em <a href="index.html">index.html</a></div>
+    <div class="emoji-hint">Active o \uD83C\uDFAF no simulador para incluir questões bónus</div>
+  </div>`;
+
+  document.getElementById('app').innerHTML = html;
+}
+
+document.addEventListener('DOMContentLoaded', render);
+</script>
+</body>
+</html>

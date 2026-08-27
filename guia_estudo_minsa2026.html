@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Estudo — MINSA 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0e1a; --bg2: #111827; --bg3: #1e293b;
+    --fg: #e2e8f0; --fg2: #94a3b8; --fg3: #64748b;
+    --accent: #10b981; --accent2: #059669; --accent3: #047857;
+    --gold: #facc15;
+    --red-flag: #d21034; --black-flag: #0a0a0a;
+    --card-bg: #0f172a; --card-border: #1e3a5f;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--fg); line-height: 1.7; min-height: 100vh;
+  }
+  .flag-stripe {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    height: 4px; display: flex;
+  }
+  .flag-stripe span { flex: 1; }
+  .flag-stripe .r { background: var(--red-flag); }
+  .flag-stripe .b { background: var(--black-flag); }
+  .flag-stripe .y { background: var(--gold); }
+  .header {
+    padding: 80px 20px 40px; text-align: center;
+    background: linear-gradient(180deg, #064e3b 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .header-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent); color: #fff; padding: 4px 14px;
+    border-radius: 20px; font-size: .75rem; font-weight: 700;
+    letter-spacing: 1px; margin-bottom: 12px;
+  }
+  .header .orgao-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(16,185,129,.15); color: var(--accent);
+    padding: 3px 10px; border-radius: 8px; font-size: .7rem; font-weight: 600;
+    margin-bottom: 10px; border: 1px solid rgba(16,185,129,.2);
+  }
+  .header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }
+  .header h1 span { color: var(--accent); }
+  .header .sub {
+    color: var(--fg2); font-size: .9rem; max-width: 650px;
+    margin: 0 auto 16px;
+  }
+  .header-actions {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  }
+  .header-actions a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 24px; border-radius: 10px; font-size: .85rem;
+    font-weight: 600; text-decoration: none; transition: .2s;
+  }
+  .btn-simular {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff; position: relative; overflow: hidden;
+    animation: pulse-glow 2.5s ease-in-out infinite, float 3s ease-in-out infinite;
+  }
+  .btn-simular:hover { background: var(--accent2); transform: scale(1.04); animation: none; box-shadow: 0 6px 25px var(--accent); }
+  .btn-simular::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  .btn-simular::after {
+    content: ""; position: absolute; inset: -4px; border-radius: 12px;
+    border: 2px solid var(--accent);
+    animation: ring-pulse 2s ease-out infinite;
+    pointer-events: none;
+  }
+  .icon-simular { display: inline-block; animation: icon-run 1.8s ease-in-out infinite; }
+  .callout-badge {
+    position: absolute; top: -14px; right: -8px;
+    font-size: .55rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .5px; background: var(--gold); color: #1a1a2e;
+    padding: 2px 10px; border-radius: 20px; white-space: nowrap;
+    animation: callout 3.5s ease-in-out infinite;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,.2); }
+    50% { box-shadow: 0 4px 35px var(--accent); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  @keyframes icon-run {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(4px); }
+    40% { transform: translateX(-1px); }
+    60% { transform: translateX(3px); }
+    80%, 100% { transform: translateX(0); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes ring-pulse {
+    0% { transform: scale(1); opacity: .5; }
+    100% { transform: scale(1.35); opacity: 0; }
+  }
+  @keyframes callout {
+    0%, 100% { opacity: 0; transform: translateY(8px) scale(.9); }
+    15%, 75% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .btn-voltar {
+    background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border);
+  }
+  .btn-voltar:hover { border-color: var(--fg3); color: var(--fg); }
+  .layout { display: flex; max-width: 1200px; margin: 0 auto; padding: 0 20px; gap: 30px; }
+  .toc-sidebar {
+    position: sticky; top: 20px; width: 260px; flex-shrink: 0;
+    max-height: calc(100vh - 40px); overflow-y: auto; padding: 20px 0;
+    display: none;
+  }
+  .toc-sidebar::-webkit-scrollbar { width: 3px; }
+  .toc-sidebar::-webkit-scrollbar-thumb { background: var(--fg3); border-radius: 2px; }
+  .toc-sidebar h3 {
+    font-size: .7rem; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--fg3); margin-bottom: 12px;
+  }
+  .toc-sidebar a {
+    display: block; padding: 4px 0; font-size: .75rem; color: var(--fg2);
+    text-decoration: none; transition: .15s; border-left: 2px solid transparent;
+    padding-left: 8px; line-height: 1.4; margin-bottom: 2px;
+  }
+  .toc-sidebar a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .content { flex: 1; min-width: 0; padding: 30px 0 60px; }
+  .section-card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 28px; margin-bottom: 16px;
+    transition: border-color .2s;
+  }
+  .section-card:hover { border-color: rgba(16,185,129,.3); }
+  .section-card .sec-header {
+    display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px;
+  }
+  .section-card .sec-icon {
+    width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; background: rgba(16,185,129,.1);
+  }
+  .section-card .sec-title {
+    font-size: 1.1rem; font-weight: 700; color: var(--fg); line-height: 1.3;
+  }
+  .section-card .sec-num {
+    font-size: .7rem; color: var(--accent); font-weight: 700;
+    letter-spacing: 1px; margin-bottom: 2px; text-transform: uppercase;
+  }
+  .section-card .sec-body {
+    font-size: .88rem; color: var(--fg2); line-height: 1.8;
+  }
+  .section-card .sec-body p { margin-bottom: 12px; }
+  .section-card .sec-body strong { color: var(--fg); }
+  .section-card .sec-body ul, .section-card .sec-body ol { margin: 8px 0 12px 20px; }
+  .section-card .sec-body li { margin-bottom: 6px; }
+  .pull-quote {
+    margin: 16px 0; padding: 16px 20px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(16,185,129,.08), rgba(16,185,129,.02));
+    border-left: 3px solid var(--accent); font-style: italic;
+    color: var(--fg); font-size: .9rem;
+  }
+  .pull-quote::before { content: "\201C"; font-size: 1.4rem; color: var(--accent); margin-right: 4px; }
+  .tip-box {
+    margin: 16px 0; padding: 14px 18px; border-radius: 10px;
+    background: rgba(250,204,21,.05); border: 1px solid rgba(250,204,21,.2);
+    color: var(--gold); font-size: .85rem; line-height: 1.6;
+  }
+  .alert-box {
+    margin: 16px 0; padding: 14px 18px; border-radius: 10px;
+    background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2);
+    color: #fca5a5; font-size: .85rem; line-height: 1.6;
+  }
+  .sec-table {
+    width: 100%; border-collapse: collapse; margin: 14px 0; font-size: .82rem;
+  }
+  .sec-table th {
+    text-align: left; padding: 10px 12px; font-weight: 700;
+    background: var(--bg3); color: var(--accent); border-bottom: 2px solid var(--accent);
+  }
+  .sec-table td {
+    padding: 10px 12px; border-bottom: 1px solid var(--card-border); color: var(--fg2);
+    vertical-align: top;
+  }
+  .sec-table tr:hover td { background: rgba(16,185,129,.04); }
+  .sec-table tr.active td {
+    background: rgba(16,185,129,.1);
+    border-left: 3px solid var(--accent);
+    font-weight: 600; color: var(--fg);
+  }
+  .mini-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px; margin: 14px 0;
+  }
+  .mini-grid .item {
+    padding: 12px 14px; border-radius: 8px; background: var(--bg3);
+    border: 1px solid var(--card-border); font-size: .8rem; color: var(--fg2);
+  }
+  .mini-grid .item strong { color: var(--fg); display: block; margin-bottom: 4px; font-size: .85rem; }
+  .orgao-nav {
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .orgao-nav a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 16px; border-radius: 8px; font-size: .8rem; font-weight: 600;
+    text-decoration: none; transition: .15s;
+    background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border);
+  }
+  .orgao-nav a:hover { border-color: var(--accent); color: var(--fg); }
+  .orgao-nav a.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .footer-guia {
+    text-align: center; padding: 40px 20px; border-top: 1px solid var(--card-border);
+    margin-top: 20px;
+  }
+  .footer-guia p { color: var(--fg3); font-size: .8rem; margin-bottom: 8px; }
+  @media (min-width: 900px) { .toc-sidebar { display: block; } }
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.3rem; }
+    .section-card { padding: 18px; }
+    .section-card .sec-header { gap: 10px; }
+    .section-card .sec-icon { width: 34px; height: 34px; font-size: 1.1rem; }
+    .layout { padding: 0 12px; }
+    .sec-table { font-size: .75rem; }
+    .sec-table th, .sec-table td { padding: 6px 8px; }
+    .mini-grid { grid-template-columns: 1fr; }
+    .orgao-nav a { font-size: .72rem; padding: 5px 10px; }
+  }
+  @media print {
+    .flag-stripe, .header-actions, .toc-sidebar, .orgao-nav, .sec-nav, .kbd-hint, .footer-guia { display: none !important; }
+    .layout { display: block !important; max-width: 100% !important; padding: 0 !important; }
+    .header { padding: 15px 0 !important; border: none !important; }
+    .header h1 { font-size: 1.5rem !important; color: #111 !important; }
+    .header h1 span { color: #059669 !important; }
+    .header .sub { color: #444 !important; }
+    .section-card { display: block !important; break-inside: avoid; border: 1px solid #ddd !important; background: #fff !important; color: #111 !important; box-shadow: none !important; margin-bottom: 24px !important; }
+    .section-card.hidden { display: block !important; }
+    .section-card .sec-header { border-bottom: 1px solid #eee !important; gap: 10px !important; }
+    .section-card .sec-icon { background: #f3f4f6 !important; border: 1px solid #ddd !important; }
+    .sec-num { color: #059669 !important; }
+    .sec-title { color: #111 !important; }
+    .sec-body { color: #222 !important; }
+    .sec-body h4 { color: #059669 !important; }
+    .sec-body strong { color: #000 !important; }
+    .sec-table th { background: #f3f4f6 !important; color: #111 !important; border-bottom: 2px solid #059669 !important; }
+    .sec-table td { color: #333 !important; border-bottom: 1px solid #ddd !important; }
+    .mini-grid .item { background: #fafafa !important; border: 1px solid #ddd !important; color: #333 !important; }
+    .mini-grid .item strong { color: #111 !important; }
+    .alert-box { background: #fef2f2 !important; border: 1px solid #fca5a5 !important; color: #991b1b !important; }
+    .tip-box { background: #fefce8 !important; border: 1px solid #fde047 !important; color: #854d0e !important; }
+    .pull-quote { background: #f8fafc !important; border-left: 3px solid #059669 !important; color: #334155 !important; }
+    body { background: #fff !important; color: #000 !important; }
+  }
+  .btn-print {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px; font-size: .8rem; font-weight: 600;
+    cursor: pointer; transition: .2s; text-decoration: none;
+    background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border);
+  }
+  .btn-print:hover { border-color: var(--accent); color: var(--fg); background: var(--bg2); }
+  .sec-read-time {
+    display: inline-block; font-size: .65rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 12px;
+    background: rgba(255,255,255,.06); color: var(--fg3);
+    margin-left: 8px; vertical-align: middle;
+  }
+  .fixacao-box {
+    margin-top: 20px; padding: 14px 18px; border-radius: 10px;
+    background: rgba(16,185,129,.05); border: 1px dashed rgba(16,185,129,.3);
+  }
+  .fixacao-title { font-size: .8rem; font-weight: 700; color: var(--accent); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .fixacao-q { font-size: .82rem; color: var(--fg); margin-bottom: 8px; font-weight: 500; }
+  .fixacao-details summary { font-size: .75rem; color: var(--gold); cursor: pointer; font-weight: 600; outline: none; }
+  .fixacao-details summary:hover { text-decoration: underline; }
+  .fixacao-ans { margin-top: 8px; padding: 8px 12px; border-radius: 6px; background: var(--bg3); font-size: .78rem; color: var(--fg2); border-left: 3px solid var(--accent); }
+  .section-card.hidden { display: none; }
+  .sec-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--card-border); }
+  .sec-nav button { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; font-size: .78rem; font-weight: 600; cursor: pointer; transition: .2s; background: var(--bg3); color: var(--fg2); border: 1px solid var(--card-border); }
+  .sec-nav button:hover { border-color: var(--accent); color: var(--fg); }
+  .sec-nav .btn-prev:hover, .sec-nav .btn-next:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .sec-nav .sec-progress { font-size: .72rem; color: var(--fg3); font-weight: 600; }
+  .toc-sidebar a.toc-active { color: var(--accent); border-left-color: var(--accent); font-weight: 700; }
+  .kbd-hint { text-align: center; font-size: .65rem; color: var(--fg3); margin-top: 14px; opacity: .6; letter-spacing: .5px; }
+</style>
+</head>
+<body>
+
+<div class="flag-stripe">
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+  <span class="r"></span><span class="b"></span><span class="y"></span>
+</div>
+
+<div class="header">
+  <div class="header-badge">📖 GUIA DE ESTUDO OFICIAL — MINSA 2026</div>
+  <div class="orgao-tag" id="orgaoTag"></div>
+  <h1>Preparação Completa para o <span>Concurso MINSA</span></h1>
+  <p class="sub">13 módulos transversais fundamentais + 1 módulo de especialidade técnica · Alinhado rigorosamente com o Programa Oficial (Decreto Presidencial n.º 112/24)</p>
+  <div class="orgao-nav" id="orgaoNav"></div>
+  <div class="header-actions">
+    <a href="#" class="btn-simular" id="btnSimular"><span class="icon-simular">▶️</span> Simular Prova <span class="callout-badge">⚡ Teste Agora!</span></a>
+    <button type="button" class="btn-print" onclick="window.print()" title="Imprimir ou Guardar em PDF"><span class="icon-simular">🖨️</span> Imprimir / PDF</button>
+    <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="toc-sidebar" id="toc"></nav>
+  <main class="content" id="content"></main>
+</div>
+
+<div class="footer-guia">
+  <p>Baseado no Programa Oficial do Concurso Público do Ministério da Saúde (MINSA 2026)</p>
+  <p style="font-size:.7rem;color:var(--fg3)">
+    Documento pedagógico orientador em estrita observância do Decreto Presidencial n.º 112/24 de 17 de Maio e legislações sanitárias vigentes em Angola.
+  </p>
+</div>
+
+<script>
+
+var ORGAOS = {
+  "enfermagem": {
+    "sigla": "Enf.",
+    "nome": "Carreira de Enfermagem",
+    "icon": "🩺",
+    "cor": "#10b981",
+    "id": "saude-enfermagem",
+    "prep": "Processo de enfermagem, farmacologia, sinais vitais, cuidados intensivos, SBV e ética."
+  },
+  "medicina": {
+    "sigla": "Med.",
+    "nome": "Carreira Médica",
+    "icon": "⚕️",
+    "cor": "#06b6d4",
+    "id": "saude-medicina",
+    "prep": "Atenção médica integral, urgências, clínica médica, obstetrícia, pediatria e ética."
+  },
+  "tdt": {
+    "sigla": "TDT",
+    "nome": "Diagnóstico e Terapêutica",
+    "icon": "🔬",
+    "cor": "#8b5cf6",
+    "id": "saude-tdt",
+    "prep": "Análises clínicas, radiologia, farmácia hospitalar, fisioterapia, nutrição e psicologia."
+  },
+  "apoio": {
+    "sigla": "Apoio",
+    "nome": "Carreira de Apoio Hospitalar",
+    "icon": "🏥",
+    "cor": "#f97316",
+    "id": "saude-apoio-hospitalar",
+    "prep": "Maqueiro, secretário clínico, vigilante, condutor de ambulância e conduta."
+  },
+  "regime-geral": {
+    "sigla": "RG",
+    "nome": "Carreira do Regime Geral",
+    "icon": "📄",
+    "cor": "#6366f1",
+    "id": "saude-regime-geral",
+    "prep": "Administração pública, gestão de RH, finanças, compras públicas e contratos."
+  },
+  "assistentes-sociais": {
+    "sigla": "AS",
+    "nome": "Carreira do Trabalhador Social",
+    "icon": "🤝",
+    "cor": "#ec4896",
+    "id": "saude-assistentes-sociais",
+    "prep": "Serviço social hospitalar, mediação, proteção social e direitos dos utentes."
+  }
+};
+
+var SECTIONS = [
+  {
+    "num": 1,
+    "title": "Noções Gerais sobre a Organização da Administração Pública",
+    "icon": "🏢",
+    "body": "<p>Base legal orientadora: <strong>Decreto Presidencial n.º 112/24, de 17 de Maio</strong>, que estabelece o regime jurídico aplicável ao recrutamento e à selecção de candidatos na Administração Pública de Angola.</p>\n<h4 style=\"color:var(--accent);margin-bottom:8px\">1.1 Estrutura e Níveis da Administração Pública</h4>\n<ul>\n  <li><strong>Administração Central Directa:</strong> Ministérios e órgãos centrais do Poder Executivo subordinados ao Presidente da República (ex.: Ministério da Saúde - MINSA).</li>\n  <li><strong>Administração Central Indirecta:</strong> Institutos públicos (INSP, ARMED), empresas públicas hospitalares e fundações públicas sanitárias dotadas de personalidade jurídica e autonomia administrativa e financeira.</li>\n  <li><strong>Administração Local do Estado:</strong> Governos Provinciais, Serviços Provinciais de Saúde, Administrações Municipais e Direcções Municipais de Saúde responsáveis pela gestão local dos centros de saúde e postos médicos comunitários.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">1.2 Princípios Constitucionais e Administrativos Fundamentais</h4>\n<table class=\"sec-table\">\n  <thead><tr><th>Princípio</th><th>Significado e Aplicação no SNS</th></tr></thead>\n  <tbody>\n    <tr><td><strong>Legalidade</strong></td><td>A Administração Pública só pode agir em estrita conformidade com a Constituição e a lei (art. 6.º da CRA).</td></tr>\n    <tr><td><strong>Interesse Público</strong></td><td>Primazia do bem-estar da colectividade, da saúde pública e da salvaguarda da vida humana sobre interesses particulares.</td></tr>\n    <tr><td><strong>Igualdade e Imparcialidade</strong></td><td>Tratamento equitativo e sem discriminação a todos os utentes e concorrentes ao serviço público.</td></tr>\n    <tr><td><strong>Continuidade do Serviço Público</strong></td><td>Os serviços de urgência, internamento e cuidados hospitalares não podem sofrer interrupções injustificadas.</td></tr>\n    <tr><td><strong>Responsabilidade</strong></td><td>O Estado e os seus agentes respondem civil, disciplinar e criminalmente pelos actos e omissões praticados no exercício de funções.</td></tr>\n  </tbody>\n</table>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">1.3 Regras de Concurso Público (DP 112/24)</h4>\n<p>O artigo 23.º do Decreto Presidencial n.º 112/24 determina que a prova de conhecimentos incide obrigatoriamente sobre quatro eixos: <strong>Organização da AP</strong>, <strong>Conhecimentos Específicos da carreira</strong>, <strong>Ética/Deontologia</strong> e <strong>Cultura Geral</strong>. O n.º 6 garante a divulgação do calendário de provas junto com a lista definitiva dos admitidos.</p>"
+  },
+  {
+    "num": 2,
+    "title": "Pauta Deontológica da Função Pública e Ética em Saúde",
+    "icon": "📜",
+    "body": "<p>Base legal: <strong>Resolução n.º 27/94</strong> (Pauta Deontológica do Serviço Público) e <strong>Lei n.º 3/10</strong> (Lei da Probidade Pública).</p>\n<h4 style=\"color:var(--accent);margin-bottom:8px\">2.1 Princípios Reitores e Deveres Funcionais</h4>\n<ul>\n  <li><strong>Dever de Lealdade e Isenção:</strong> Desempenhar as funções com fidelidade aos fins do Estado e estrita neutralidade política e ideológica no ambiente hospitalar.</li>\n  <li><strong>Probidade e Integridade:</strong> Proibição absoluta de receber, exigir ou aceitar vantagens patrimoniais, gorjetas ou subornos para agilizar consultas, cirurgias ou exames.</li>\n  <li><strong>Zelo, Assiduidade e Pontualidade:</strong> Cumprimento rigoroso dos horários de escala, plantões e passagem de turno entre equipas de saúde.</li>\n  <li><strong>Urbanidade e Respeito:</strong> Cortesia e empatia no atendimento aos utentes, acompanhantes e colegas de equipa multidisciplinar.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">2.2 O Segredo Profissional no Sector Sanitário</h4>\n<p>O sigilo sobre a história clínica, diagnósticos, resultados laboratoriais e prontuários médicos é um dever ético e jurídico absoluto. A quebra de confidencialidade só é permitida por justa causa legal (notificação compulsória de epidemias) ou ordem judicial fundamentada.</p>\n<div class=\"pull-quote\">A ética na saúde não é apenas um código burocrático — é o compromisso inalienável com a vida, a dignidade humana e a humanização do cuidado.</div>"
+  },
+  {
+    "num": 3,
+    "title": "Divisão Político-Administrativa de Angola (Lei n.º 14/24)",
+    "icon": "🗺️",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">3.1 A Nova Estrutura Territorial de Angola</h4>\n<p>A <strong>Lei n.º 14/24, de 5 de Setembro</strong> reestruturou o território nacional com o objectivo de aproximar os serviços públicos das populações, fixando o país em <strong>21 províncias</strong>, <strong>326 municípios</strong> e <strong>378 comunas</strong>, com vigência oficial desde 1 de Janeiro de 2025.</p>\n<p>As novas unidades territoriais surgiram a partir do desmembramento de três províncias antigas:</p>\n<ul>\n  <li><strong>Icolo e Bengo:</strong> Desmembrada de Luanda/Bengo.</li>\n  <li><strong>Moxico Leste:</strong> Desmembrada do Moxico.</li>\n  <li><strong>Cuando e Cubango:</strong> Desmembramento da antiga Cuando Cubango em duas novas províncias (Cuando e Cubango).</li>\n</ul>\n<table class=\"sec-table\">\n  <thead><tr><th>Província</th><th>Sede/Capital</th><th>Província</th><th>Sede/Capital</th></tr></thead>\n  <tbody>\n    <tr><td><strong>Bengo</strong></td><td>Dande</td><td><strong>Lunda-Sul</strong></td><td>Saurimo</td></tr>\n    <tr><td><strong>Benguela</strong></td><td>Benguela</td><td><strong>Malanje</strong></td><td>Malanje</td></tr>\n    <tr><td><strong>Bié</strong></td><td>Cuito</td><td><strong>Moxico</strong></td><td>Luena</td></tr>\n    <tr><td><strong>Cabinda</strong></td><td>Cabinda</td><td><strong>Moxico Leste</strong></td><td>Cazombo</td></tr>\n    <tr><td><strong>Cuando</strong></td><td>Mavinga</td><td><strong>Namibe</strong></td><td>Moçâmedes</td></tr>\n    <tr><td><strong>Cubango</strong></td><td>Menongue</td><td><strong>Uíge</strong></td><td>Uíge</td></tr>\n    <tr><td><strong>Cuanza-Norte</strong></td><td>Cazengo</td><td><strong>Zaire</strong></td><td>Mbanza Kongo</td></tr>\n    <tr><td><strong>Cuanza-Sul</strong></td><td>Sumbe</td><td><strong>Icolo e Bengo</strong></td><td>Catete</td></tr>\n    <tr><td><strong>Cunene</strong></td><td>Cuanhama</td><td><strong>Luanda</strong></td><td>Ingombota</td></tr>\n    <tr><td><strong>Huambo</strong></td><td>Huambo</td><td><strong>Lunda-Norte</strong></td><td>Dundo</td></tr>\n    <tr><td><strong>Huíla</strong></td><td>Lubango</td><td>-</td><td>-</td></tr>\n  </tbody>\n</table>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">3.2 Impacto na Gestão e Redes do Sector da Saúde</h4>\n<ul>\n  <li><strong>Descentralização Sanitária:</strong> Criação de novas Direcções Municipais e Serviços Provinciais de Saúde nas novas capitais e municípios.</li>\n  <li><strong>Expansão da Rede Hospitalar:</strong> Planeamento de novos Hospitais Gerais e Municipais para cobrir as novas capitais provinciais (como Mavinga, Cazombo, Catete).</li>\n  <li><strong>Acesso aos Cuidados de Saúde:</strong> Redução das distâncias geográficas para consultas de especialidade e exames de diagnóstico.</li>\n</ul>"
+  },
+  {
+    "num": 4,
+    "title": "Censo Geral da População e Habitação de Angola 2024",
+    "icon": "📊",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">4.1 O Censo 2024 (INE Angola)</h4>\n<p>Conduzido pelo Instituto Nacional de Estatística (INE) com data de referência de 19 de Setembro de 2024, o censo revelou que a população residente em Angola é de <strong>36.604.681 habitantes</strong> (51% mulheres [18,6M] e 49% homens [17,9M]).</p>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">4.2 Indicadores Demográficos Críticos para a Saúde</h4>\n<div class=\"mini-grid\">\n  <div class=\"item\"><strong>36.604.681 Habitantes</strong>População oficial definitiva para o planeamento de recursos.</div>\n  <div class=\"item\"><strong>65,5% de Urbanização</strong>Maioria da população reside em áreas urbanas, restando 34,5% na área rural.</div>\n  <div class=\"item\"><strong>Luanda (10,1 Milhões)</strong>A maior província e centro de consumo sanitário (24,1% da população total).</div>\n  <div class=\"item\"><strong>40,6% População Jovem</strong>Jovens com menos de 15 anos exigindo forte foco em Pediatria e PAV.</div>\n</div>"
+  },
+  {
+    "num": 5,
+    "title": "Inquérito de Indicadores Múltiplos e de Saúde (IIMS 2023–2024)",
+    "icon": "📋",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">5.1 Enquadramento do IIMS</h4>\n<p>Executado pelo INE com apoio do MINSA e UNICEF entre Agosto de 2023 e Janeiro de 2024, o IIMS fornece os indicadores de base demográfica e epidemiológica essenciais para a saúde reprodutiva, nutrição e infância.</p>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">5.2 Indicadores Críticos Oficiais de Saúde</h4>\n<ul>\n  <li><strong>Desnutrição Crónica (Altura/Idade):</strong> Afeta **41,2%** das crianças menores de 5 anos (stunting), com incidência 20% maior na área rural.</li>\n  <li><strong>Desnutrição Aguda (Peso/Altura):</strong> Prevalência de **8,3%** em crianças menores de 5 anos (wasting).</li>\n  <li><strong>Mortalidade Infantil (Menores de 1 ano):</strong> Redução substancial para **32 óbitos por mil nascidos vivos** (contra 44 no IIMS 2015-2016).</li>\n  <li><strong>Mortalidade Infantojuvenil (Menores de 5 anos):</strong> Reduzida de 68 para **52 óbitos por mil nascidos vivos**.</li>\n  <li><strong>Trabalho Infantil:</strong> Redução significativa de 23,4% para **13%** na faixa etária avaliada.</li>\n</ul>"
+  },
+  {
+    "num": 6,
+    "title": "Inteligência Artificial (IA) no Sector da Saúde Pública",
+    "icon": "🤖",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">6.1 Conceito e Aplicações Clínicas da IA</h4>\n<p>A Inteligência Artificial (IA) no sector da saúde engloba algoritmos de aprendizagem automática e visão computacional aplicados para otimizar processos diagnósticos, terapêuticos e de gestão pública.</p>\n<ul>\n  <li><strong>Imagiologia Médica:</strong> Apoio no rastreio e interpretação automatizada de radiografias de tórax e tomografias para deteção precoce de tuberculose, nódulos pulmonares e pneumonias.</li>\n  <li><strong>Telemedicina e Teletriagem:</strong> Algoritmos de triagem inteligente e suporte a técnicos em municípios remotos, facilitando o encaminhamento ágil de casos graves.</li>\n  <li><strong>Epidemiologia Preditiva:</strong> Modelos para previsão de surtos de cólera e malária correlacionando dados climáticos e sanitários.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">6.2 Ética, Privacidade e Protecção de Dados</h4>\n<div class=\"alert-box\">O uso de IA na saúde exige estrita observância da bioética: garantia da confidencialidade dos dados dos utentes, consentimento informado e a certeza de que a decisão clínica final cabe sempre ao profissional de saúde humano.</div>"
+  },
+  {
+    "num": 7,
+    "title": "Sistema Nacional de Saúde de Angola (SNS)",
+    "icon": "🏥",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">7.1 Organização em Três Níveis de Atenção Médica</h4>\n<table class=\"sec-table\">\n  <thead><tr><th>Nível de Atenção</th><th>Infraestruturas</th><th>Tipo de Cuidados Prestados</th></tr></thead>\n  <tbody>\n    <tr><td><strong>Atenção Primária</strong> (Porta de Entrada)</td><td>Postos Médicos, Centros de Saúde, Postos de Enfermagem e Brigadas Móveis</td><td>Promoção da saúde, vacinação (PAV), consultas pré-natais, planeamento familiar e tratamento de doenças comuns.</td></tr>\n    <tr><td><strong>Atenção Secundária</strong> (Intermédio)</td><td>Hospitais Municipais, Hospitais Gerais e Provinciais</td><td>Consultas de especialidades médicas básicas, internamento, cirurgia geral, urgência 24h e apoio laboratorial e radiológico.</td></tr>\n    <tr><td><strong>Atenção Terciária</strong> (Alta Complexidade)</td><td>Hospitais Centrais, Hospitais Nacionais e Institutos Especializados</td><td>Cuidados altamente especializados, cirurgias complexas, oncologia, neurocirurgia, cuidados intensivos e investigação científica.</td></tr>\n  </tbody>\n</table>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">7.2 Instrumentos Estratégicos e Órgãos Reguladores</h4>\n<ul>\n  <li><strong>ENDS (Estratégia Nacional de Desenvolvimento Sanitário):</strong> Plano mestre para cobertura universal de saúde e redução da mortalidade materno-infantil.</li>\n  <li><strong>ARMED:</strong> Autoridade reguladora responsável pelo licenciamento, inspeção e controlo de qualidade de medicamentos e equipamentos biomédicos.</li>\n  <li><strong>INSP:</strong> Instituto vocacionado para a vigilância epidemiológica, investigação sanitária e resposta laboratorial de referência.</li>\n</ul>"
+  },
+  {
+    "num": 8,
+    "title": "Doenças Prevalentes e Epidemiologia em Angola",
+    "icon": "🦠",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">8.1 Doenças Transmissíveis Prioritárias</h4>\n<ul>\n  <li><strong>Malária:</strong> Principal causa de morbilidade e mortalidade em Angola, causada pelo <em>Plasmodium falciparum</em> e transmitida pela fêmea do mosquito <em>Anopheles</em>. Formas graves: cerebral, anemia severa e acidose metabólica. Tratamento: Derivados de Artemisinina (Artesunato EV na grave; CTA na não complicada).</li>\n  <li><strong>Tuberculose (TB):</strong> Causada pelo <em>Mycobacterium tuberculosis</em> (Bacilo de Koch). Transmissão por aerossóis. Diagnóstico: Baciloscopia e GeneXpert. Tratamento: Esquema TDO/DOTS (Rifampicina, Isoniazida, Pirazinamida e Etambutol).</li>\n  <li><strong>HIV/SIDA:</strong> Infecção retroviral com destruição progressiva dos linfócitos T CD4+. Prevenção da transmissão vertical (PTV) e tratamento com TARV universal (TDF + 3TC + DTG).</li>\n  <li><strong>Cólera:</strong> Doença diarreica aguda aquosa profusa em \\\"água de arroz\\\", causada por <em>Vibrio cholerae</em>. Terapêutica prioritária: Reidratação imediata e agressiva com Solução de Reidratação Oral (SRO) e Ringer Lactato EV.</li>\n  <li><strong>Febre Tifoide:</strong> Infecção bacteriana sistémica por <em>Salmonella typhi</em> transmitida por água e alimentos contaminados.</li>\n  <li><strong>COVID-19:</strong> Infecção respiratória aguda por <em>SARS-CoV-2</em>. Quadro de febre, tosse, dispneia e risco de pneumonia e SDRA.</li>\n</ul>"
+  },
+  {
+    "num": 9,
+    "title": "Biossegurança, Controlo de Infecção e Gestão de Resíduos",
+    "icon": "🧪",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">9.1 Higiene das Mãos — Os 5 Momentos da OMS</h4>\n<ol>\n  <li>Antes de tocar no doente.</li>\n  <li>Antes de realizar procedimentos limpos ou assépticos.</li>\n  <li>Após o risco de exposição a fluidos corporais.</li>\n  <li>Após tocar no doente.</li>\n  <li>Após tocar em superfícies e áreas próximas ao doente.</li>\n</ol>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">9.2 Classificação dos Resíduos Hospitalares em Angola</h4>\n<table class=\"sec-table\">\n  <thead><tr><th>Grupo de Resíduos</th><th>Cor / Acondicionamento</th><th>Exemplos Práticos</th></tr></thead>\n  <tbody>\n    <tr><td><strong>Grupo I — Gerais / Banais</strong></td><td>Saco Preto / Cinzento</td><td>Papéis de escritório, caixas de cartão limpas, restos de comida de refeitórios não contaminados.</td></tr>\n    <tr><td><strong>Grupo II — Não Infecciosos Especiais</strong></td><td>Saco Castanho / Verde</td><td>Embalagens de medicamentos vazias, gessos não contaminados, fraldas limpas.</td></tr>\n    <tr><td><strong>Grupo III — Infecciosos / Biológicos</strong></td><td>Saco Branco Leitoso ou Vermelho</td><td>Pensos com sangue, compressas sujas, bolsas de sangue, tecidos e culturas microbiológicas.</td></tr>\n    <tr><td><strong>Grupo IV — Especiais / Químicos / Perfurocortantes</strong></td><td>Caixa Rígida Amarela (Descarpack)</td><td>Agulhas, lâminas de bisturi, ampolas partidas, fármacos citotóxicos e resíduos químicos.</td></tr>\n  </tbody>\n</table>\n<div class=\"alert-box\">É expressamente proibido reencapar agulhas usadas! O descarte de perfurocortantes deve ser imediato na caixa coletora rígida para evitar acidentes ocupacionais com risco biológico.</div>"
+  },
+  {
+    "num": 10,
+    "title": "Suporte Básico de Vida (SBV) e Urgências Clínicas",
+    "icon": "🩹",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">10.1 Cadeia de Sobrevivência no Adulto</h4>\n<ol>\n  <li>Reconhecimento imediato da paragem cardiorrespiratória (PCR) e pedido de socorro.</li>\n  <li>Ressuscitação Cardiopulmonar (RCP) precoce de alta qualidade.</li>\n  <li>Desfibrilhação rápida (com DAE quando disponível).</li>\n  <li>Suporte Avançado de Vida e cuidados pós-PCR.</li>\n</ol>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">10.2 Parâmetros de RCP de Alta Qualidade</h4>\n<ul>\n  <li><strong>Relação Compressão-Ventilação:</strong> 30 compressões para 2 ventilações em adultos.</li>\n  <li><strong>Frequência de Compressões:</strong> 100 a 120 compressões por minuto.</li>\n  <li><strong>Profundidade das Compressões:</strong> 5 a 6 cm no centro do tórax (metade inferior do esterno), permitindo o retorno completo do tórax após cada compressão.</li>\n  <li><strong>Minimizar Interrupções:</strong> Não interromper as massagens cardíacas por mais de 10 segundos.</li>\n</ul>"
+  },
+  {
+    "num": 11,
+    "title": "Raciocínio Lógico e Cálculos em Saúde",
+    "icon": "🧮",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">11.1 Fórmulas de Gotejamento de Soluções</h4>\n<ul>\n  <li><strong>Gotejamento em Gotas/minuto:</strong> <code>N.º de gotas/min = Volume (ml) / [Tempo (horas) × 3]</code></li>\n  <li><strong>Gotejamento em Microgotas/minuto:</strong> <code>N.º de microgotas/min = Volume (ml) / Tempo (horas)</code></li>\n  <li><em>Exemplo:</em> Prescrito 500 ml de Soro Fisiológico para correr em 8 horas: <code>500 / (8 × 3) = 500 / 24 ≈ 21 gotas/minuto</code>.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">11.2 Regra de Três Simples para Dosagens</h4>\n<p>Dose Desejada × Volume Disponível / Dose Disponível no Frasco. Essencial para antibióticos, insulina e diluições de eletrólitos.</p>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">11.3 Raciocínio Lógico Psicotécnico</h4>\n<ul>\n  <li><strong>Sequências Numéricas e Alfanuméricas:</strong> Identificação de padrões aritméticos, geométricos ou alternados.</li>\n  <li><strong>Analogias e Relações de Causa-Efeito:</strong> Compreensão semântica e vocabulário técnico.</li>\n  <li><strong>Atenção aos Detalhes:</strong> Cuidado redobrado com palavras de negação no enunciado (ex.: <em>EXCEPTO</em>, <em>INCORRECTO</em>, <em>FALSO</em>).</li>\n</ul>"
+  },
+  {
+    "num": 12,
+    "title": "Cultura Geral, História e Símbolos Nacionais de Angola",
+    "icon": "🇦🇴",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">12.1 Dados Essenciais e Datas Nacionais</h4>\n<table class=\"sec-table\">\n  <thead><tr><th>Data Histórica</th><th>Acontecimento / Significado</th></tr></thead>\n  <tbody>\n    <tr><td><strong>4 de Fevereiro de 1961</strong></td><td>Início da Luta Armada de Libertação Nacional (ataque à Casa de Reclusão em Luanda).</td></tr>\n    <tr><td><strong>11 de Novembro de 1975</strong></td><td>Proclamação da Independência Nacional pelo Presidente Dr. António Agostinho Neto.</td></tr>\n    <tr><td><strong>4 de Abril de 2002</strong></td><td>Dia da Paz e da Reconciliação Nacional (assinatura do Memorando de Entendimento de Luena).</td></tr>\n    <tr><td><strong>17 de Setembro</strong></td><td>Dia do Herói Nacional e do Fundador da Nação (Dr. António Agostinho Neto).</td></tr>\n  </tbody>\n</table>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">12.2 Símbolos Nacionais e Órgãos de Soberania (CRA 2010)</h4>\n<ul>\n  <li><strong>Bandeira Nacional:</strong> Duas faixas horizontais (Vermelho: sangue derramado; Preto: continente africano) e emblema amarelo ao centro (estrela: solidariedade e progresso; catana e roda dentada: camponeses e trabalhadores).</li>\n  <li><strong>Hino Nacional:</strong> \\\"Angola Avante!\\\". Lema nacional: \\\"Virtude e Unidade\\\".</li>\n  <li><strong>Órgãos de Soberania:</strong> Presidente da República (Chefe de Estado e do Executivo), Assembleia Nacional (220 deputados) e Tribunais (Supremo, Constitucional, de Contas e Militares).</li>\n</ul>"
+  },
+  {
+    "num": 13,
+    "title": "Guia Prático do Concurso, Checklist de Revisão e Erros Frequentes",
+    "icon": "✒️",
+    "body": "<h4 style=\"color:var(--accent);margin-bottom:8px\">13.1 Principais Erros a Evitar na Preparação</h4>\n<div class=\"mini-grid\">\n  <div class=\"item\"><strong>Negligenciar a Ética</strong>Ética, Deontologia e Legislação correspondem a 40% do exame.</div>\n  <div class=\"item\"><strong>Desconhecer a DPA 2024</strong>Angola tem 21 províncias e 326 municípios (Lei 14/24).</div>\n  <div class=\"item\"><strong>Ignorar o DP 112/24</strong>O concurso rege-se pelo Decreto Presidencial n.º 112/24 de 17 de Maio.</div>\n  <div class=\"item\"><strong>Não treinar o tempo</strong>60 segundos por questão exige raciocínio rápido e gestão de tempo.</div>\n</div>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">13.2 Checklist de Revisão Final</h4>\n<div class=\"mini-grid\">\n  <div class=\"item\">Estrutura do SNS e 3 Níveis de Atenção?</div>\n  <div class=\"item\">Princípios da AP e Deveres da Pauta Deontológica?</div>\n  <div class=\"item\">Novas províncias: Icolo e Bengo, Moxico Leste, Cuando?</div>\n  <div class=\"item\">Censo 2024 e IIMS 2023-2024?</div>\n  <div class=\"item\">Aplicações e Ética da IA na Saúde?</div>\n  <div class=\"item\">Manejo de Malária, TB, HIV, Cólera e COVID-19?</div>\n  <div class=\"item\">Protocolo de Higiene das Mãos e Resíduos Hospitalares?</div>\n  <div class=\"item\">Cálculos de Gotejamento e Suporte Básico de Vida?</div>\n</div>"
+  }
+];
+
+var EXTRA_SECTIONS = {
+  "enfermagem": {
+    "num": 14,
+    "title": "Preparação Específica — Carreira de Enfermagem",
+    "icon": "🩺",
+    "body": "<p>Base legal: <strong>Decreto Presidencial n.º 187/18, de 6 de Agosto</strong> (Estatuto da Carreira de Enfermagem). Abrange 1.828 vagas para Técnico Médio de Enfermagem e Enfermeiro de 3.ª Classe.</p>\n<h4 style=\"color:var(--accent);margin-bottom:8px\">14.1 Processo de Enfermagem (PE) e Sistematização</h4>\n<ul>\n  <li><strong>5 Etapas do PE:</strong> Investigação → Diagnóstico de Enfermagem (NANDA-I) → Planeamento (NOC) → Implementação (NIC) → Avaliação.</li>\n  <li><strong>Sinais Vitais — Valores de Referência:</strong> PA normal 120/80 mmHg; FC 60–100 bpm; FR 12–20 rpm; Temperatura 36,1–37,2°C; SpO₂ ≥ 95%. Identificar desvios: taquicardia (FC>100), bradicardia (<60), taquipneia (FR>20), hipotermia (<36°C), hipertermia (>38°C).</li>\n  <li><strong>Semiologia por aparelhos:</strong> Frémito Toracovocal (FTV) — aumentado na condensação, diminuído no derrame; Sinal de Kernig e Brudzinski — irritação meníngea; B3 galope — IC com FE reduzida.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.2 Farmacologia e Administração Segura de Medicamentos</h4>\n<ul>\n  <li><strong>Princípio dos 9 Certos:</strong> Paciente, medicamento, via, dose, hora, registo, orientação, forma e resposta correctos.</li>\n  <li><strong>Vias de Administração:</strong> Intramuscular (ângulo 90°, quadrante súpero-externo do glúteo); EV (cuidados com flebite e infiltração); SC (insulina, heparina, ângulo 45°); ID (Mantoux, BCG).</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.3 Sondas e Cateterismos</h4>\n<ul>\n  <li><strong>Sonda Vesical (Foley):</strong> Técnica estéril rigorosa — campo estéril, luvas estéreis, anti-séptico no meato (clorohexidina). Não insuflação do balão antes da urina fluir.</li>\n  <li><strong>Sonda Nasogástrica (SNG):</strong> Indicações: nutrição entérica, medicação, descompressão gástrica, lavagem. Confirmação de posição: Rx tórax (método de referência) ou pH aspirado < 5,5. O método da auscultação do epigastro é não fiável.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.4 Hemodiálise e Acesso Vascular</h4>\n<ul>\n  <li><strong>Mecanismo:</strong> Membrana semipermeável artificial — difusão de ureia, creatinina, K⁺; ultrafiltração para remoção de líquidos.</li>\n  <li><strong>Acesso por ordem de preferência:</strong> 1.º FAV nativa → 2.º Prótese PTFE → 3.º Cateter tunelizado.</li>\n  <li><strong>Cuidados com a FAV:</strong> Palpar frémito e auscultar sopro diariamente. Nunca picar para colheitas, nunca aferir PA no membro. Ausência de frémito = trombose → alertar médico.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.5 Escalas de Avaliação — Morse e Braden</h4>\n<ul>\n  <li><strong>Escala de Morse:</strong> Avalia risco de <em>quedas</em> em 6 parâmetros. Pontuação ≥ 45 = alto risco → medidas preventivas: cama baixa, grades, calçado antiderrapante.</li>\n  <li><strong>Escala de Braden:</strong> Avalia risco de <em>Lesões por Pressão (LPP)</em> em 6 subescalas (percepção sensorial, humidade, actividade, mobilidade, nutrição, fricção/cisalhamento). Pontuação ≤ 9 = risco muito alto.</li>\n  <li><strong>Classificação das LPP:</strong> Grau I = eritema não branqueável; Grau II = perda parcial da derme; Grau III = perda total (sem osso/tendão); Grau IV = exposição de osso/tendão/músculo → risco de osteomielite.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.6 Banho no Leito e Higiene Hospitalar</h4>\n<ul>\n  <li><strong>Objectivos:</strong> Higiene corporal, estimulação circulatória, prevenção de LPP e maceração, avaliação da integridade cutânea, promoção do conforto. Água morna 37–40°C, em privacidade, sequência: face → tronco → membros superiores → genitais → dorso.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.7 Controlo de Infecção Nosocomial (IACS) e Esterilização</h4>\n<ul>\n  <li><strong>IACS:</strong> Infecção que surge após 48–72h de internamento (ou 30 dias pós-cirurgia). Mais frequentes: IUAC, pneumonia associada a VMI, bacteriémia por cateter, infecção de ferida cirúrgica.</li>\n  <li><strong>Precauções Padrão:</strong> Aplicam-se a TODOS os doentes — higiene das mãos, EPI, prevenção de picadas.</li>\n  <li><strong>Assepsia vs. Antissepsia:</strong> Assepsia = medidas para prevenir contaminação; Antissepsia = agentes químicos em tecidos vivos (álcool 70%, clorohexidina, iodopovidona).</li>\n  <li><strong>Esterilização:</strong> Elimina TODOS os microrganismos incluindo esporos. Métodos: calor seco (estufa 160–180°C/120 min), vapor saturado (autoclave 121°C/15min), óxido de etileno (materiais termossensíveis).</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.8 Saúde Materno-Infantil e Deontologia</h4>\n<ul>\n  <li><strong>Parto e Neonatologia:</strong> Assistência ao parto eutócico, cuidados com coto umbilical, aleitamento materno exclusivo até 6 meses, manejo de desidratação pediátrica.</li>\n  <li><strong>Sigilo Profissional:</strong> Regulado pela Pauta Deontológica (Resolução 27/94). O sigilo perdura mesmo após a morte do doente. Excepções: justa causa, dever legal, autorização do doente.</li>\n</ul>"
+  },
+  "medicina": {
+    "num": 14,
+    "title": "Preparação Específica — Carreira Médica",
+    "icon": "⚕️",
+    "body": "<p>Base legal: <strong>Decreto Presidencial n.º 186/18, de 6 de Agosto</strong> (Estatuto da Carreira Médica). Abrange 1.545 vagas para Médico Assistente e Médico Geral / Interno de Especialidade.</p>\n<h4 style=\"color:var(--accent);margin-bottom:8px\">14.1 Medicina Interna</h4>\n<ul>\n  <li><strong>Insuficiência Cardíaca (IC):</strong> Classificação NYHA I–IV; IC com FE preservada (ICFEp) vs. reduzida (ICFEr); tratamento: IECAs/ARA-II, betabloqueadores, diuréticos, antagonistas aldosterona. Galope B3 = sobrecarga de volume.</li>\n  <li><strong>Hipertensão Arterial (HTA):</strong> Critério ≥ 140/90 mmHg. HTA resistente (3 fármacos incluindo diurético). Urgência hipertensiva (sem lesão órgão-alvo) vs. Emergência hipertensiva (PA > 180/120 + lesão órgão-alvo → nitroprussiato EV).</li>\n  <li><strong>Síndromes Coronárias Agudas:</strong> Angina instável / NSTEMI / STEMI. Tríade: dor precordial + ECG + Troponinas. STEMI: supra ST ≥ 1mm em 2 derivações adjacentes → reperfusão < 90 min (ICP primária).</li>\n  <li><strong>Pneumonia Comunitária:</strong> Score CURB-65 (Confusão, Ureia, FR, PA, ≥65 anos). Agente mais comum: S. pneumoniae. Tratamento: amoxicilina ± claritromicina (ou fluoroquinolona respiratória).</li>\n  <li><strong>DPOC em Agudização:</strong> FEV1/FVC < 0,70. Agudização: infecciosa (antibiótico) ou não infecciosa; broncodilatadores inalados + corticóides sistémicos. Critérios de internamento: PA parcial O₂ < 60 mmHg, alteração estado consciência.</li>\n  <li><strong>Malária (Paludismo):</strong> Plasmodium falciparum (forma grave). Diagnóstico: gota espessa (padrão ouro) + TDR. Malária grave: parasitémia > 5%, coma (Glasgow < 11), hipoglicémia, insuficiência renal, anemia grave (Hb < 7 g/dL). Tratamento: Artesunato EV nas formas graves.</li>\n  <li><strong>HIV/SIDA:</strong> CD4 e Carga Viral para estadiamento. TARV: 2 INTRs + 1 INNTR ou inibidor de integrase. Profilaxia de infecções oportunistas: CD4 < 200 → cotrimoxazol; CD4 < 50 → azitromicina.</li>\n  <li><strong>Tuberculose (TB):</strong> Bacilo álcool-ácido resistente (BAAR). Diagnóstico: expectoração × 3 + Xpert MTB/RIF. Tratamento 1.ª linha: HRZE (2 meses) + HR (4 meses). TB multirresistente: resistente à Isoniazida + Rifampicina.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.2 Cirurgia Geral</h4>\n<ul>\n  <li><strong>Abdómen Agudo:</strong> Diferencial entre: Inflamatório (apendicite — sinal de McBurney + Blumberg; colecistite — Murphy); Obstrutivo (oclusão intestinal — timpanismo + ausência de ruídos); Perfurativo (úlcera péptica — pneumoperitoneu em Rx); Hemorrágico (rotura esplénica — trauma); Vascular (isquémia mesentérica).</li>\n  <li><strong>Cuidados Pré e Pós-Operatórios:</strong> Jejum pré-op; profilaxia antibiótica 30–60 min antes da incisão; heparinização profilática (TVP/TEP); vigilância de complicações pós-op: hemorragia, infecção de ferida, TEP, paralisia intestinal.</li>\n  <li><strong>Queimaduras:</strong> Regra dos 9 (adulto) para estimativa de SCQ. Grau I = eritema; Grau II superficial = bolha + base rósea; Grau II profundo = base pálida; Grau III = necrose/carbonização sem dor. Fluidoterapia de Parkland: 4 ml × kg × % SCQ (metade nas primeiras 8h).</li>\n  <li><strong>Traumatologia:</strong> ATLS — Primary Survey: ABCDE (Airway, Breathing, Circulation, Disability, Exposure). Choque hemorrágico: Classes I–IV. Controlo de dano: cirurgia abreviada + UCI + segunda cirurgia definitiva.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.3 Ginecologia e Obstetrícia</h4>\n<ul>\n  <li><strong>Assistência ao Parto Normal:</strong> Mecanismo do parto (encravamento, descida, flexão, rotação interna, extensão, rotação externa, expulsão). Vigilância pelo Partograma OMS — linha de alerta e linha de acção.</li>\n  <li><strong>Complicações Obstétricas:</strong> Placenta Prévia (hemorragia indolor 3.º trimestre); DPPNI (hemorragia + dor + útero lenhoso); Pré-eclâmpsia grave (PA ≥ 160/110 + proteinúria ≥ 5 g/24h + sintomas) → Sulfato de Magnésio para profilaxia da eclampsia (dose ataque 4 g EV + manutenção 1 g/h).</li>\n  <li><strong>Hemorragia Pós-Parto (HPP):</strong> Causa mais comum = atonia uterina. Manejo: massagem uterina + uterotónicos (Ocitocina 10 UI IM, Misoprostol 800 µg SL). HPP > 500 ml (parto vaginal) ou > 1000 ml (cesariana).</li>\n  <li><strong>Ginecologia:</strong> Rastreio do cancro do colo uterino: Pap smear (citologia cervical) + HPV. Infecções Sexualmente Transmissíveis (IST): gonorreia (Neisseria gonorrhoeae), sífilis (T. pallidum — VDRL/RPR), Clamídia, tricomoníase, herpes genital.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.4 Pediatria</h4>\n<ul>\n  <li><strong>Reanimação Neonatal:</strong> Sequência: secar + estimular → avaliar frequência cardíaca. FC < 100 bpm = VPP (Ventilação com Pressão Positiva) com máscara + balão. FC < 60 bpm após VPP = massagem cardíaca (relação 3:1) ± adrenalina. Score de Apgar (1 e 5 min): 7–10 normal; 4–6 moderado; 0–3 grave.</li>\n  <li><strong>Diarreia Aguda na Criança:</strong> Plano A (sem desidratação — SRO em casa); Plano B (desidratação ligeira-moderada — SRO 75 ml/kg em 4h na unidade); Plano C (desidratação grave — Ringer Lactato 100 ml/kg em 3h + vigilância).</li>\n  <li><strong>Desnutrição Aguda Grave (DAG):</strong> MUAC < 115 mm ou Z-score P/I < -3 DP. Tratamento: ATPU (Plumpy'Nut) no Programa de Alimentação Terapêutica Ambulatória (ATA). Critérios de internamento: complicações médicas, anorexia, edema ++ /+++.</li>\n  <li><strong>Vacinação (PNV Angola):</strong> BCG (nascença), VPO + PENTA + PCV13 (6, 10, 14 semanas), Rotavírus (6 e 10 semanas), Sarampo/Rubéola (9 meses), Febre Amarela (9 meses).</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.5 Urgências e Emergências Médicas</h4>\n<ul>\n  <li><strong>Escala de Coma de Glasgow (ECG):</strong> Abertura ocular (1–4) + Resposta verbal (1–5) + Resposta motora (1–6) = Total 3–15. ECG < 8 = coma grave → intubação profiláctica da via aérea.</li>\n  <li><strong>Sépsis e Choque Séptico:</strong> Sépsis = disfunção orgânica ameaçadora de vida secundária a infecção (qSOFA ≥ 2: FR > 22, confusão, PAS ≤ 100). Choque séptico: sépsis + vasopressores para MAP ≥ 65 + lactato > 2 mmol/L. Bundles: antibiótico < 1h, culturas, fluidos 30 ml/kg, noradrenalina.</li>\n  <li><strong>Leptospirose:</strong> Bactéria: Leptospira interrogans. Transmissão: contacto com urina de roedor/água contaminada. Apresentação grave (síndrome de Weil): icterícia + insuficiência renal + hemorragia pulmonar. Tratamento: Penicilina G EV ou Doxiciclina (forma ligeira PO).</li>\n</ul>"
+  },
+  "tdt": {
+    "num": 14,
+    "title": "Preparação Específica — Diagnóstico e Terapêutica (TDT)",
+    "icon": "🔬",
+    "body": "<p>Base legal: <strong>Decreto Presidencial n.º 188/18, de 7 de Agosto</strong> (Estatuto da Carreira de Diagnóstico e Terapêutica). Abrange 1.255 vagas nos ramos Superior e Técnico Médio de 2.ª Classe.</p>\n<h4 style=\"color:var(--accent);margin-bottom:8px\">14.1 Análises Clínicas e Hematologia</h4>\n<ul>\n  <li><strong>Hematologia e Hematopoiese:</strong> Composição e funções do sangue; eritrócitos (morfologia, contagem, volume globular / hematócrito); contagem de reticulócitos. Anemias: ferropénica (microcítica/hipocrómica), megaloblástica (macrocítica por défice de B12/folato), hemolítica (reticulocitose). Hemoglobinopatias: Drepanocitose (mutação Glu6Val na cadeia β — HbS) e Talassemias (défice quantitativo de cadeias α ou β); diagnóstico de referência por Electroforese/HPLC.</li>\n  <li><strong>Imunohematologia e Hemoterapia:</strong> Sistema ABO e factor Rh; bases moleculares e herança genética; provas de compatibilidade pré-transfusional (teste de Coombs directo e indirecto); controlo de qualidade e segurança das bolsas de sangue.</li>\n  <li><strong>Erros Pré-Analíticos na Recolha:</strong> Tubos e anticoagulantes: EDTA (tubo roxo/lavanda — hematologia), Citrato de Sódio 3,2% (tubo azul — coagulação/hemostase), Heparina (tubo verde — bioquímica/gasometria), Tubo Seco/Gel separador (vermelho/amarelo — sorologia e bioquímica); prevenção de hemólise mecânica e jejum inadequado.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.2 Microbiologia e Parasitologia Médica</h4>\n<ul>\n  <li><strong>Coproparasitologia e Helmintos:</strong> Exame directo e métodos de concentração de fezes. Nematodes: <em>Ascaris lumbricoides</em> (migração pulmonar/síndrome de Löffler), <em>Trichuris trichiura</em>, <em>Enterobius vermicularis</em> (fita-cola/Graham), <em>Ancylostoma duodenale</em> e <em>Necator americanus</em> (anemia por espoliação sanguínea), <em>Strongyloides stercoralis</em>. Trematodos: <em>Schistosoma haematobium</em> (hematúria/esquistossomose urogenital) e <em>S. mansoni</em>. Cestodes: <em>Taenia solium</em> (teníase e neurocisticercose), <em>Taenia saginata</em> e <em>Echinococcus granulosus</em> (quistos hidáticos).</li>\n  <li><strong>Protozoários:</strong> Intestinais: <em>Giardia lamblia</em> (má-absorção/diarreia com esteatorreia), <em>Entamoeba histolytica</em> (disenteria e abcesso hepático amebiano), <em>Cryptosporidium</em>. Tissulares: <em>Plasmodium falciparum</em> (gota espessa e esfregaço sanguíneo delgado), <em>Toxoplasma gondii</em> (risco em grávidas/congénita e imunodeprimidos), <em>Leishmania</em> spp. (transmitida por flebótomos/mosca-palha).</li>\n  <li><strong>Bacteriologia Diagnóstica:</strong> Coloração de Gram (Gram-positivas em violeta vs. Gram-negativas em rosa). Testes bioquímicos chave: Catalase (<em>Staphylococcus</em> [+] vs. <em>Streptococcus</em> [-]), Coagulase (<em>S. aureus</em> [+]). Diagnóstico de <em>Neisseria meningitidis</em> e <em>N. gonorrhoeae</em>. Antibiograma: método de difusão em disco (Kirby-Bauer), interpretação de halos de inibição e determinação da CMI (Concentração Mínima Inibitória).</li>\n  <li><strong>Virologia e Micologia:</strong> Estrutura dos vírus (cápside, envelope, genoma ARN/ADN, ciclo lítico vs. lisogénico); fungos dermatófitos (<em>Trichophyton</em>, <em>Microsporum</em> — micoses superficiais/tinhas com exame em KOH) e <em>Candida albicans</em> (micoses oportunistas).</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.3 Bioquímica Clínica e Urinologia</h4>\n<ul>\n  <li><strong>Bioquímica do Sangue:</strong> Dosagem de proteínas totais (Método de Biuret) e Albumina (Método do Verde de Bromocresol); Ureia e Creatinina (avaliação da taxa de filtração glomerular); Glicémia (método enzimático da glicose oxidase) e hemoglobina glicada (HbA1c); Enzimas hepáticas (ALT/TGP, AST/TGO, Fosfatase Alcalina, GGT) e Bilirrubinas (total e fracções).</li>\n  <li><strong>Urinologia (Urina Sumária e Sedimento):</strong> Exame físico (cor, aspecto, densidade 1.005–1.030, pH 4.5–8.0); Exame químico por fita reactiva (proteínas, glicose, corpos cetónicos, hemoglobina, nitritos e esterase leucocitária); Exame microscópico do sedimento (eritrócitos, leucócitos, células epiteliais, cilindros hialinos/granulosos/leucocitários e cristais). Urocultura com contagem de colónias (> 10⁵ UFC/mL = bacteriúria significativa).</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.4 Outras Especialidades de Diagnóstico e Terapêutica</h4>\n<ul>\n  <li><strong>Farmácia Hospitalar:</strong> Boas práticas de recepção, armazenamento e dispensação; cadeia de frio (2°C a 8°C para biológicos e vacinas); sistema de distribuição de medicamentos por dose unitária; controlo rigoroso de psicotrópicos e estupefacientes; papel na Comissão de Farmácia e Terapêutica (CFT).</li>\n  <li><strong>Radiologia e Imagiologia:</strong> Princípios físicos dos Raios X; protecção radiológica e princípio ALARA (As Low As Reasonably Achievable); contrastes iodados e reacções adversas; incidências fundamentais e TC.</li>\n  <li><strong>Anatomia Patológica:</strong> Processamento histológico padrão: fixação obrigatória em Formol neutro a 10% (proporção 1:10 a 1:20 volume tecido/fixador), desidratação em álcoois, diafanização em xilol, inclusão em parafina, microtomia (3–5 µm) e coloração de rotina por Hematoxilina-Eosina (HE).</li>\n  <li><strong>Fisioterapia, Psicologia, Nutrição, Eletromedicina e Estomatologia:</strong> Cinesioterapia motora e respiratória; avaliação psicométrica e perturbações do humor/ansiedade; dietoterapia e avaliação antropométrica; calibração e manutenção de monitores e desfibrilhadores; patologia oral, cárie e periodontite.</li>\n</ul>"
+  },
+  "apoio": {
+    "num": 14,
+    "title": "Preparação Específica — Carreira de Apoio Hospitalar",
+    "icon": "🏥",
+    "body": "<p>Base legal: <strong>Decreto Presidencial n.º 185/18, de 6 de Agosto</strong> (Estatuto da Carreira de Apoio Hospitalar). Abrange 1.067 vagas: Maqueiro, Secretário Clínico, Vigilante e Condutor de Ambulância.</p>\n<h4 style=\"color:var(--accent);margin-bottom:8px\">14.1 Perfis Funcionais Oficiais</h4>\n<ul>\n  <li><strong>Maqueiro:</strong> Transporte e mobilização segura em macas/cadeiras de rodas; técnica de transferência leito-maca (postura ergonómica, segurança do doente); higienização e desinfecção de macas; uso de EPI e biossegurança.</li>\n  <li><strong>Secretário Clínico:</strong> Acolhimento e admissão de utentes; gestão e arquivo clínico; registo de dados no sistema hospitalar; preservação do sigilo do prontuário; marcação de consultas e exames.</li>\n  <li><strong>Vigilante:</strong> Segurança patrimonial e controlo de acessos (enfermarias, bloco cirúrgico, morgue); prevenção de conflitos; actuação em planos de evacuação e emergência.</li>\n  <li><strong>Condutor de Ambulância:</strong> Código da Estrada de Angola; condução defensiva em emergência; manutenção preventiva da ambulância; uso correcto de sirene + sinais luminosos azuis; SBV (Suporte Básico de Vida) noções.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.2 COVID-19 — 8 Sub-Tópicos Obrigatórios (MINSA)</h4>\n<ul>\n  <li><strong>1. Conceito:</strong> COVID-19 (Coronavirus Disease 2019) — doença infecciosa do sistema respiratório.</li>\n  <li><strong>2. Etiologia:</strong> SARS-CoV-2 (Betacoronavirus) — ARN de cadeia simples com envelope lipídico. Surgiu em Wuhan, China, em Dezembro de 2019; pandemia declarada pela OMS em Março de 2020.</li>\n  <li><strong>3. Quadro Clínico:</strong> Febre > 38°C, tosse seca, fadiga, dispneia, anosmia (perda de olfacto), ageusia (perda de paladar), mialgia, cefaleias, diarreia.</li>\n  <li><strong>4. Classificação de Gravidade (OMS):</strong><br>Ligeira (sintomas sem pneumonia); Moderada (pneumonia sem hipoxia grave, SpO₂ 94–95%); <strong>Grave</strong> (SpO₂ < 90%, FR > 30 rpm, ARDS ou choque séptico); Crítica (ARDS severo, sépsis, falência multi-orgânica).</li>\n  <li><strong>5. Critérios Diagnósticos:</strong> Gold standard = RT-PCR (zaragatoa naso/orofaríngea). Teste rápido de antigénio: mais acessível, menor sensibilidade. TC torácica: padrão em vidro despolido bilateral (não específico).</li>\n  <li><strong>6. Complicações:</strong> ARDS, choque séptico, falência multi-orgânica, tromboembolismo (coagulopatia), miocardite, AVC isquémico, COVID longa (sintomas > 12 semanas).</li>\n  <li><strong>7. Conduta:</strong> Isolamento; Oxigenioterapia (alvo SpO₂ ≥ 94%); Posição prona em vigília; Dexametasona 6 mg/dia EV × 10 dias (reduz mortalidade 35% — Trial RECOVERY); Anticoagulação profilática (Enoxaparina). Antibiótico apenas se infecção bacteriana sobreponente.</li>\n  <li><strong>8. Prognóstico — Factores de Risco:</strong> Idade > 60 anos, obesidade (IMC > 30), DM, HTA, doença cardiovascular, DPOC/asma grave, imunodepressão (HIV, imunossupressores), IRC. Vacinação reduz significativamente o risco de doença grave e morte.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.3 Código de Estrada de Angola</h4>\n<ul>\n  <li><strong>Limites de Velocidade:</strong> Autoestradas/Vias rápidas = 120 km/h; Estradas nacionais = 90 km/h; Em localidades = 50 km/h. Ambulâncias em emergência podem exceder os limites com sirene + sinais luminosos activados, mas com prudência.</li>\n  <li><strong>Semáforos:</strong> Verde = passagem; Amarelo/ámbar = preparar para parar (só avançar se a paragem segura já não for possível); Vermelho = paragem obrigatória.</li>\n  <li><strong>Sinais de Emergência da Ambulância:</strong> Sirene sonora + sinais luminosos azuis giratórios em simultâneo = prioridade de passagem. Os outros condutores devem ceder imediatamente. Os 4 piscas (luzes de perigo) = paragem de emergência estática.</li>\n  <li><strong>Álcool e Condução:</strong> Taxa de álcool máxima: 0,5 g/L (sangue) para condutores em geral; 0 g/L para profissionais de saúde em serviço.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.4 Mecânica de Veículos — Ambulância</h4>\n<ul>\n  <li><strong>Verificação Pré-Partida:</strong> Nível de óleo do motor (vareta entre MIN e MAX); Nível de água do radiador + reservatório de expansão; Pressão de todos os pneus (incluindo sobresselente); Nível de líquido de travões; Funcionamento de faróis, piscas, sirene e sinais azuis; Verificar equipamento médico (O₂, DAE, medicação).</li>\n  <li><strong>Sobreaquecimento do Motor:</strong> Parar em local seguro → desligar motor → NUNCA abrir o radiador com motor quente (risco de queimadura por vapor pressurizado) → aguardar arrefecimento 30–60 min → solicitar assistência mecânica.</li>\n  <li><strong>Pneu Furado em Emergência:</strong> Reduzir velocidade gradualmente (não travar bruscamente), manter o volante firme, parar em local seguro, activar os 4 piscas e colocar triângulo de sinalização.</li>\n</ul>"
+  },
+  "regime-geral": {
+    "num": 14,
+    "title": "Preparação Específica — Carreira do Regime Geral",
+    "icon": "📄",
+    "body": "<p>Base legal: <strong>Decreto n.º 24/91, de 29 de Junho</strong> e <strong>Lei n.º 26/22, de 22 de Agosto</strong> (Lei de Bases da Função Pública). Abrange 220 vagas para <strong>Técnico Superior de 2.ª Classe</strong> na Administração da Saúde.</p>\n<h4 style=\"color:var(--accent);margin-bottom:8px\">14.1 Organização da Administração Pública</h4>\n<ul>\n  <li><strong>Estrutura Administrativa do Estado:</strong> Administração Directa (Ministérios, Governos Provinciais e Administrações Municipais) vs. Administração Indirecta (Institutos Públicos como INSP, Centros Hospitalares, Empresas Públicas); Administração Central vs. Administração Local do Estado.</li>\n  <li><strong>Princípios Fundamentais:</strong> Princípio da Legalidade, Proporcionalidade, Imparcialidade, Prossecução do Interesse Público, Transparência, Eficiência e Desconcentração Administrativa.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.2 Pauta Deontológica, Ética e Função Pública</h4>\n<ul>\n  <li><strong>Pauta Deontológica da Função Pública (Resolução n.º 27/94):</strong> Deveres do funcionário público: legalidade, lealdade, zelo, sigilo profissional, isenção e urbanidade no atendimento aos cidadãos.</li>\n  <li><strong>Lei da Probidade Pública (Lei n.º 3/10, de 29 de Março):</strong> Princípios da moralidade administrativa, integridade patrimonial, declaração de bens pelos gestores públicos e prevenção de conflitos de interesse e actos de corrupção.</li>\n  <li><strong>Regime Jurídico dos Funcionários Públicos (Lei n.º 26/22):</strong> Direitos e deveres, regime de faltas e licenças, processo disciplinar (penas de advertência, repreensão registada, multa, despromoção e demissão) e avaliação de desempenho.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.3 Contratação Pública e Gestão Orçamental no SNS</h4>\n<ul>\n  <li><strong>Lei da Contratação Pública (Lei n.º 41/20, de 23 de Dezembro):</strong> Procedimentos concursais (Concurso Público, Concurso Limitado por Prévia Qualificação, Concurso Limitado por Convite e Procedimento de Ajuste Directo); critérios de adjudicação na compra de medicamentos, reagentes laboratoriais e manutenção de infraestruturas sanitárias.</li>\n  <li><strong>Gestão Orçamental e Financeira:</strong> OGE (Orçamento Geral do Estado) — fases da despesa pública: Cabimentação, Liquidação e Pagamento; prestação de contas e controlo financeiro pelo Tribunal de Contas e IGE (Inspecção-Geral do Estado).</li>\n  <li><strong>Arquivo, Protocolo e Redacção Oficial:</strong> Elaboração de ofícios, circulares, despachos, relatórios técnicos e actas de reunião administrativa; fluxo documental e arquivo corrente/intermédio.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.4 Divisão Político-Administrativa 2024 e Censo Demográfico</h4>\n<ul>\n  <li><strong>Nova Divisão Político-Administrativa (Lei n.º 14/24):</strong> Angola conta com <strong>21 Províncias</strong> e <strong>326 Municípios</strong> (criação das províncias de Moxico Leste, Cuando, Cubango e reconfiguração de Luanda com Icolo e Bengo e Quiçama). Impacto directo na descentralização hospitalar, criação de Direcções Municipais de Saúde e alocação de recursos sanitários.</li>\n  <li><strong>Censo Geral da População e Habitação 2024:</strong> Coordenado pelo INE (Instituto Nacional de Estatística). Objectivos: apuramento demográfico exacto, pirâmide etária e distribuição geográfica da população. Utilidade vital para cálculo de taxas de cobertura vacinal, rácio médico/habitante e planeamento de redes sanitárias.</li>\n</ul>"
+  },
+  "assistentes-sociais": {
+    "num": 14,
+    "title": "Preparação Específica — Carreira do Trabalhador Social",
+    "icon": "🤝",
+    "body": "<p>Abrange 85 vagas para <strong>Assistente Social de 2.ª Classe</strong> no Serviço Nacional de Saúde. Base legal: <strong>Decreto Presidencial n.º 109/22, de 12 de Maio</strong> (Estatuto da Carreira do Trabalhador Social).</p>\n<h4 style=\"color:var(--accent);margin-bottom:8px\">14.1 Decreto Presidencial n.º 109/22 — Base Legal</h4>\n<ul>\n  <li><strong>Categorias profissionais:</strong> Assistente Social de 2.ª Classe (acesso) → 1.ª Classe → Principal.</li>\n  <li><strong>Funções:</strong> Diagnóstico social, planos de intervenção individualizada, articulação com redes de suporte, promoção dos direitos sociais, mediação familiar, intervenção em vulnerabilidade social (pobreza, violência doméstica, abandono, desemprego).</li>\n  <li><strong>Enquadramento Estado–Política–Questão Social:</strong> A questão social resulta das desigualdades produzidas pelas relações de trabalho e poder. O Estado responde com políticas sociais (saúde, educação, habitação, assistência social). O AS medeia o acesso dos cidadãos a esses serviços.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.2 Saúde e Trabalho do Assistente Social</h4>\n<ul>\n  <li><strong>Perfil na Saúde:</strong> Identificar condicionantes sociais do processo saúde-doença; planear a alta hospitalar garantindo continuidade de cuidados; intervir em violência doméstica, abandono, pobreza; articular com MASFAMU, municípios e ONG.</li>\n  <li><strong>Humanização dos Serviços:</strong> Acolher com empatia; mediar conflitos equipa-utente; informar sobre direitos (sigilo, reclamação); apoiar em situações de luto e doença terminal; defender a dignidade do doente.</li>\n  <li><strong>Determinantes Sociais da Saúde:</strong> A institucionalização do Serviço Social reconhece que a saúde é determinada por factores sociais, económicos e culturais — não apenas biomédicos. O AS aborda estas condicionantes na equipa multidisciplinar.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.3 Ética e Deontologia Profissional</h4>\n<ul>\n  <li><strong>Princípios éticos (IFSW 2014 + DP 109/22):</strong> Respeito pela dignidade humana; promoção dos direitos humanos; justiça social; autonomia do utente; confidencialidade; interdisciplinaridade. O AS deve agir com ética mesmo perante pressões institucionais.</li>\n  <li><strong>Sigilo Profissional:</strong> O AS é obrigado ao sigilo de todas as informações do utente. Excepções: autorização do utente, dever legal ou justa causa.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.4 Área de Intervenção Social — Tipos, Fases e Métodos</h4>\n<ul>\n  <li><strong>Tipos de Intervenção (3 níveis):</strong><br>Microssocial = intervenção individual/caso (estudo social, plano individual);<br>Mesossocial = trabalho com grupos (grupos terapêuticos, apoio familiar);<br>Macrossocial = intervenção comunitária e política social (projectos comunitários, advocacy).</li>\n  <li><strong>Fases do Processo de Intervenção:</strong><br>1. Diagnóstico Social (entrevista, visita domiciliária, ficha social) →<br>2. Planeamento (objectivos e estratégias) →<br>3. Execução (referenciação, acompanhamento, mediação) →<br>4. Avaliação dos Resultados (reformulação se necessário). Processo contínuo e dinâmico.</li>\n  <li><strong>Gestão Social e Participação:</strong> Gestão de casos individuais; mediação (conflitos família-hospital); trabalho em rede (MASFAMU, municípios, ONG, igrejas); mobilização comunitária para co-responsabilização dos cidadãos.</li>\n  <li><strong>Entrevista Social:</strong> Principal instrumento de diagnóstico. Características: escuta activa (verbal e não-verbal), empatia, reformulação, ambiente de confiança e confidencialidade. Tipos: directiva, semi-directiva, não-directiva.</li>\n</ul>\n<h4 style=\"color:var(--accent);margin-top:12px;margin-bottom:8px\">14.5 Contextos de Intervenção e Rede de Protecção Social</h4>\n<ul>\n  <li><strong>Apoio a Doentes Crónicos:</strong> Acompanhamento psicossocial de portadores de TB, HIV/SIDA, patologias oncológicas — promover adesão terapêutica.</li>\n  <li><strong>Protecção à Criança e ao Idoso:</strong> Lei n.º 25/12 (Protecção e Desenvolvimento Integral da Criança) e Lei n.º 32/20. Acção contra abandono, maus-tratos, mendicidade.</li>\n  <li><strong>Violência Baseada no Género (VBG):</strong> Lei n.º 25/11 (Lei contra a Violência Doméstica). AS é obrigado a reportar situações de violência doméstica às autoridades competentes.</li>\n  <li><strong>Rede de Articulação:</strong> MASFAMU (Ministério da Acção Social, Família e Promoção da Mulher); Programa Kwenda (protecção social em dinheiro); lares de acolhimento, centros de saúde, municípios, ONG e organizações religiosas.</li>\n</ul>"
+  }
+};
+
+var ORGAO_LIST = ["enfermagem", "medicina", "tdt", "apoio", "regime-geral", "assistentes-sociais"];
+
+function getOrgaoFromURL() {
+  var p = new URLSearchParams(window.location.search);
+  var o = p.get("carreira");
+  if (o && ORGAO_LIST.indexOf(o) >= 0) return o;
+  return "enfermagem";
+}
+
+function render() {
+  var orgao = getOrgaoFromURL();
+  var meta = ORGAOS[orgao];
+
+  document.getElementById("orgaoTag").textContent = meta.icon + " " + meta.sigla + " — " + meta.nome;
+  document.getElementById("btnSimular").href = "simulador_prova_MININT.html?id=" + meta.id;
+
+  var navHTML = "";
+  ORGAO_LIST.forEach(function(k) {
+    var m = ORGAOS[k];
+    navHTML += "<a href=\"?carreira=" + k + "\" class=\"" + (k === orgao ? "active" : "") + "\">" + m.icon + " " + m.sigla + "</a>";
+  });
+  document.getElementById("orgaoNav").innerHTML = navHTML;
+
+  var toc = document.getElementById("toc");
+  var content = document.getElementById("content");
+
+  var tocHTML = "<h3>Conteúdo Transversal</h3>";
+  var contentHTML = "";
+
+  function calcReadTime(html) {
+    var words = html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
+    var mins = Math.max(2, Math.round(words / 140));
+    return "⏱️ ~" + mins + " min de leitura";
+  }
+
+  SECTIONS.forEach(function(s) {
+    var id = "sec-" + s.num;
+    var rt = calcReadTime(s.body);
+    tocHTML += "<a href=\"#" + id + "\">Módulo " + s.num + " — " + s.title + "</a>";
+    contentHTML += "<div class=\"section-card\" id=\"" + id + "\">" +
+      "<div class=\"sec-header\">" +
+        "<div class=\"sec-icon\">" + s.icon + "</div>" +
+        "<div>" +
+          "<div class=\"sec-num\">MÓDULO " + s.num + " · TRONCO COMUM <span class=\"sec-read-time\">" + rt + "</span></div>" +
+          "<div class=\"sec-title\">" + s.title + "</div>" +
+        "</div>" +
+      "</div>" +
+      "<div class=\"sec-body\">" + s.body + "</div>" +
+    "</div>";
+  });
+
+  var extra = EXTRA_SECTIONS[orgao];
+  var eid = "sec-14";
+  var ert = calcReadTime(extra.body);
+  tocHTML += "<h3 style=\"margin-top:16px;color:var(--gold)\">Especialidade</h3>";
+  tocHTML += "<a href=\"#" + eid + "\" style=\"color:var(--gold);font-weight:600\">Módulo 14 — " + extra.title + "</a>";
+  contentHTML += "<div class=\"section-card\" id=\"" + eid + "\" style=\"border-color:rgba(16,185,129,.4);box-shadow:0 0 20px rgba(16,185,129,.06)\">" +
+    "<div class=\"sec-header\">" +
+      "<div class=\"sec-icon\" style=\"background:rgba(16,185,129,.18)\">" + extra.icon + "</div>" +
+      "<div>" +
+        "<div class=\"sec-num\" style=\"color:var(--gold)\">MÓDULO 14 · PREPARAÇÃO ESPECÍFICA <span class=\"sec-read-time\" style=\"color:var(--gold);background:rgba(250,204,21,.1)\">" + ert + "</span></div>" +
+        "<div class=\"sec-title\">" + extra.title + "</div>" +
+      "</div>" +
+    "</div>" +
+    "<div class=\"sec-body\">" + extra.body + "</div>" +
+  "</div>";
+
+  toc.innerHTML = tocHTML;
+  content.innerHTML = contentHTML;
+
+  var cards = document.querySelectorAll(".section-card");
+  cards.forEach(function(card, i) {
+    var num = i + 1;
+    var nav = document.createElement("div");
+    nav.className = "sec-nav";
+    nav.innerHTML = 
+      (i > 0 ? "<button class=\"btn-prev\" data-target=\"sec-" + (num - 1) + "\">← Anterior</button>" : "<span></span>") +
+      "<span class=\"sec-progress\">Módulo " + num + " de " + cards.length + "</span>" +
+      (i < cards.length - 1 ? "<button class=\"btn-next\" data-target=\"sec-" + (num + 1) + "\">Seguinte →</button>" : "<span></span>");
+    card.appendChild(nav);
+  });
+
+  cards.forEach(function(c) { c.classList.add("hidden"); });
+  if (cards[0]) cards[0].classList.remove("hidden");
+  var tocLinks = document.querySelectorAll(".toc-sidebar a");
+  if (tocLinks[0]) tocLinks[0].classList.add("toc-active");
+
+  function goToModule(id) {
+    cards.forEach(function(c) { c.classList.add("hidden"); });
+    var target = document.getElementById(id);
+    if (target) {
+      target.classList.remove("hidden");
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    tocLinks.forEach(function(a) {
+      a.classList.toggle("toc-active", a.getAttribute("href") === "#" + id);
+    });
+  }
+
+  document.getElementById("toc").addEventListener("click", function(e) {
+    var link = e.target.closest("a");
+    if (!link) return;
+    var href = link.getAttribute("href");
+    if (!href || href[0] !== "#") return;
+    e.preventDefault();
+    goToModule(href.substring(1));
+  });
+
+  document.getElementById("content").addEventListener("click", function(e) {
+    var btn = e.target.closest(".sec-nav button");
+    if (!btn) return;
+    var target = btn.getAttribute("data-target");
+    if (target) goToModule(target);
+  });
+
+  document.addEventListener("keydown", function(e) {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    var visible = document.querySelector(".section-card:not(.hidden)");
+    if (!visible) return;
+    var cur = parseInt(visible.id.split("-")[1]);
+    var next = e.key === "ArrowRight" ? cur + 1 : cur - 1;
+    if (next >= 1 && next <= cards.length) goToModule("sec-" + next);
+  });
+
+  var hint = document.createElement("p");
+  hint.className = "kbd-hint";
+  hint.textContent = "⌨ ← → para navegar entre módulos";
+  document.getElementById("content").appendChild(hint);
+}
+
+render();
+</script>
+<script src="audio-guia.js"></script>
+</body>
+</html>
