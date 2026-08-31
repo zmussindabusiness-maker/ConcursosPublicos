@@ -560,20 +560,20 @@ var QUEST_DATA = [
       "20",
       "21"
     ],
-    "r": 1,
-    "e": "Após a criação de novas Províncias em 2024 (Icolo e Bengo, Moxico Leste, Cuando, Cuango, Mimbu), Angola passou a ter 21 Províncias."
+    "r": 3,
+    "e": "Após a reestruturação territorial de 2024 (Lei n.º 14/24), que criou as províncias de Icolo e Bengo, Moxico Leste, Cuando e Cubango, Angola passou a ter 21 Províncias."
   },
   {
     "tema": "Org. Política e Administrativa",
     "p": "Novas Províncias criadas em 2024:",
     "o": [
       "Huíla e Cunene",
-      "Icolo e Bengo, Moxico Leste, Cuando, Cuango, Mimbu",
+      "Icolo e Bengo, Moxico Leste, Cuando e Cubango",
       "Luanda e Bengo",
       "Bié e Moxico"
     ],
     "r": 1,
-    "e": "Foram criadas 5 novas Províncias: Icolo e Bengo (de Luanda), Moxico Leste (de Moxico), Cuando (de Cuando Cubango), Cuango e Mimbu."
+    "e": "As novas províncias criadas pela Lei n.º 14/24 são Icolo e Bengo, Moxico Leste, Cuando e Cubango."
   },
   {
     "tema": "Org. Política e Administrativa",

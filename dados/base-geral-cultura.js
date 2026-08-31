@@ -307,8 +307,8 @@ var Q_BASE_geral_cultura = [
       "Bengo",
       "Luanda e Icolo e Bengo"
     ],
-    "r": 2,
-    "e": "A cidade de Luanda está situada na província do Bengo (desde a divisão administrativa de 2024 que criou a província de Icolo e Bengo separada de Luanda).",
+    "r": 0,
+    "e": "A capital de Angola, Luanda, está situada na província de Luanda.",
     "f": "Geografia de Angola"
   },
   {
@@ -737,7 +737,7 @@ var Q_BASE_geral_cultura = [
       "20"
     ],
     "r": 1,
-    "e": "Angola tinha 18 províncias até 2024. Com a criação de 5 novas províncias (Icolo e Bengo, Moxico Leste, Cuando, Cuango e Mimbu), passou a ter 21 províncias.",
+    "e": "Angola tinha 18 províncias até 2024. Com a reestruturação territorial (Lei n.º 14/24) que criou as províncias de Icolo e Bengo, Moxico Leste, Cuando e Cubango, passou a ter 21 províncias.",
     "f": "Divisão Político-Administrativa de Angola"
   },
   {
