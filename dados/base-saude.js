@@ -186,12 +186,12 @@ var Q_BASE_saude = [
     "p": "Quais foram as novas províncias criadas pela Lei n.º 14/24 na reestruturação territorial de Angola?",
     "o": [
       "Cabinda Sul, Zaire Leste e Huambo Norte",
-      "Icolo e Bengo, Moxico Leste e Cuando",
+      "Icolo e Bengo, Moxico Leste, Cuando e Cubango",
       "Benguela Norte, Cuanza Ocidental e Namibe Leste",
       "Cunene Central, Malanje Sul e Uíge Norte"
     ],
     "r": 1,
-    "e": "A Lei n.º 14/24 criou as províncias de Icolo e Bengo (divisão de Luanda/Bengo), Moxico Leste (divisão do Moxico) e Cuando (divisão do Cuando Cubango).",
+    "e": "A Lei n.º 14/24 criou as províncias de Icolo e Bengo (desmembrada de Luanda/Bengo), Moxico Leste (desmembrada do Moxico), Cuando e Cubango (desmembramento da antiga Cuando Cubango em duas províncias).",
     "f": "Lei n.º 14/24"
   },
   {
