@@ -296,6 +296,74 @@
   }
   .tema-jump:hover { border-color: var(--accent); color: var(--accent); }
   .tema-jump option { background: var(--bg2); color: var(--fg); }
+  /* ===== FLOATING COMPACT TIMER (mobile) ===== */
+  .float-timer {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    background: rgba(15,23,42,.92);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    border-bottom: 1px solid rgba(59,130,246,.25);
+    padding: 6px 16px;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    transition: transform .25s cubic-bezier(.4,0,.2,1), opacity .25s;
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  .light .float-timer {
+    background: rgba(248,250,252,.92);
+    border-bottom-color: rgba(37,99,235,.2);
+  }
+  .float-timer.visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .float-timer-q {
+    display: flex; align-items: center; gap: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .float-timer-q svg { transform: rotate(-90deg); flex-shrink: 0; }
+  .float-timer-q-ring-bg { fill: none; stroke: rgba(59,130,246,.2); stroke-width: 3; }
+  .float-timer-q-ring-fg {
+    fill: none; stroke: var(--accent2); stroke-width: 3; stroke-linecap: round;
+    transition: stroke-dashoffset .3s ease, stroke .3s;
+  }
+  .float-timer-q-ring-fg.warning { stroke: #facc15; }
+  .float-timer-q-ring-fg.danger { stroke: #ef4444; }
+  .float-timer-q-text {
+    font-size: .85rem; font-weight: 800; color: var(--accent2);
+    font-variant-numeric: tabular-nums; min-width: 36px;
+  }
+  .float-timer-q-text.warning { color: #facc15; }
+  .float-timer-q-text.danger { color: #ef4444; }
+  .float-timer-sep { width: 1px; height: 18px; background: var(--border); flex-shrink: 0; }
+  .float-timer-total {
+    font-size: .75rem; color: var(--fg2); font-variant-numeric: tabular-nums;
+  }
+  .float-timer-total span { color: var(--fg); font-weight: 700; }
+  .float-timer-label {
+    font-size: .6rem; color: var(--fg2); text-transform: uppercase;
+    letter-spacing: 1px; flex-shrink: 0;
+  }
+  .float-timer-bar-wrap {
+    flex: 1; height: 3px; background: rgba(59,130,246,.15);
+    border-radius: 2px; overflow: hidden;
+  }
+  .float-timer-bar-fill {
+    height: 100%; background: var(--accent2); border-radius: 2px;
+    transition: width .3s ease, background .3s;
+  }
+  .float-timer-bar-fill.warning { background: #facc15; }
+  .float-timer-bar-fill.danger { background: #ef4444; }
+
+  @media (max-width: 600px) {
+    .float-timer { display: flex; }
+  }
+
   @media (max-width: 480px) {
     .card { padding: 14px; }
     button { width: 100%; }
@@ -372,6 +440,21 @@
 </style>
 </head>
 <body>
+<!-- Floating compact timer for mobile (appears when scrolled past main timer) -->
+<div class="float-timer" id="floatTimer" aria-hidden="true">
+  <div class="float-timer-q">
+    <svg width="28" height="28" viewBox="0 0 28 28">
+      <circle class="float-timer-q-ring-bg" cx="14" cy="14" r="11"/>
+      <circle class="float-timer-q-ring-fg" id="floatTimerRing" cx="14" cy="14" r="11" stroke-dasharray="69.1" stroke-dashoffset="0"/>
+    </svg>
+    <span class="float-timer-q-text" id="floatTimerText">00:35</span>
+  </div>
+  <div class="float-timer-bar-wrap">
+    <div class="float-timer-bar-fill" id="floatTimerBar" style="width:100%"></div>
+  </div>
+  <div class="float-timer-sep"></div>
+  <div class="float-timer-total">⏱ <span id="floatTotalTimer">59:00</span></div>
+</div>
 <div class="container">
   <div class="header-top">
     <h1 id="mainTitle">Simulador</h1>
@@ -637,7 +720,8 @@ function updateTimerDisplay() {
 
   const qm = Math.floor(displayQ / 60);
   const qs = displayQ % 60;
-  qEl.textContent = `${String(qm).padStart(2,'0')}:${String(qs).padStart(2,'0')}`;
+  const qFormatted = `${String(qm).padStart(2,'0')}:${String(qs).padStart(2,'0')}`;
+  qEl.textContent = qFormatted;
   const offset = circumference * (1 - qProgress);
   if (ring) { ring.style.strokeDasharray = `${circumference}`; ring.style.strokeDashoffset = `${offset}`; }
   if (bar) bar.style.width = `${qProgress * 100}%`;
@@ -656,6 +740,27 @@ function updateTimerDisplay() {
   tEl.className = "timer";
   if (state.totalTimeLeft <= 60) tEl.classList.add("timer-danger");
   else if (state.totalTimeLeft <= 300) tEl.classList.add("timer-warning");
+
+  // — sync floating compact timer —
+  const floatText = document.getElementById("floatTimerText");
+  const floatRing = document.getElementById("floatTimerRing");
+  const floatBar  = document.getElementById("floatTimerBar");
+  const floatTotal = document.getElementById("floatTotalTimer");
+  if (floatText) {
+    floatText.textContent = qFormatted;
+    floatText.className = "float-timer-q-text" + (cls ? " " + cls : "");
+  }
+  if (floatRing) {
+    const floatCirc = 2 * Math.PI * 11; // r=11
+    floatRing.style.strokeDasharray = `${floatCirc}`;
+    floatRing.style.strokeDashoffset = `${floatCirc * (1 - qProgress)}`;
+    floatRing.className = "float-timer-q-ring-fg" + (cls ? " " + cls : "");
+  }
+  if (floatBar) {
+    floatBar.style.width = `${qProgress * 100}%`;
+    floatBar.className = "float-timer-bar-fill" + (cls ? " " + cls : "");
+  }
+  if (floatTotal) floatTotal.textContent = formatted;
 }
 
 // ===== MODOS =====
@@ -675,6 +780,27 @@ function toggleExame() {
   document.getElementById("statExame").style.display = state.exame ? "block" : "none";
   saveState();
 }
+
+// ===== SCROLL — floating timer visibility =====
+(function setupFloatTimer() {
+  const floatEl = document.getElementById('floatTimer');
+  if (!floatEl) return;
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const box = document.getElementById('qTimerBox');
+      if (box) {
+        const rect = box.getBoundingClientRect();
+        // Show floating bar once the main timer box has scrolled fully above viewport
+        const shouldShow = rect.bottom < 0;
+        floatEl.classList.toggle('visible', shouldShow);
+      }
+      ticking = false;
+    });
+  }, { passive: true });
+})();
 
 let themeToggle = false;
 function toggleTheme() {
