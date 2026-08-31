@@ -305,6 +305,70 @@
     .mini-map { max-height: 72px; }
     .mini-dot { width: 16px; height: 16px; font-size: .5rem; }
   }
+  
+  /* ===== SETTINGS SECTION CSS ===== */
+  .settings-section {
+    margin-top: 14px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+    text-align: left;
+  }
+  .settings-section h3 {
+    font-size: .9rem;
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .settings-group:last-child {
+    margin-bottom: 0;
+  }
+  .settings-label {
+    font-size: .78rem;
+    color: var(--fg2);
+    font-weight: 600;
+  }
+  .settings-options {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .settings-btn {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--fg2);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: .78rem;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, color .15s;
+    user-select: none;
+    font-weight: 500;
+  }
+  .settings-btn:hover {
+    border-color: var(--accent2);
+    color: var(--fg);
+  }
+  .settings-btn:has(input:checked) {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: #fff;
+  }
+  .settings-btn.disabled {
+    opacity: .35;
+    cursor: not-allowed;
+  }
+  .settings-btn.disabled:hover {
+    border-color: var(--border);
+    color: var(--fg2);
+  }
 </style>
 </head>
 <body>
@@ -394,6 +458,47 @@
 let STORAGE_KEY = "minint_progress_default";
 let SECONDS_PER_QUESTION = 35;
 
+// ===== PERSISTENCE HELPERS FOR WRONG & FLAGGED QUESTIONS =====
+function getPersistentList(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : [];
+  } catch (_) {
+    return [];
+  }
+}
+function savePersistentList(key, list) {
+  try {
+    localStorage.setItem(key, JSON.stringify(list));
+  } catch (_) {}
+}
+function updatePersistentFlag(questionText, isFlagged) {
+  const meta = window.CONCURSO_META || window._META;
+  if (!meta) return;
+  const key = "minint_flagged_" + meta.id;
+  let list = getPersistentList(key);
+  const idx = list.indexOf(questionText);
+  if (isFlagged) {
+    if (idx === -1) list.push(questionText);
+  } else {
+    if (idx !== -1) list.splice(idx, 1);
+  }
+  savePersistentList(key, list);
+}
+function updatePersistentWrong(questionText, isWrong) {
+  const meta = window.CONCURSO_META || window._META;
+  if (!meta) return;
+  const key = "minint_wrong_" + meta.id;
+  let list = getPersistentList(key);
+  const idx = list.indexOf(questionText);
+  if (isWrong) {
+    if (idx === -1) list.push(questionText);
+  } else {
+    if (idx !== -1) list.splice(idx, 1);
+  }
+  savePersistentList(key, list);
+}
+
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -408,8 +513,15 @@ function loadState() {
 }
 
 function buildInitialState() {
+  const metaId = (window.CONCURSO_META || window._META || { id: 'default' }).id;
+  const flaggedList = getPersistentList("minint_flagged_" + metaId);
   return {
-    progress: QUESTIONS.map(() => ({ answered: false, selected: -1, correct: false, flagged: false })),
+    progress: QUESTIONS.map(q => ({
+      answered: false,
+      selected: -1,
+      correct: false,
+      flagged: flaggedList.indexOf(q.p) !== -1
+    })),
     current: 0,
     acertos: 0,
     erros: 0,
@@ -804,6 +916,7 @@ function toggleFlag() {
   document.getElementById("btnFlag").classList.toggle("active", p.flagged);
   renderMiniMap();
   saveState();
+  updatePersistentFlag(QUESTIONS[state.current].p, p.flagged);
 }
 
 // ===== CHECK / NEXT =====
@@ -822,6 +935,8 @@ function check() {
   if (pr.correct) state.acertos++; else state.erros++;
   document.getElementById("acertos").textContent = state.acertos;
   document.getElementById("erros").textContent = state.erros;
+
+  updatePersistentWrong(q.p, !pr.correct);
 
   if (state.exame) {
     setTimeout(next, 300);
@@ -1084,7 +1199,14 @@ function restart() {
       pct: pct
     });
   }
-  state.progress = QUESTIONS.map(() => ({ answered: false, selected: -1, correct: false, flagged: false }));
+  const metaId = (window.CONCURSO_META || window._META || { id: 'default' }).id;
+  const flaggedList = getPersistentList("minint_flagged_" + metaId);
+  state.progress = QUESTIONS.map(q => ({
+    answered: false,
+    selected: -1,
+    correct: false,
+    flagged: flaggedList.indexOf(q.p) !== -1
+  }));
   state.current = 0;
   state.acertos = 0;
   state.erros = 0;
@@ -1272,6 +1394,40 @@ function showTemaSelector() {
       '</div>';
   }
 
+  var settingsHtml = [
+    '<div class="settings-section" style="margin-bottom:16px">',
+      '<h3>⚙️ Configuração do Simulado</h3>',
+      
+      '<div class="settings-group">',
+        '<div class="settings-label">Quantidade de Questões:</div>',
+        '<div class="settings-options">',
+          '<label class="settings-btn"><input type="radio" name="qtyLimit" value="all" checked style="display:none" onchange="updateTemaCount()">Todas</label>',
+          '<label class="settings-btn"><input type="radio" name="qtyLimit" value="10" style="display:none" onchange="updateTemaCount()">10 q</label>',
+          '<label class="settings-btn"><input type="radio" name="qtyLimit" value="20" style="display:none" onchange="updateTemaCount()">20 q</label>',
+          '<label class="settings-btn"><input type="radio" name="qtyLimit" value="30" style="display:none" onchange="updateTemaCount()">30 q</label>',
+          '<label class="settings-btn"><input type="radio" name="qtyLimit" value="50" style="display:none" onchange="updateTemaCount()">50 q</label>',
+        '</div>',
+      '</div>',
+
+      '<div class="settings-group">',
+        '<div class="settings-label">Filtro de Questões:</div>',
+        '<div class="settings-options">',
+          '<label class="settings-btn"><input type="radio" name="filterMode" value="all" checked style="display:none" onchange="updateTemaCount()">Todas</label>',
+          '<label class="settings-btn" id="lblFilterWrong"><input type="radio" name="filterMode" value="wrong" style="display:none" onchange="updateTemaCount()">Erradas (<span id="cntWrong">0</span>)</label>',
+          '<label class="settings-btn" id="lblFilterFlagged"><input type="radio" name="filterMode" value="flagged" style="display:none" onchange="updateTemaCount()">Marcadas ⭐ (<span id="cntFlagged">0</span>)</label>',
+        '</div>',
+      '</div>',
+
+      '<div class="settings-group">',
+        '<div class="settings-label">Ordem das Questões:</div>',
+        '<div class="settings-options">',
+          '<label class="settings-btn"><input type="radio" name="questionOrder" value="random" checked style="display:none">Aleatória</label>',
+          '<label class="settings-btn"><input type="radio" name="questionOrder" value="seq" style="display:none">Sequencial</label>',
+        '</div>',
+      '</div>',
+    '</div>'
+  ].join('');
+
   document.getElementById('app').innerHTML =
     headerHtml +
     '<div class="card tema-selector-card" style="margin-top:0">' +
@@ -1284,11 +1440,14 @@ function showTemaSelector() {
         '<button class="btn-check" onclick="selectAllTemas(true)">✅ Todas</button>' +
         '<button class="btn-restart" onclick="selectAllTemas(false)">🧹 Nenhuma</button>' +
       '</div>' +
+      settingsHtml +
       '<div style="display:flex;gap:8px">' +
         '<button class="btn-next" id="btnIniciar" onclick="confirmTemas()" style="flex:2">▶ Iniciar (' + total + ' questões)</button>' +
       '<button class="btn-restart" onclick="window.location.href=\'index.html\'" style="flex:1">← Voltar</button>' +
     '</div>' +
   '</div>';
+
+  updateTemaCount();
 }
 
 function onLpToggle() {
@@ -1331,18 +1490,88 @@ function onDisciplinaToggle(el) {
 }
 
 function updateTemaCount() {
-  var checks = document.querySelectorAll('#temaGrid input[type="checkbox"]');
-  var count = 0;
-  checks.forEach(function(c) {
-    if (c.checked) {
-      var qtd = parseInt(c.parentNode.querySelector('.tema-qtd').textContent);
-      count += qtd;
-    }
+  var checks = document.querySelectorAll('#temaGrid input[type="checkbox"]:checked');
+  var selectedThemes = [];
+  checks.forEach(function(c) { selectedThemes.push(c.value); });
+  
+  var pool = (window._ALL_QUESTIONS || []).filter(function(q) {
+    return selectedThemes.indexOf(q.tema) !== -1;
   });
+  
+  var metaId = (window.CONCURSO_META || window._META || { id: 'default' }).id;
+  var wrongList = getPersistentList("minint_wrong_" + metaId);
+  var flaggedList = getPersistentList("minint_flagged_" + metaId);
+  
+  // Count wrong and flagged in the selected pool before applying filterMode
+  var wrongCount = pool.filter(function(q) { return wrongList.indexOf(q.p) !== -1; }).length;
+  var flaggedCount = pool.filter(function(q) { return flaggedList.indexOf(q.p) !== -1; }).length;
+  
+  // Update UI indicators
+  var elWrong = document.getElementById('cntWrong');
+  if (elWrong) elWrong.textContent = wrongCount;
+  var inputWrong = document.querySelector('input[name="filterMode"][value="wrong"]');
+  if (inputWrong) {
+    var isZero = (wrongCount === 0);
+    inputWrong.disabled = isZero;
+    var parent = inputWrong.parentNode;
+    if (parent) {
+      parent.classList.toggle('disabled', isZero);
+      if (isZero && inputWrong.checked) {
+        var inputAll = document.querySelector('input[name="filterMode"][value="all"]');
+        if (inputAll) inputAll.checked = true;
+      }
+    }
+  }
+
+  var elFlagged = document.getElementById('cntFlagged');
+  if (elFlagged) elFlagged.textContent = flaggedCount;
+  var inputFlagged = document.querySelector('input[name="filterMode"][value="flagged"]');
+  if (inputFlagged) {
+    var isZero = (flaggedCount === 0);
+    inputFlagged.disabled = isZero;
+    var parent = inputFlagged.parentNode;
+    if (parent) {
+      parent.classList.toggle('disabled', isZero);
+      if (isZero && inputFlagged.checked) {
+        var inputAll = document.querySelector('input[name="filterMode"][value="all"]');
+        if (inputAll) inputAll.checked = true;
+      }
+    }
+  }
+
+  // Get active filterMode
+  var filterVal = 'all';
+  var filterRadios = document.querySelectorAll('input[name="filterMode"]');
+  filterRadios.forEach(function(r) { if (r.checked) filterVal = r.value; });
+  
+  if (filterVal === 'wrong') {
+    pool = pool.filter(function(q) { return wrongList.indexOf(q.p) !== -1; });
+  } else if (filterVal === 'flagged') {
+    pool = pool.filter(function(q) { return flaggedList.indexOf(q.p) !== -1; });
+  }
+  
+  var totalSelected = pool.length;
+  
+  // Get quantity limit
+  var qtyVal = 'all';
+  var qtyRadios = document.querySelectorAll('input[name="qtyLimit"]');
+  qtyRadios.forEach(function(r) { if (r.checked) qtyVal = r.value; });
+  
+  var activeCount = totalSelected;
+  if (qtyVal !== 'all') {
+    var limit = parseInt(qtyVal);
+    if (!isNaN(limit)) {
+      activeCount = Math.min(totalSelected, limit);
+    }
+  }
+  
   var el = document.getElementById('temaTotalCount');
-  if (el) el.textContent = count;
+  if (el) el.textContent = activeCount;
   var btn = document.getElementById('btnIniciar');
-  if (btn) btn.textContent = '▶ Iniciar (' + count + ' questões)';
+  if (btn) {
+    btn.textContent = '▶ Iniciar (' + activeCount + ' questões)';
+    btn.disabled = (activeCount === 0);
+  }
 }
 
 function selectAllTemas(select) {
@@ -1369,6 +1598,48 @@ function confirmTemas() {
   checks.forEach(function(c) { selected[c.value] = true; });
 
   var filtered = window._ALL_QUESTIONS.filter(function(q) { return selected[q.tema]; });
+
+  // Get active filterMode
+  var filterVal = 'all';
+  var filterRadios = document.querySelectorAll('input[name="filterMode"]');
+  filterRadios.forEach(function(r) { if (r.checked) filterVal = r.value; });
+  
+  var metaId = (window.CONCURSO_META || window._META || { id: 'default' }).id;
+  if (filterVal === 'wrong') {
+    var wrongList = getPersistentList("minint_wrong_" + metaId);
+    filtered = filtered.filter(function(q) { return wrongList.indexOf(q.p) !== -1; });
+  } else if (filterVal === 'flagged') {
+    var flaggedList = getPersistentList("minint_flagged_" + metaId);
+    filtered = filtered.filter(function(q) { return flaggedList.indexOf(q.p) !== -1; });
+  }
+
+  // Get active questionOrder
+  var orderVal = 'random';
+  var orderRadios = document.querySelectorAll('input[name="questionOrder"]');
+  orderRadios.forEach(function(r) { if (r.checked) orderVal = r.value; });
+
+  if (orderVal === 'random') {
+    // Shuffle using Fisher-Yates algorithm
+    for (var i = filtered.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = filtered[i];
+      filtered[i] = filtered[j];
+      filtered[j] = temp;
+    }
+  }
+
+  // Get active qtyLimit
+  var qtyVal = 'all';
+  var qtyRadios = document.querySelectorAll('input[name="qtyLimit"]');
+  qtyRadios.forEach(function(r) { if (r.checked) qtyVal = r.value; });
+
+  if (qtyVal !== 'all') {
+    var limit = parseInt(qtyVal);
+    if (!isNaN(limit)) {
+      filtered = filtered.slice(0, limit);
+    }
+  }
+
   window._QUESTIONS = filtered;
   initSimulador();
 }
