@@ -1,4 +1,4 @@
-const CACHE = "simulador-provas-v12";
+const CACHE = "simulador-provas-v13";
 const FILES = [
   ".",
   "index.html",
