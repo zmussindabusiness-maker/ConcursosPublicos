@@ -1,4 +1,4 @@
-const CACHE = "simulador-provas-v13";
+const CACHE = "simulador-provas-v14";
 const FILES = [
   ".",
   "index.html",
@@ -92,6 +92,11 @@ self.addEventListener("fetch", function(e) {
   e.respondWith(
     caches.match(cacheKey).then(function(r) {
       return r || fetch(e.request).then(function(res) {
+        // Safari/WebKit não permite que Service Workers retornem
+        // respostas que passaram por redirecionamento.
+        if (res.redirected) {
+          return fetch(res.url);
+        }
         if (res && res.ok && url.origin === location.origin) {
           var copy = res.clone();
           caches.open(CACHE).then(function(c) { c.put(cacheKey, copy); });
